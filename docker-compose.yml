@@ -1,0 +1,27 @@
+services:
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cen_prod
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+    depends_on:
+      - database
+    environment:
+      DATABASE_URL: ecto://postgres:postgres@database/cen_prod
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      PHX_HOST: ${HOST}
+    ports:
+      - 4000:4000
+    restart: unless-stopped
+
+volumes:
+  postgres:
