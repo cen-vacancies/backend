@@ -1,0 +1,16 @@
+default:
+  image: elixir:slim
+
+styles:
+  stage: check
+  script:
+    - mix do deps.get, deps.compile, compile
+    - mix ci
+
+tests:
+  stage: check
+  coverage: '/\d+.\d+\%\s+\|\s+Total/'
+  script:
+    - mix do deps.get, deps.compile, compile
+    - mix ecto.create && mix ecto.migrate
+    - mix test
