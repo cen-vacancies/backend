@@ -13,8 +13,18 @@ styles:
 
 tests:
   stage: check
+  variables:
+    POSTGRES_DB: cen_test
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_HOST: database
+    MIX_ENV: test
+  services:
+    - name: postgres:latest
+      alias: database
   coverage: '/\d+.\d+\%\s+\|\s+Total/'
-  script:
-    - mix do deps.get, deps.compile, compile
+  before_script:
+    - mix do deps.get --only test, deps.compile, compile
     - mix ecto.create && mix ecto.migrate
+  script:
     - mix test
