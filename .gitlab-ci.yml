@@ -7,12 +7,28 @@ stages:
 
 styles:
   stage: check
+  cache:
+    - key:
+        files:
+          - mix.lock
+        prefix: dev
+      paths:
+        - deps/
+        - _build/dev
   script:
     - mix do deps.get, deps.compile, compile
     - mix ci
 
 tests:
   stage: check
+  cache:
+    - key:
+        files:
+          - mix.lock
+        prefix: test
+      paths:
+        - deps/
+        - _build/test
   variables:
     POSTGRES_DB: cen_test
     POSTGRES_USER: postgres
