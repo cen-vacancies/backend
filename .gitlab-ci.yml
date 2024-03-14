@@ -1,6 +1,10 @@
 default:
   image: elixir:slim
 
+stages:
+  - check
+  - build
+
 styles:
   stage: check
   script:
