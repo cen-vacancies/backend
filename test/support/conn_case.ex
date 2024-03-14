@@ -28,6 +28,7 @@ defmodule CenWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import CenWeb.ConnCase
+      import CenWeb.Validator
     end
   end
 
