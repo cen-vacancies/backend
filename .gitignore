@@ -35,3 +35,9 @@ cen-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Environment
+.env
+
+# Nix
+.nix-*
+.direnv
