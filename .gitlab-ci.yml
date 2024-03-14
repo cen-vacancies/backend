@@ -1,5 +1,5 @@
 default:
-  image: elixir:slim
+  image: elixir:otp-26
 
 stages:
   - check
