@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Readability.Specs
 defmodule CenWeb.CoreComponents do
   @moduledoc """
   Provides core UI components.
@@ -16,8 +17,10 @@ defmodule CenWeb.CoreComponents do
   """
   use Phoenix.Component
 
-  alias Phoenix.LiveView.JS
   import CenWeb.Gettext
+
+  alias Phoenix.HTML
+  alias Phoenix.LiveView.JS
 
   @doc """
   Renders a modal.
@@ -115,9 +118,9 @@ defmodule CenWeb.CoreComponents do
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
       class={[
-        "fixed top-2 right-2 mr-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
-        @kind == :info && "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
-        @kind == :error && "bg-rose-50 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
+        "fixed top-2 right-2 z-50 mr-2 w-80 rounded-lg p-3 ring-1 sm:w-96",
+        @kind == :info && "bg-emerald-50 fill-cyan-900 text-emerald-800 ring-emerald-500",
+        @kind == :error && "bg-rose-50 fill-rose-900 text-rose-900 shadow-md ring-rose-500"
       ]}
       {@rest}
     >
@@ -231,7 +234,7 @@ defmodule CenWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
+        "rounded-lg bg-zinc-900 px-3 py-2 hover:bg-zinc-700 phx-submit-loading:opacity-75",
         "text-sm font-semibold leading-6 text-white active:text-white/80",
         @class
       ]}
@@ -278,8 +281,7 @@ defmodule CenWeb.CoreComponents do
     values: ~w(checkbox color date datetime-local email file month number password
                range search select tel text textarea time url week)
 
-  attr :field, Phoenix.HTML.FormField,
-    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+  attr :field, HTML.FormField, doc: "a form field struct retrieved from the form, for example: @form[:email]"
 
   attr :errors, :list, default: []
   attr :checked, :boolean, doc: "the checked flag for checkbox inputs"
@@ -287,13 +289,12 @@ defmodule CenWeb.CoreComponents do
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
 
-  attr :rest, :global,
-    include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
+  attr :rest, :global, include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
 
   slot :inner_block
 
-  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+  def input(%{field: %HTML.FormField{} = field} = assigns) do
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
     |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
@@ -305,7 +306,7 @@ defmodule CenWeb.CoreComponents do
   def input(%{type: "checkbox"} = assigns) do
     assigns =
       assign_new(assigns, :checked, fn ->
-        Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
+        HTML.Form.normalize_value("checkbox", assigns[:value])
       end)
 
     ~H"""
@@ -340,7 +341,7 @@ defmodule CenWeb.CoreComponents do
         {@rest}
       >
         <option :if={@prompt} value=""><%= @prompt %></option>
-        <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
+        <%= HTML.Form.options_for_select(@options, @value) %>
       </select>
       <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
@@ -361,7 +362,7 @@ defmodule CenWeb.CoreComponents do
           @errors != [] && "border-rose-400 focus:border-rose-400"
         ]}
         {@rest}
-      ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
+      ><%= HTML.Form.normalize_value("textarea", @value) %></textarea>
       <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
     """
@@ -376,7 +377,7 @@ defmodule CenWeb.CoreComponents do
         type={@type}
         name={@name}
         id={@id}
-        value={Phoenix.HTML.Form.normalize_value(@type, @value)}
+        value={HTML.Form.normalize_value(@type, @value)}
         class={[
           "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
           "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400",
@@ -477,9 +478,9 @@ defmodule CenWeb.CoreComponents do
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
       <table class="w-[40rem] mt-11 sm:w-full">
-        <thead class="text-sm text-left leading-6 text-zinc-500">
+        <thead class="text-left text-sm leading-6 text-zinc-500">
           <tr>
-            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal"><%= col[:label] %></th>
+            <th :for={col <- @col} class="p-0 pr-6 pb-4 font-normal"><%= col[:label] %></th>
             <th :if={@action != []} class="relative p-0 pb-4">
               <span class="sr-only"><%= gettext("Actions") %></span>
             </th>
@@ -605,8 +606,7 @@ defmodule CenWeb.CoreComponents do
     JS.show(js,
       to: selector,
       transition:
-        {"transition-all transform ease-out duration-300",
-         "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
+        {"transition-all transform ease-out duration-300", "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
          "opacity-100 translate-y-0 sm:scale-100"}
     )
   end
@@ -616,8 +616,7 @@ defmodule CenWeb.CoreComponents do
       to: selector,
       time: 200,
       transition:
-        {"transition-all transform ease-in duration-200",
-         "opacity-100 translate-y-0 sm:scale-100",
+        {"transition-all transform ease-in duration-200", "opacity-100 translate-y-0 sm:scale-100",
          "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
     )
   end

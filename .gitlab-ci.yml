@@ -1,0 +1,47 @@
+default:
+  image: elixir:otp-26
+
+stages:
+  - check
+  - build
+
+styles:
+  stage: check
+  cache:
+    - key:
+        files:
+          - mix.lock
+        prefix: dev
+      paths:
+        - deps/
+        - _build/dev
+  before_script:
+    - mix do deps.get --only dev, deps.compile, compile
+  script:
+    - mix ci
+
+tests:
+  stage: check
+  cache:
+    - key:
+        files:
+          - mix.lock
+        prefix: test
+      paths:
+        - deps/
+        - _build/test
+  variables:
+    POSTGRES_DB: cen_test
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_HOST: database
+    MIX_ENV: test
+  services:
+    - name: postgres:latest
+      alias: database
+  coverage: '/\d+.\d+\%\s+\|\s+Total/'
+  before_script:
+    - mix do deps.get --only test, deps.compile, compile
+    - mix ecto.create && mix ecto.migrate
+  script:
+    - mix test --cover
