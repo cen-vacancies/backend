@@ -14,6 +14,7 @@ defmodule CenWeb.HealthCheckController do
       ok: {"User response", "application/json", HealthCheckResponse}
     ]
 
+  @spec check(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def check(conn, _params) do
     render(conn, :ok)
   end

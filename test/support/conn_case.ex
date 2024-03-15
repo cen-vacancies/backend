@@ -20,15 +20,15 @@ defmodule CenWeb.ConnCase do
   using do
     quote do
       # The default endpoint for testing
-      @endpoint CenWeb.Endpoint
-
       use CenWeb, :verified_routes
 
       # Import conveniences for testing with connections
-      import Plug.Conn
-      import Phoenix.ConnTest
       import CenWeb.ConnCase
       import CenWeb.Validator
+      import Phoenix.ConnTest
+      import Plug.Conn
+
+      @endpoint CenWeb.Endpoint
     end
   end
 
