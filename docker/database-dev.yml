@@ -9,8 +9,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres:/data/postgres
+      - cen_postgres_dev:/data/postgres
     restart: unless-stopped
 
 volumes:
-  postgres:
+  cen_postgres_dev:
