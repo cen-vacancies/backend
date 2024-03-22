@@ -45,3 +45,13 @@ tests:
     - mix ecto.create && mix ecto.migrate
   script:
     - mix test --cover
+
+build and publish:
+  image: docker:dind
+  services:
+    - docker:dind
+  stage: build
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/cen-vacancies/backend/image:latest .
+    - docker push $CI_REGISTRY/cen-vacancies/backend/image:latest
