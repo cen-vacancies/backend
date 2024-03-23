@@ -48,6 +48,7 @@ jobs:
 
       - name: Install dependencies
         run: mix do deps.get --only test, deps.compile, compile
+        env: MIX_ENV=test
 
       - name: Setup database
         run: mix ecto.setup
