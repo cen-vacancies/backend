@@ -33,7 +33,7 @@ jobs:
         with:
           path: |
             deps
-            _build/test
+            _build/dev
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
 
