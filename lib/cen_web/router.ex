@@ -9,7 +9,8 @@ defmodule CenWeb.Router do
     plug :protect_from_forgery
 
     plug :put_secure_browser_headers, %{
-      "content-security-policy" => "default-src 'self'; img-src 'self' data: blob:; style-src 'self'; font-src 'self';"
+      "content-security-policy" =>
+        "default-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; img-src 'self' data: blob:; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; font-src 'self'"
     }
 
     plug :put_secure_browser_headers
