@@ -4,10 +4,12 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cen_prod
+      POSTGRES_DB: cen_dev
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
+    ports:
+      - 5432:5432
     restart: unless-stopped
 
   app:
@@ -16,12 +18,14 @@ services:
     depends_on:
       - database
     environment:
-      DATABASE_URL: ecto://postgres:postgres@database/cen_prod
+      DATABASE_URL: ecto://postgres:postgres@database/cen_dev
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       PHX_HOST: ${HOST}
     ports:
       - 4000:4000
     restart: unless-stopped
+    profiles:
+      - app
 
 volumes:
   postgres:
