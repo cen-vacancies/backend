@@ -10,7 +10,7 @@ defmodule CenWeb.UserController do
 
   action_fallback CenWeb.FallbackController
 
-  tags :users
+  tags "users"
 
   operation :create,
     summary: "Create user",
@@ -67,19 +67,14 @@ defmodule CenWeb.UserController do
       user_id: [in: :path, description: "User ID", type: :string, example: "f3e99641-3214-431a-8d46-26cb4c2efee9"]
     ],
     responses: [
-      no_content: "Empty response"
+      no_content: "User deleted"
     ]
 
   def delete(conn, %{"user_id" => user_id}) do
-    response = send_resp(conn, :no_content, "")
-
-    case Accounts.fetch_user(user_id) do
-      {:error, _reason} ->
-        response
-
-      {:ok, user} ->
-        Accounts.delete_user(user)
-        response
+    with {:ok, user} <- Accounts.fetch_user(user_id) do
+      Accounts.delete_user(user)
     end
+
+    send_resp(conn, :no_content, "")
   end
 end

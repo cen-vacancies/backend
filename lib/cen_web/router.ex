@@ -57,7 +57,6 @@ defmodule CenWeb.Router do
     pipe_through :api
 
     post "/tokens", TokenController, :create
-    delete "/tokens/:token", TokenController, :delete
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
