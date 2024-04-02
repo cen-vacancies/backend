@@ -1,8 +1,6 @@
 defmodule CenWeb.Router do
   use CenWeb, :router
 
-  import CenWeb.UserAuth
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -16,7 +14,6 @@ defmodule CenWeb.Router do
     }
 
     plug :put_secure_browser_headers
-    plug :fetch_current_user
   end
 
   pipeline :api do
