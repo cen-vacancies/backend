@@ -1,6 +1,5 @@
 defmodule CenWeb.UserController do
   use CenWeb, :controller
-  use OpenApiSpex.ControllerSpecs
 
   alias Cen.Accounts
   alias CenWeb.Schemas.ChangesetErrorsResponse

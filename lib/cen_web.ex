@@ -43,6 +43,8 @@ defmodule CenWeb do
         formats: [:html, :json],
         layouts: [html: CenWeb.Layouts]
 
+      use OpenApiSpex.ControllerSpecs
+
       import CenWeb.Gettext
       import Plug.Conn
 
