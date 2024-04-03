@@ -21,12 +21,6 @@ defmodule CenWeb.Router do
     plug OpenApiSpex.Plug.PutApiSpec, module: CenWeb.ApiSpec
   end
 
-  scope "/", CenWeb do
-    pipe_through :browser
-
-    get "/", PageController, :home
-  end
-
   scope "/" do
     pipe_through :browser
     get "/swaggerui", OpenApiSpex.Plug.SwaggerUI, path: "/api/openapi"
