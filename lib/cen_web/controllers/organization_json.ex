@@ -1,5 +1,6 @@
 defmodule CenWeb.OrganizationJSON do
   alias Cen.Employers.Organization
+  alias CenWeb.UserJSON
 
   @doc """
   Renders a list of organizations.
@@ -15,14 +16,15 @@ defmodule CenWeb.OrganizationJSON do
     %{data: data(organization)}
   end
 
-  defp data(%Organization{} = organization) do
+  def data(%Organization{} = organization) do
     %{
       id: organization.id,
       name: organization.name,
       logo: organization.logo,
       description: organization.description,
       address: organization.address,
-      contacts: organization.contacts
+      contacts: organization.contacts,
+      employer: UserJSON.data(organization.employer)
     }
   end
 end
