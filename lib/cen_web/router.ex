@@ -1,6 +1,8 @@
 defmodule CenWeb.Router do
   use CenWeb, :router
 
+  import CenWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -51,6 +53,16 @@ defmodule CenWeb.Router do
     pipe_through :api
 
     post "/tokens", TokenController, :create
+  end
+
+  scope "/api", CenWeb do
+    pipe_through [:api, :fetch_api_user]
+
+    post "/organizations", OrganizationController, :create
+
+    get "/organizations/:organization_id", OrganizationController, :show
+    patch "/organizations/:organization_id", OrganizationController, :update
+    delete "/organizations/:organization_id", OrganizationController, :delete
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

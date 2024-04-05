@@ -4,6 +4,8 @@ defmodule Cen.Accounts.User do
 
   import Ecto.Changeset
 
+  alias Cen.Employers.Organization
+
   @roles ~w[admin applicant employer]a
 
   schema "users" do
@@ -14,6 +16,8 @@ defmodule Cen.Accounts.User do
     field :role, Ecto.Enum, values: @roles
     field :birth_date, :date
     field :confirmed_at, :naive_datetime
+
+    has_one :organization, Organization, foreign_key: :employer_id
 
     timestamps(type: :utc_datetime)
   end
