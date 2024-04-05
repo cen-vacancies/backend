@@ -18,7 +18,7 @@ defmodule CenWeb.UserControllerTest do
       }
 
       conn = post(conn, ~p"/api/users", %{user: applicant_attrs})
-      json = json_response(conn, 200)
+      json = json_response(conn, 201)
 
       assert_schema UserResponse, json
       assert %{"data" => %{}} = json
@@ -34,7 +34,7 @@ defmodule CenWeb.UserControllerTest do
       }
 
       conn = post(conn, ~p"/api/users", %{user: employer_attrs})
-      json = json_response(conn, 200)
+      json = json_response(conn, 201)
 
       assert_schema UserResponse, json
       assert %{"data" => %{}} = json
