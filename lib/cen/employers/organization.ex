@@ -5,6 +5,7 @@ defmodule Cen.Employers.Organization do
   import Ecto.Changeset
 
   alias Cen.Accounts.User
+  alias Cen.Employers.Vacancy
 
   schema "organizations" do
     field :name, :string
@@ -14,6 +15,7 @@ defmodule Cen.Employers.Organization do
     field :contacts, :string
 
     belongs_to :employer, User
+    has_many :vacancies, Vacancy
 
     timestamps(type: :utc_datetime)
   end

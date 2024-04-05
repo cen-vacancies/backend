@@ -88,4 +88,105 @@ defmodule Cen.EmployersTest do
       assert %Ecto.Changeset{} = Employers.change_organization(organization)
     end
   end
+
+  describe "vacancies" do
+    import Cen.EmployersFixtures
+
+    alias Cen.Employers.Vacancy
+
+    setup context do
+      Map.put(context, :invalid_attrs, %{
+        description: nil,
+        published: nil,
+        reviewed: nil,
+        employment_type: nil,
+        work_schedule: nil,
+        education: nil,
+        field_of_art: nil,
+        min_years_of_work_experience: nil,
+        proposed_salary: nil,
+        organization: organization_fixture()
+      })
+    end
+
+    test "list_vacancies/0 returns all vacancies" do
+      vacancy = vacancy_fixture()
+      assert Employers.list_vacancies() == [vacancy]
+    end
+
+    test "get_vacancy!/1 returns the vacancy with given id" do
+      vacancy = vacancy_fixture()
+      assert Employers.get_vacancy!(vacancy.id) == vacancy
+    end
+
+    test "create_vacancy/1 with valid data creates a vacancy" do
+      valid_attrs = %{
+        description: "some description",
+        employment_type: :main,
+        work_schedule: :full_time,
+        education: :none,
+        field_of_art: :music,
+        min_years_of_work_experience: 42,
+        proposed_salary: 42,
+        organization: organization_fixture()
+      }
+
+      assert {:ok, %Vacancy{} = vacancy} = Employers.create_vacancy(valid_attrs)
+      assert vacancy.description == "some description"
+      assert vacancy.employment_type == :main
+      assert vacancy.work_schedule == :full_time
+      assert vacancy.education == :none
+      assert vacancy.field_of_art == :music
+      assert vacancy.min_years_of_work_experience == 42
+      assert vacancy.proposed_salary == 42
+    end
+
+    test "create_vacancy/1 with invalid data returns error changeset", %{invalid_attrs: invalid_attrs} do
+      assert {:error, %Ecto.Changeset{}} = Employers.create_vacancy(invalid_attrs)
+    end
+
+    test "update_vacancy/2 with valid data updates the vacancy" do
+      vacancy = vacancy_fixture()
+
+      update_attrs = %{
+        description: "some updated description",
+        published: false,
+        reviewed: false,
+        employment_type: :secondary,
+        work_schedule: :part_time,
+        education: :higher,
+        field_of_art: :visual,
+        min_years_of_work_experience: 43,
+        proposed_salary: 43
+      }
+
+      assert {:ok, %Vacancy{} = vacancy} = Employers.update_vacancy(vacancy, update_attrs)
+      assert vacancy.description == "some updated description"
+      assert vacancy.published == false
+      assert vacancy.reviewed == false
+      assert vacancy.employment_type == :secondary
+      assert vacancy.work_schedule == :part_time
+      assert vacancy.education == :higher
+      assert vacancy.field_of_art == :visual
+      assert vacancy.min_years_of_work_experience == 43
+      assert vacancy.proposed_salary == 43
+    end
+
+    test "update_vacancy/2 with invalid data returns error changeset", %{invalid_attrs: invalid_attrs} do
+      vacancy = vacancy_fixture()
+      assert {:error, %Ecto.Changeset{}} = Employers.update_vacancy(vacancy, invalid_attrs)
+      assert vacancy == Employers.get_vacancy!(vacancy.id)
+    end
+
+    test "delete_vacancy/1 deletes the vacancy" do
+      vacancy = vacancy_fixture()
+      assert {:ok, %Vacancy{}} = Employers.delete_vacancy(vacancy)
+      assert_raise Ecto.NoResultsError, fn -> Employers.get_vacancy!(vacancy.id) end
+    end
+
+    test "change_vacancy/1 returns a vacancy changeset" do
+      vacancy = vacancy_fixture()
+      assert %Ecto.Changeset{} = Employers.change_vacancy(vacancy)
+    end
+  end
 end

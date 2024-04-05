@@ -63,6 +63,14 @@ defmodule CenWeb.Router do
     get "/organizations/:organization_id", OrganizationController, :show
     patch "/organizations/:organization_id", OrganizationController, :update
     delete "/organizations/:organization_id", OrganizationController, :delete
+
+    scope "/organizations/:organization_id" do
+      post "/vacancies", VacancyController, :create
+
+      get "/vacancies/:vacancy_id", VacancyController, :show
+      patch "/vacancies/:vacancy_id", VacancyController, :update
+      delete "/vacancies/:vacancy_id", VacancyController, :delete
+    end
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
