@@ -6,6 +6,8 @@ defmodule CenWeb.OrganizationControllerTest do
   alias Cen.Accounts
   alias Cen.AccountsFixtures
   alias Cen.Employers.Organization
+  alias CenWeb.Schemas.ChangesetErrorsResponse
+  alias CenWeb.Schemas.OrganizationResponse
 
   @create_attrs %{
     name: "some name",
@@ -36,6 +38,9 @@ defmodule CenWeb.OrganizationControllerTest do
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, ~p"/api/organizations/#{id}")
+      json = json_response(conn, 200)
+
+      assert_schema OrganizationResponse, json
 
       assert %{
                "id" => ^id,
@@ -44,12 +49,16 @@ defmodule CenWeb.OrganizationControllerTest do
                "description" => "some description",
                "logo" => "some logo",
                "name" => "some name"
-             } = json_response(conn, 200)["data"]
+             } = json["data"]
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, ~p"/api/organizations", organization: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+      json = json_response(conn, 422)
+
+      assert_schema ChangesetErrorsResponse, json
+
+      assert json["errors"] != %{}
     end
   end
 
@@ -61,6 +70,9 @@ defmodule CenWeb.OrganizationControllerTest do
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, ~p"/api/organizations/#{id}")
+      json = json_response(conn, 200)
+
+      assert_schema OrganizationResponse, json
 
       assert %{
                "id" => ^id,
@@ -69,7 +81,7 @@ defmodule CenWeb.OrganizationControllerTest do
                "description" => "some updated description",
                "logo" => "some updated logo",
                "name" => "some updated name"
-             } = json_response(conn, 200)["data"]
+             } = json["data"]
     end
 
     test "renders errors when data is invalid", %{conn: conn, organization: organization} do

@@ -28,6 +28,8 @@ defmodule CenWeb.OrganizationController do
     organization_params = Map.put(organization_params, :employer, employer)
 
     with {:ok, %Organization{} = organization} <- Employers.create_organization(organization_params) do
+      organization = Map.put(organization, :employer, employer)
+
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/organizations/#{organization}")

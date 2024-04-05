@@ -39,7 +39,7 @@ defmodule Cen.Employers do
   def get_organization!(id), do: Repo.get!(Organization, id)
 
   def fetch_organization(id) do
-    case Repo.get(Organization, id) do
+    case Organization |> Repo.get(id) |> Repo.preload(:employer) do
       nil -> {:error, :not_found}
       organization -> {:ok, organization}
     end
