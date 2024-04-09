@@ -24,6 +24,7 @@ defmodule Cen.Accounts do
       nil
 
   """
+  @spec get_user_by_email(String.t()) :: User.t()
   def get_user_by_email(email) when is_binary(email) do
     Repo.get_by(User, email: email)
   end
@@ -40,6 +41,7 @@ defmodule Cen.Accounts do
       nil
 
   """
+  @spec get_user_by_email_and_password(String.t(), String.t()) :: User.t() | nil
   def get_user_by_email_and_password(email, password) when is_binary(email) and is_binary(password) do
     user = Repo.get_by(User, email: email)
     if User.valid_password?(user, password), do: user
@@ -59,8 +61,10 @@ defmodule Cen.Accounts do
       ** (Ecto.NoResultsError)
 
   """
+  @spec get_user!(String.t() | integer()) :: User.t()
   def get_user!(id), do: Repo.get!(User, id)
 
+  @spec fetch_user(String.t() | integer()) :: {:ok, User.t()} | {:error, :not_found}
   def fetch_user(id) do
     case Repo.get(User, id) do
       nil -> {:error, :not_found}
@@ -82,6 +86,7 @@ defmodule Cen.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec register_user(map()) :: {:ok, User.t()}
   def register_user(attrs) do
     %User{}
     |> User.registration_changeset(attrs)
@@ -97,6 +102,7 @@ defmodule Cen.Accounts do
       %Ecto.Changeset{data: %User{}}
 
   """
+  @spec change_user_registration(User.t(), map()) :: Ecto.Changeset.t()
   def change_user_registration(%User{} = user, attrs \\ %{}) do
     User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
   end
@@ -112,6 +118,7 @@ defmodule Cen.Accounts do
       %Ecto.Changeset{data: %User{}}
 
   """
+  @spec change_user_email(User.t(), map()) :: Ecto.Changeset.t()
   def change_user_email(user, attrs \\ %{}) do
     User.email_changeset(user, attrs, validate_email: false)
   end
@@ -129,6 +136,7 @@ defmodule Cen.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec apply_user_email(User.t(), String.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def apply_user_email(user, password, attrs) do
     user
     |> User.email_changeset(attrs)
@@ -142,15 +150,16 @@ defmodule Cen.Accounts do
   If the token matches, the user email is updated and the token is deleted.
   The confirmed_at date is also updated to the current time.
   """
+  @spec update_user_email(User.t(), String.t()) :: :ok | :error
   def update_user_email(user, token) do
     context = "change:#{user.email}"
 
     with {:ok, query} <- UserToken.verify_change_email_token_query(token, context),
          %UserToken{sent_to: email} <- Repo.one(query),
-         {:ok, _} <- Repo.transaction(user_email_multi(user, email, context)) do
+         {:ok, _} <- user |> user_email_multi(email, context) |> Repo.transaction() do
       :ok
     else
-      _ -> :error
+      _error -> :error
     end
   end
 
@@ -174,6 +183,8 @@ defmodule Cen.Accounts do
       {:ok, %{to: ..., body: ...}}
 
   """
+  @spec deliver_user_update_email_instructions(User.t(), String.t(), (String.t() -> String.t())) ::
+          {:ok, Swoosh.Email.t()} | {:error, term()}
   def deliver_user_update_email_instructions(%User{} = user, current_email, update_email_url_fun)
       when is_function(update_email_url_fun, 1) do
     {encoded_token, user_token} = UserToken.build_email_token(user, "change:#{current_email}")
@@ -191,6 +202,7 @@ defmodule Cen.Accounts do
       %Ecto.Changeset{data: %User{}}
 
   """
+  @spec change_user_password(User.t(), map()) :: Ecto.Changeset.t()
   def change_user_password(user, attrs \\ %{}) do
     User.password_changeset(user, attrs, hash_password: false)
   end
@@ -207,6 +219,7 @@ defmodule Cen.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec update_user_password(User.t(), String.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def update_user_password(user, password, attrs) do
     changeset =
       user
@@ -219,7 +232,7 @@ defmodule Cen.Accounts do
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}
-      {:error, :user, changeset, _} -> {:error, changeset}
+      {:error, :user, changeset, _changes} -> {:error, changeset}
     end
   end
 
@@ -228,6 +241,7 @@ defmodule Cen.Accounts do
 
   Note, use update_user_password and update_user_email to update user's password or mail, respectively.
   """
+  @spec update_user_info(User.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def update_user_info(user, attrs) do
     user
     |> User.info_changeset(attrs)
@@ -248,6 +262,8 @@ defmodule Cen.Accounts do
       {:error, :already_confirmed}
 
   """
+  @spec deliver_user_confirmation_instructions(User.t(), (String.t() -> String.t())) ::
+          {:ok, Swoosh.Email.t()} | {:error, term()}
   def deliver_user_confirmation_instructions(%User{} = user, confirmation_url_fun)
       when is_function(confirmation_url_fun, 1) do
     if user.confirmed_at do
@@ -265,13 +281,14 @@ defmodule Cen.Accounts do
   If the token matches, the user account is marked as confirmed
   and the token is deleted.
   """
+  @spec confirm_user(String.t()) :: {:ok, User.t()} | :error
   def confirm_user(token) do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "confirm"),
          %User{} = user <- Repo.one(query),
-         {:ok, %{user: user}} <- Repo.transaction(confirm_user_multi(user)) do
+         {:ok, %{user: user}} <- user |> confirm_user_multi() |> Repo.transaction() do
       {:ok, user}
     else
-      _ -> :error
+      _error -> :error
     end
   end
 
@@ -292,6 +309,8 @@ defmodule Cen.Accounts do
       {:ok, %{to: ..., body: ...}}
 
   """
+  @spec deliver_user_reset_password_instructions(User.t(), (String.t() -> String.t())) ::
+          {:ok, Swoosh.Email.t()} | {:error, :ok}
   def deliver_user_reset_password_instructions(%User{} = user, reset_password_url_fun)
       when is_function(reset_password_url_fun, 1) do
     {encoded_token, user_token} = UserToken.build_email_token(user, "reset_password")
@@ -311,12 +330,13 @@ defmodule Cen.Accounts do
       nil
 
   """
+  @spec get_user_by_reset_password_token(String.t()) :: User.t() | nil
   def get_user_by_reset_password_token(token) do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "reset_password"),
          %User{} = user <- Repo.one(query) do
       user
     else
-      _ -> nil
+      _error -> nil
     end
   end
 
@@ -332,6 +352,7 @@ defmodule Cen.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec reset_user_password(User.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def reset_user_password(user, attrs) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, User.password_changeset(user, attrs))
@@ -339,12 +360,13 @@ defmodule Cen.Accounts do
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}
-      {:error, :user, changeset, _} -> {:error, changeset}
+      {:error, :user, changeset, _changes} -> {:error, changeset}
     end
   end
 
   ## Delete account
 
+  @spec delete_user(User.t()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def delete_user(user) do
     Repo.delete(user)
   end
@@ -357,6 +379,7 @@ defmodule Cen.Accounts do
   The token returned must be saved somewhere safe.
   This token cannot be recovered from the database.
   """
+  @spec create_user_api_token(User.t()) :: {:ok, String.t()} | {:error, term()}
   def create_user_api_token(user) do
     with {:ok, token, _claims} = Cen.Token.encode_and_sign(user) do
       {:ok, token}
@@ -366,6 +389,7 @@ defmodule Cen.Accounts do
   @doc """
   Fetches the user by API token.
   """
+  @spec fetch_user_by_api_token(String.t()) :: {:ok, User.t(), map()} | {:error, :not_found}
   def fetch_user_by_api_token(token) do
     Cen.Token.resource_from_token(token)
   end

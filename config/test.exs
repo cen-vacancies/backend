@@ -23,6 +23,8 @@ config :cen, CenWeb.Endpoint,
   secret_key_base: "4aUyGJMb0C7QUBvsov/H3zTaPNMPNvm6lx6+3NahZTi8ajcyD/Ix3kXbprvS3AF9",
   server: false
 
+config :cen, Cen.Token, secret_key: "4aUyGJMb0C7QUBvsov/H3zTaPNMPNvm6lx6+3NahZTi8ajcyD/Ix3kXbprvS3AF9"
+
 # In test we don't send emails.
 config :cen, Cen.Mailer, adapter: Swoosh.Adapters.Test
 

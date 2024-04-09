@@ -4,6 +4,16 @@ defmodule Cen.Accounts.User do
 
   import Ecto.Changeset
 
+  @type t :: %__MODULE__{
+          email: String.t() | nil,
+          password: String.t() | nil,
+          hashed_password: String.t() | nil,
+          fullname: String.t() | nil,
+          role: atom() | nil,
+          birth_date: Date.t() | nil,
+          confirmed_at: NaiveDateTime.t() | nil
+        }
+
   @roles ~w[admin applicant employer]a
 
   schema "users" do
@@ -18,6 +28,7 @@ defmodule Cen.Accounts.User do
     timestamps(type: :utc_datetime)
   end
 
+  @spec roles() :: [atom(), ...]
   def roles, do: @roles
 
   @doc """
@@ -43,6 +54,7 @@ defmodule Cen.Accounts.User do
       submitting the form), this option can be set to `false`.
       Defaults to `true`.
   """
+  @spec registration_changeset(t(), map(), keyword()) :: Ecto.Changeset.t()
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, ~w[email password fullname role birth_date]a)
@@ -103,6 +115,7 @@ defmodule Cen.Accounts.User do
 
   It requires the email to change otherwise an error is added.
   """
+  @spec email_changeset(t(), map(), keyword()) :: Ecto.Changeset.t()
   def email_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email])
@@ -125,6 +138,7 @@ defmodule Cen.Accounts.User do
       validations on a LiveView form), this option can be set to `false`.
       Defaults to `true`.
   """
+  @spec password_changeset(t(), map(), keyword()) :: Ecto.Changeset.t()
   def password_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:password])
@@ -135,6 +149,7 @@ defmodule Cen.Accounts.User do
   @doc """
   Confirms the account by setting `confirmed_at`.
   """
+  @spec confirm_changeset(t() | Ecto.Changeset.t()) :: Ecto.Changeset.t()
   def confirm_changeset(user) do
     now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
     change(user, confirmed_at: now)
@@ -146,12 +161,13 @@ defmodule Cen.Accounts.User do
   If there is no user or the user doesn't have a password, we call
   `Bcrypt.no_user_verify/0` to avoid timing attacks.
   """
+  @spec valid_password?(t(), String.t()) :: boolean()
   def valid_password?(%Cen.Accounts.User{hashed_password: hashed_password}, password)
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Bcrypt.verify_pass(password, hashed_password)
   end
 
-  def valid_password?(_, _) do
+  def valid_password?(__user, _password) do
     Bcrypt.no_user_verify()
     false
   end
@@ -159,6 +175,7 @@ defmodule Cen.Accounts.User do
   @doc """
   Validates the current password otherwise adds an error to the changeset.
   """
+  @spec validate_current_password(Ecto.Changeset.t(), String.t()) :: Ecto.Changeset.t()
   def validate_current_password(changeset, password) do
     if valid_password?(changeset.data, password) do
       changeset
@@ -167,6 +184,7 @@ defmodule Cen.Accounts.User do
     end
   end
 
+  @spec info_changeset(t(), map()) :: Ecto.Changeset.t()
   def info_changeset(user, attrs) do
     user
     |> cast(attrs, ~w[fullname birth_date]a)

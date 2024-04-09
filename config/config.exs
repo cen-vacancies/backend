@@ -61,9 +61,7 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 # Configure Guardian
-config :cen, Cen.Token,
-  issuer: "cen-vacancies",
-  secret_key: "Secret key. You can use `mix guardian.gen.secret` to get one"
+config :cen, Cen.Token, issuer: "cen-vacancies"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

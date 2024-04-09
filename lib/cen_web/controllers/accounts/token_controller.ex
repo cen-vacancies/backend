@@ -18,6 +18,7 @@ defmodule CenWeb.TokenController do
       unauthorized: "Wrong email or password"
     ]
 
+  @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def create(conn, %{"user" => %{"email" => email, "password" => password}}) do
     case Accounts.get_user_by_email_and_password(email, password) do
       nil ->

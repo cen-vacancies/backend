@@ -4,6 +4,7 @@ defmodule Cen.Accounts.UserToken do
 
   import Ecto.Query
 
+  alias Cen.Accounts.User
   alias Cen.Accounts.UserToken
 
   @hash_algorithm :sha256
@@ -15,11 +16,18 @@ defmodule Cen.Accounts.UserToken do
   @confirm_validity_in_days 7
   @change_email_validity_in_days 7
 
+  @type t :: %__MODULE__{
+          token: binary(),
+          context: String.t(),
+          sent_to: String.t(),
+          user: User.t() | Ecto.Association.NotLoaded.t()
+        }
+
   schema "users_tokens" do
     field :token, :binary
     field :context, :string
     field :sent_to, :string
-    belongs_to :user, Cen.Accounts.User
+    belongs_to :user, User
 
     timestamps(updated_at: false)
   end
@@ -37,6 +45,7 @@ defmodule Cen.Accounts.UserToken do
   Users can easily adapt the existing code to provide other types of delivery methods,
   for example, by phone numbers.
   """
+  @spec build_email_token(User.t(), String.t()) :: {String.t(), t()}
   def build_email_token(user, context) do
     build_hashed_token(user, context, user.email)
   end
@@ -67,6 +76,7 @@ defmodule Cen.Accounts.UserToken do
   for resetting the password. For verifying requests to change the email,
   see `verify_change_email_token_query/2`.
   """
+  @spec verify_email_token_query(String.t(), String.t()) :: {:ok, Ecto.Query.t()} | :error
   def verify_email_token_query(token, context) do
     case Base.url_decode64(token, padding: false) do
       {:ok, decoded_token} ->
@@ -103,7 +113,8 @@ defmodule Cen.Accounts.UserToken do
   database and if it has not expired (after @change_email_validity_in_days).
   The context must always start with "change:".
   """
-  def verify_change_email_token_query(token, "change:" <> _ = context) do
+  @spec verify_change_email_token_query(String.t(), String.t()) :: {:ok, Ecto.Query.t()} | :error
+  def verify_change_email_token_query(token, "change:" <> _email = context) do
     case Base.url_decode64(token, padding: false) do
       {:ok, decoded_token} ->
         hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
@@ -122,6 +133,7 @@ defmodule Cen.Accounts.UserToken do
   @doc """
   Returns the token struct for the given token value and context.
   """
+  @spec by_token_and_context_query(String.t(), String.t()) :: Ecto.Query.t()
   def by_token_and_context_query(token, context) do
     from UserToken, where: [token: ^token, context: ^context]
   end
@@ -129,6 +141,7 @@ defmodule Cen.Accounts.UserToken do
   @doc """
   Gets all tokens for the given user for the given contexts.
   """
+  @spec by_user_and_contexts_query(User.t(), [String.t()] | :all) :: Ecto.Query.t()
   def by_user_and_contexts_query(user, :all) do
     from t in UserToken, where: t.user_id == ^user.id
   end

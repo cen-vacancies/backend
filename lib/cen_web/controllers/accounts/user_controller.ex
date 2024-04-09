@@ -20,6 +20,7 @@ defmodule CenWeb.UserController do
       unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}
     ]
 
+  @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def create(conn, %{"user" => user_params}) do
     with {:ok, user} <- Accounts.register_user(user_params) do
       conn
@@ -39,6 +40,7 @@ defmodule CenWeb.UserController do
       not_found: {"User not found", "application/json", NotFoundErrorResponse}
     ]
 
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, %{"user_id" => user_id}) do
     with {:ok, user} <- Accounts.fetch_user(user_id) do
       render(conn, :show, user: user)
@@ -57,6 +59,7 @@ defmodule CenWeb.UserController do
       unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}
     ]
 
+  @spec update_info(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
   def update_info(conn, %{"user_id" => user_id, "user" => user_info}) do
     with {:ok, user} <- Accounts.fetch_user(user_id),
          {:ok, updated_user} <- Accounts.update_user_info(user, user_info) do
@@ -73,6 +76,7 @@ defmodule CenWeb.UserController do
       no_content: "User deleted"
     ]
 
+  @spec delete(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def delete(conn, %{"user_id" => user_id}) do
     with {:ok, user} <- Accounts.fetch_user(user_id) do
       Accounts.delete_user(user)
