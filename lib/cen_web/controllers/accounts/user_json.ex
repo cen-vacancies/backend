@@ -1,11 +1,6 @@
 defmodule CenWeb.UserJSON do
   alias Cen.Accounts.User
 
-  @spec index(%{users: [User.t()]}) :: %{data: [map()]}
-  def index(%{users: users}) do
-    %{data: Enum.map(users, &data/1)}
-  end
-
   @spec show(%{user: User.t()}) :: %{data: map()}
   def show(%{user: user}) do
     %{data: data(user)}

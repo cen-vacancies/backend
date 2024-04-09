@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Readability.Specs
 defmodule CenWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
@@ -56,10 +57,8 @@ defmodule CenWeb.ConnCase do
   It returns an updated `conn`.
   """
   def log_in_user(conn, user) do
-    token = Cen.Accounts.generate_user_session_token(user)
+    {:ok, token} = Cen.Accounts.create_user_api_token(user)
 
-    conn
-    |> Phoenix.ConnTest.init_test_session(%{})
-    |> Plug.Conn.put_session(:user_token, token)
+    Plug.Conn.put_req_header(conn, "authorization", "Bearer #{token}")
   end
 end
