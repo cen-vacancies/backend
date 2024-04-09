@@ -157,7 +157,7 @@
           {Credo.Check.Refactor.IoPuts, []},
           {Credo.Check.Refactor.MapMap, []},
           {Credo.Check.Refactor.RejectFilter, []},
-          {Credo.Check.Refactor.VariableRebinding, [allow_bang: true]},
+          {Credo.Check.Refactor.VariableRebinding, []},
           {Credo.Check.Warning.LeakyEnvironment, []},
           {Credo.Check.Warning.MapGetUnsafePass, []},
           {Credo.Check.Warning.MixEnv, []},
