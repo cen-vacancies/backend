@@ -1,10 +1,7 @@
 defmodule CenWeb.UserControllerTest do
   use CenWeb.ConnCase, async: true
 
-  import Cen.AccountsFixtures
-
   alias CenWeb.Schemas.ChangesetErrorsResponse
-  alias CenWeb.Schemas.NotFoundErrorResponse
   alias CenWeb.Schemas.UserResponse
 
   describe "POST /api/users" do
@@ -80,13 +77,11 @@ defmodule CenWeb.UserControllerTest do
     end
   end
 
-  describe "GET /api/users/:user_id" do
-    setup do
-      %{user: user_fixture()}
-    end
+  describe "GET /api/users/me" do
+    setup :register_and_log_in_user
 
-    test "shows user", %{conn: conn, user: user} do
-      conn = get(conn, ~p"/api/users/#{user}")
+    test "shows user", %{conn: conn} do
+      conn = get(conn, ~p"/api/users/me")
 
       json = json_response(conn, 200)
 
@@ -94,28 +89,26 @@ defmodule CenWeb.UserControllerTest do
       assert %{"data" => %{}} = json
     end
 
-    test "shows 404 when no user with provided id", %{conn: conn} do
-      conn = get(conn, ~p"/api/users/-1")
+    test "returns unauthorized when not logged in", %{conn: conn} do
+      conn =
+        conn
+        |> delete_req_header("authorization")
+        |> get(~p"/api/users/me")
 
-      json = json_response(conn, 404)
-
-      assert_schema NotFoundErrorResponse, json
-      assert %{"errors" => %{}} = json
+      assert response(conn, 401)
     end
   end
 
-  describe "PATCH /api/users/:user_id/info" do
-    setup do
-      %{user: user_fixture()}
-    end
+  describe "PATCH /api/users/me/info" do
+    setup :register_and_log_in_user
 
-    test "updates user info", %{conn: conn, user: user} do
+    test "updates user info", %{conn: conn} do
       valid_attrs = %{
         birth_date: Date.new!(1991, 12, 8),
         fullname: "Васильев Василий Васильевич"
       }
 
-      conn = patch(conn, ~p"/api/users/#{user}/info", %{user: valid_attrs})
+      conn = patch(conn, ~p"/api/users/me/info", %{user: valid_attrs})
 
       json = json_response(conn, 200)
 
@@ -123,49 +116,50 @@ defmodule CenWeb.UserControllerTest do
       assert %{"data" => %{}} = json
     end
 
-    test "shows 404 when no user with provided id", %{conn: conn} do
-      valid_attrs = %{
-        birth_date: Date.new!(1991, 12, 8),
-        fullname: "Васильев Василий Васильевич"
-      }
-
-      conn = patch(conn, ~p"/api/users/-1/info", %{user: valid_attrs})
-
-      json = json_response(conn, 404)
-
-      assert_schema NotFoundErrorResponse, json
-      assert %{"errors" => %{}} = json
-    end
-
-    test "returns error when attrs are invalid", %{conn: conn, user: user} do
+    test "returns error when attrs are invalid", %{conn: conn} do
       invalid_attrs = %{
         fullname: ""
       }
 
-      conn = patch(conn, ~p"/api/users/#{user}/info", %{user: invalid_attrs})
+      conn = patch(conn, ~p"/api/users/me/info", %{user: invalid_attrs})
 
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
       assert %{"errors" => %{}} = json
     end
+
+    test "returns unauthorized when not logged in", %{conn: conn} do
+      valid_attrs = %{
+        birth_date: Date.new!(1991, 12, 8),
+        fullname: "Васильев Василий Васильевич"
+      }
+
+      conn =
+        conn
+        |> delete_req_header("authorization")
+        |> patch(~p"/api/users/me/info", %{user: valid_attrs})
+
+      assert response(conn, 401)
+    end
   end
 
-  describe "DELETE /api/users/:user_id" do
-    setup do
-      %{user: user_fixture()}
-    end
+  describe "DELETE /api/users/me" do
+    setup :register_and_log_in_user
 
-    test "deletes user", %{conn: conn, user: user} do
-      conn = delete(conn, ~p"/api/users/#{user}")
+    test "deletes user", %{conn: conn} do
+      conn = delete(conn, ~p"/api/users/me")
 
       assert "" = response(conn, 204)
     end
 
-    test "returns success when user is not exists", %{conn: conn} do
-      conn = delete(conn, ~p"/api/users/-1")
+    test "returns unauthorized when not logged in", %{conn: conn} do
+      conn =
+        conn
+        |> delete_req_header("authorization")
+        |> delete(~p"/api/users/me")
 
-      assert "" = response(conn, 204)
+      assert "No access for you" = response(conn, 401)
     end
   end
 end

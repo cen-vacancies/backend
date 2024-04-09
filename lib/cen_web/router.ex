@@ -1,6 +1,8 @@
 defmodule CenWeb.Router do
   use CenWeb, :router
 
+  import CenWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -48,9 +50,13 @@ defmodule CenWeb.Router do
 
     post "/users", UserController, :create
 
-    get "/users/:user_id", UserController, :show
-    patch "/users/:user_id/info", UserController, :update_info
-    delete "/users/:user_id", UserController, :delete
+    scope "/" do
+      pipe_through :fetch_api_user
+
+      get "/users/me", UserController, :show
+      patch "/users/me/info", UserController, :update_info
+      delete "/users/me", UserController, :delete
+    end
   end
 
   scope "/api", CenWeb do
