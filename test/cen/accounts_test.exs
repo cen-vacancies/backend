@@ -471,6 +471,17 @@ defmodule Cen.AccountsTest do
     end
   end
 
+  describe "delete_user/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "deletes user", %{user: user} do
+      assert {:ok, _user} = Accounts.delete_user(user)
+      refute Repo.get(User, user.id)
+    end
+  end
+
   describe "create_user_api_token/1 and fetch_user_by_api_token/1" do
     test "creates and fetches by token" do
       user = user_fixture()
