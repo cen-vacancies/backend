@@ -30,8 +30,8 @@ defmodule CenWeb.OrganizationControllerTest do
       conn = post(conn, ~p"/api/organizations", organization: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, ~p"/api/organizations/#{id}")
-      json = json_response(conn, 200)
+      conn_get = get(conn, ~p"/api/organizations/#{id}")
+      json = json_response(conn_get, 200)
 
       assert_schema OrganizationResponse, json
 
@@ -62,8 +62,8 @@ defmodule CenWeb.OrganizationControllerTest do
       conn = patch(conn, ~p"/api/organizations/#{organization}", organization: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get(conn, ~p"/api/organizations/#{id}")
-      json = json_response(conn, 200)
+      conn_get = get(conn, ~p"/api/organizations/#{id}")
+      json = json_response(conn_get, 200)
 
       assert_schema OrganizationResponse, json
 
@@ -90,12 +90,12 @@ defmodule CenWeb.OrganizationControllerTest do
       conn = delete(conn, ~p"/api/organizations/#{organization}")
       assert response(conn, 204)
 
-      conn = get(conn, ~p"/api/organizations/#{organization}")
-      assert response(conn, 404)
+      conn_get = get(conn, ~p"/api/organizations/#{organization}")
+      assert response(conn_get, 404)
     end
   end
 
-  defp create_organization(_) do
+  defp create_organization(_attrs) do
     organization = organization_fixture()
     %{organization: organization}
   end

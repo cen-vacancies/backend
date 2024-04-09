@@ -13,7 +13,8 @@ defmodule Cen.Accounts.User do
           fullname: String.t() | nil,
           role: atom() | nil,
           birth_date: Date.t() | nil,
-          confirmed_at: NaiveDateTime.t() | nil
+          confirmed_at: NaiveDateTime.t() | nil,
+          organization: Organization.t() | Ecto.Association.NotLoaded.t()
         }
 
   @roles ~w[admin applicant employer]a

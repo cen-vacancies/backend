@@ -1,9 +1,10 @@
+# credo:disable-for-this-file Credo.Check.Readability.Specs
 defmodule Cen.EmployersFixtures do
   @moduledoc """
   This module defines test helpers for creating
   entities via the `Cen.Employers` context.
   """
-alias Cen.AccountsFixtures
+  alias Cen.AccountsFixtures
 
   @doc """
   Generate a organization.

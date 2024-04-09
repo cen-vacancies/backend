@@ -1,5 +1,5 @@
 defmodule CenWeb.OrganizationController do
-  use CenWeb, :controller
+  use CenWeb, :controller_with_specs
 
   alias Cen.Employers
   alias Cen.Employers.Organization
@@ -23,6 +23,7 @@ defmodule CenWeb.OrganizationController do
       unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}
     ]
 
+  @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def create(conn, %{"organization" => organization_params}) do
     employer = conn.assigns.current_user
     organization_params = Map.put(organization_params, :employer, employer)
@@ -48,6 +49,7 @@ defmodule CenWeb.OrganizationController do
       not_found: {"Organization not found", "application/json", NotFoundErrorResponse}
     ]
 
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, %{"organization_id" => id}) do
     with {:ok, organization} <- Employers.fetch_organization(id) do
       render(conn, :show, organization: organization)
@@ -66,6 +68,7 @@ defmodule CenWeb.OrganizationController do
       not_found: {"Organization not found", "application/json", NotFoundErrorResponse}
     ]
 
+  @spec update(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def update(conn, %{"organization_id" => id, "organization" => organization_params}) do
     with {:ok, organization} <- Employers.fetch_organization(id),
          {:ok, %Organization{} = organization} <- Employers.update_organization(organization, organization_params) do
@@ -83,6 +86,7 @@ defmodule CenWeb.OrganizationController do
       unauthorized: "Unauthorized"
     ]
 
+  @spec delete(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def delete(conn, %{"organization_id" => id}) do
     with {:ok, organization} <- Employers.fetch_organization(id) do
       Employers.delete_organization(organization)

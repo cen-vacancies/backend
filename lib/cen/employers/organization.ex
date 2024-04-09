@@ -6,6 +6,15 @@ defmodule Cen.Employers.Organization do
 
   alias Cen.Accounts.User
 
+  @type t :: %__MODULE__{
+          name: String.t(),
+          address: String.t(),
+          description: String.t(),
+          logo: String.t(),
+          contacts: String.t(),
+          employer: User.t() | Ecto.Association.NotLoaded.t()
+        }
+
   schema "organizations" do
     field :name, :string
     field :address, :string
@@ -19,6 +28,7 @@ defmodule Cen.Employers.Organization do
   end
 
   @doc false
+  @spec changeset(t(), map()) :: Ecto.Changeset.t()
   def changeset(organization, attrs) do
     organization
     |> cast(attrs, [:name, :logo, :description, :address, :contacts])
