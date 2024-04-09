@@ -482,11 +482,27 @@ defmodule Cen.AccountsTest do
     end
   end
 
-  describe "create_user_api_token/1 and fetch_user_by_api_token/1" do
-    test "creates and fetches by token" do
-      user = user_fixture()
-      assert {:ok, token} = Accounts.create_user_api_token(user)
+  describe "create_user_api_token/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "creates token", %{user: user} do
+      assert {:ok, _token} = Accounts.create_user_api_token(user)
+    end
+  end
+
+  describe "fetch_user_by_api_token/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "fetches by token", %{user: user} do
+      {:ok, token} = Accounts.create_user_api_token(user)
       assert {:ok, ^user, _claims} = Accounts.fetch_user_by_api_token(token)
+    end
+
+    test "returns error on ivnalid token" do
       assert {:error, :invalid_token} = Accounts.fetch_user_by_api_token("invalid")
     end
   end
