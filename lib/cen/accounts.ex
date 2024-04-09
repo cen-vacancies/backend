@@ -64,6 +64,20 @@ defmodule Cen.Accounts do
   @spec get_user!(String.t() | integer()) :: User.t()
   def get_user!(id), do: Repo.get!(User, id)
 
+  @doc """
+  Gets a single user.
+
+  Returns `{:error, :not_found}` if the User does not exist.
+
+  ## Examples
+
+      iex> get_user!(123)
+      {:ok, %User{}}
+
+      iex> get_user!(456)
+      {:error, :not_found}
+
+  """
   @spec fetch_user(String.t() | integer()) :: {:ok, User.t()} | {:error, :not_found}
   def fetch_user(id) do
     case Repo.get(User, id) do
@@ -366,6 +380,14 @@ defmodule Cen.Accounts do
 
   ## Delete account
 
+  @doc """
+  Deletes user.
+
+  ## Examples
+
+    iex> delete_user(%User{})
+    {:ok, %User{}}
+  """
   @spec delete_user(User.t()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def delete_user(user) do
     Repo.delete(user)

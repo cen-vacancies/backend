@@ -184,6 +184,9 @@ defmodule Cen.Accounts.User do
     end
   end
 
+  @doc """
+  A user changeset for updating info about user.
+  """
   @spec info_changeset(t(), map()) :: Ecto.Changeset.t()
   def info_changeset(user, attrs) do
     user
