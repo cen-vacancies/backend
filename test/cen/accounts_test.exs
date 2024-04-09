@@ -311,7 +311,9 @@ defmodule Cen.AccountsTest do
     end
 
     test "deletes all tokens for the given user", %{user: user} do
-      _ = Accounts.reset_user_password(user, %{"password" => "123456789101112"})
+      extract_user_token(fn url ->
+        Accounts.deliver_user_update_email_instructions(user, "current@example.com", url)
+      end)
 
       {:ok, _} =
         Accounts.update_user_password(user, valid_user_password(), %{
@@ -454,7 +456,10 @@ defmodule Cen.AccountsTest do
     end
 
     test "deletes all tokens for the given user", %{user: user} do
-      _ = Accounts.change_user_password(user, %{"password" => "1234564789101112"})
+      extract_user_token(fn url ->
+        Accounts.deliver_user_update_email_instructions(user, "current@example.com", url)
+      end)
+
       {:ok, _} = Accounts.reset_user_password(user, %{password: "new valid password"})
       refute Repo.get_by(UserToken, user_id: user.id)
     end
