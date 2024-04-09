@@ -234,33 +234,6 @@ defmodule Cen.Accounts do
     |> Repo.update()
   end
 
-  ## Session
-
-  @doc """
-  Generates a session token.
-  """
-  def generate_user_session_token(user) do
-    {token, user_token} = UserToken.build_session_token(user)
-    Repo.insert!(user_token)
-    token
-  end
-
-  @doc """
-  Gets the user with the given signed token.
-  """
-  def get_user_by_session_token(token) do
-    {:ok, query} = UserToken.verify_session_token_query(token)
-    Repo.one(query)
-  end
-
-  @doc """
-  Deletes the signed token with the given context.
-  """
-  def delete_user_session_token(token) do
-    Repo.delete_all(UserToken.by_token_and_context_query(token, "session"))
-    :ok
-  end
-
   ## Confirmation
 
   @doc ~S"""
@@ -385,20 +358,15 @@ defmodule Cen.Accounts do
   This token cannot be recovered from the database.
   """
   def create_user_api_token(user) do
-    {encoded_token, user_token} = UserToken.build_email_token(user, "api-token")
-    Repo.insert!(user_token)
-    encoded_token
+    with {:ok, token, _claims} = Cen.Token.encode_and_sign(user) do
+      {:ok, token}
+    end
   end
 
   @doc """
   Fetches the user by API token.
   """
   def fetch_user_by_api_token(token) do
-    with {:ok, query} <- UserToken.verify_email_token_query(token, "api-token"),
-         %User{} = user <- Repo.one(query) do
-      {:ok, user}
-    else
-      _ -> :error
-    end
+    Cen.Token.resource_from_token(token)
   end
 end

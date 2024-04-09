@@ -8,7 +8,7 @@ defmodule CenWeb.TokenController do
 
   action_fallback CenWeb.FallbackController
 
-  tags "authorization[DRAFT]"
+  tags "authorization"
 
   operation :create,
     summary: "Get access token",
@@ -24,8 +24,9 @@ defmodule CenWeb.TokenController do
         send_resp(conn, :unauthorized, "")
 
       user ->
-        token = Accounts.create_user_api_token(user)
-        render(conn, :show, token: token)
+        with {:ok, token} <- Accounts.create_user_api_token(user) do
+          render(conn, :show, token: token)
+        end
     end
   end
 end
