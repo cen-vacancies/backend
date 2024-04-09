@@ -1,5 +1,8 @@
 import Config
 
+# Only in tests, remove the complexity from the password hashing algorithm
+config :bcrypt_elixir, :log_rounds, 1
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used
@@ -19,6 +22,8 @@ config :cen, CenWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "4aUyGJMb0C7QUBvsov/H3zTaPNMPNvm6lx6+3NahZTi8ajcyD/Ix3kXbprvS3AF9",
   server: false
+
+config :cen, Cen.Token, secret_key: "4aUyGJMb0C7QUBvsov/H3zTaPNMPNvm6lx6+3NahZTi8ajcyD/Ix3kXbprvS3AF9"
 
 # In test we don't send emails.
 config :cen, Cen.Mailer, adapter: Swoosh.Adapters.Test

@@ -20,7 +20,9 @@ defmodule CenWeb.ApiSpec do
         version: to_string(Application.spec(:my_app, :vsn))
       },
       paths: Paths.from_router(Router),
-      components: %Components{securitySchemes: %{"authorization" => %SecurityScheme{type: "http", scheme: "bearer"}}}
+      components: %Components{
+        securitySchemes: %{"authorization" => %SecurityScheme{type: "http", scheme: "bearer", bearerFormat: "JWT"}}
+      }
     })
   end
 end

@@ -10,7 +10,7 @@ defmodule CenWeb.FallbackController do
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
     |> put_status(:unprocessable_entity)
-    |> put_view(html: CenWeb.ErrorHTML, json: CenWeb.ErrorJSON)
+    |> put_view(html: CenWeb.ErrorHTML, json: CenWeb.ChangesetJSON)
     |> render("error.json", %{changeset: changeset})
   end
 
