@@ -1,6 +1,5 @@
 defmodule CenWeb.TokenController do
-  use CenWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use CenWeb, :controller_with_specs
 
   alias Cen.Accounts
   alias CenWeb.Schemas.TokenResponse
