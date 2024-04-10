@@ -7,7 +7,7 @@ defmodule Cen.Employers.Organization do
   alias Cen.Accounts.User
 
   @type t :: %__MODULE__{
-          id: integer(),
+          id: integer() | nil,
           name: String.t(),
           address: String.t(),
           description: String.t(),

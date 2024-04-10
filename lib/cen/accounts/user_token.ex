@@ -17,6 +17,7 @@ defmodule Cen.Accounts.UserToken do
   @change_email_validity_in_days 7
 
   @type t :: %__MODULE__{
+          id: integer() | nil,
           token: binary(),
           context: String.t(),
           sent_to: String.t(),
