@@ -44,8 +44,8 @@ defmodule CenWeb.VacancyControllerTest do
       conn = post(conn, ~p"/api/organizations/#{organization}/vacancies", vacancy: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, ~p"/api/organizations/#{organization}/vacancies/#{id}")
-      json = json_response(conn, 200)
+      conn_get = get(conn, ~p"/api/organizations/#{organization}/vacancies/#{id}")
+      json = json_response(conn_get, 200)
 
       assert_schema VacancyResponse, json
 
@@ -77,8 +77,8 @@ defmodule CenWeb.VacancyControllerTest do
       conn = patch(conn, ~p"/api/organizations/#{vacancy.organization_id}/vacancies/#{vacancy}", vacancy: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get(conn, ~p"/api/organizations/#{vacancy.organization_id}/vacancies/#{id}")
-      json = json_response(conn, 200)
+      conn_get = get(conn, ~p"/api/organizations/#{vacancy.organization_id}/vacancies/#{id}")
+      json = json_response(conn_get, 200)
 
       assert_schema VacancyResponse, json
 
@@ -117,12 +117,12 @@ defmodule CenWeb.VacancyControllerTest do
     end
   end
 
-  defp create_vacancy(_) do
+  defp create_vacancy(_context) do
     vacancy = vacancy_fixture()
     %{vacancy: vacancy}
   end
 
-  defp create_organization(_) do
+  defp create_organization(_context) do
     organization = organization_fixture()
     %{organization: organization}
   end

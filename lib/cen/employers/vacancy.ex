@@ -6,14 +6,34 @@ defmodule Cen.Employers.Vacancy do
 
   alias Cen.Employers.Organization
 
+  @spec employment_types() :: [atom(), ...]
   @employment_types ~w[main secondary practice internship]a
   def employment_types, do: @employment_types
+
+  @spec work_schedules() :: [atom(), ...]
   @work_schedules ~w[full_time part_time remote_working hybrid_working flexible_schedule]a
   def work_schedules, do: @work_schedules
+
+  @spec educations() :: [atom(), ...]
   @educations ~w[none higher secondary secondary_vocational]a
   def educations, do: @educations
+
+  @spec field_of_arts() :: [atom(), ...]
   @field_of_arts ~w[music visual performing choreography folklore other]a
   def field_of_arts, do: @field_of_arts
+
+  @type t :: %__MODULE__{
+          published: boolean(),
+          reviewed: boolean(),
+          description: String.t(),
+          employment_type: atom(),
+          work_schedule: atom(),
+          education: atom(),
+          field_of_art: atom(),
+          min_years_of_work_experience: integer(),
+          proposed_salary: integer(),
+          organization: Organization.t() | Ecto.Association.NotLoaded.t()
+        }
 
   schema "vacancies" do
     field :published, :boolean, default: false
@@ -38,6 +58,7 @@ defmodule Cen.Employers.Vacancy do
   @optional_fields ~w[min_years_of_work_experience proposed_salary]a
 
   @doc false
+  @spec changeset(t(), map()) :: Ecto.Changeset.t()
   def changeset(vacancy, attrs) do
     vacancy
     |> cast(attrs, @requried_fields ++ @optional_fields)

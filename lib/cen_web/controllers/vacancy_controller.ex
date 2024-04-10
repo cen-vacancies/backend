@@ -14,6 +14,7 @@ defmodule CenWeb.VacancyController do
   tags :vacancies
   security [%{}, %{"user_auth" => ["employer"]}]
 
+  @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
   def index(conn, _params) do
     vacancies = Employers.list_vacancies()
     render(conn, :index, vacancies: vacancies)
@@ -31,6 +32,7 @@ defmodule CenWeb.VacancyController do
       unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}
     ]
 
+  @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
   def create(conn, %{"vacancy" => vacancy_params, "organization_id" => organization_id}) do
     with {:ok, %Organization{} = organization} <- Employers.fetch_organization(organization_id),
          vacancy_params = Map.put(vacancy_params, :organization, organization),
@@ -56,6 +58,7 @@ defmodule CenWeb.VacancyController do
       not_found: {"Vacancy not found", "application/json", NotFoundErrorResponse}
     ]
 
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
   def show(conn, %{"vacancy_id" => id}) do
     with {:ok, vacancy} <- Employers.fetch_vacancy(id) do
       render(conn, :show, vacancy: vacancy)
@@ -75,6 +78,7 @@ defmodule CenWeb.VacancyController do
       not_found: {"Vacancy not found", "application/json", NotFoundErrorResponse}
     ]
 
+  @spec update(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
   def update(conn, %{"vacancy_id" => id, "vacancy" => vacancy_params}) do
     with {:ok, %{organization: organization} = vacancy} <- Employers.fetch_vacancy(id),
          {:ok, %Vacancy{} = vacancy} <- Employers.update_vacancy(vacancy, vacancy_params) do
@@ -93,6 +97,7 @@ defmodule CenWeb.VacancyController do
       unauthorized: "Unauthorized"
     ]
 
+  @spec delete(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
   def delete(conn, %{"vacancy_id" => id}) do
     with {:ok, vacancy} <- Employers.fetch_vacancy(id),
          {:ok, %Vacancy{}} <- Employers.delete_vacancy(vacancy) do

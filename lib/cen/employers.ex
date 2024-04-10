@@ -142,6 +142,7 @@ defmodule Cen.Employers do
       [%Vacancy{}, ...]
 
   """
+  @spec list_vacancies() :: [Vacancy.t()]
   def list_vacancies do
     Repo.all(Vacancy)
   end
@@ -160,8 +161,24 @@ defmodule Cen.Employers do
       ** (Ecto.NoResultsError)
 
   """
+  @spec get_vacancy!(String.t() | integer()) :: Vacancy.t()
   def get_vacancy!(id), do: Repo.get!(Vacancy, id)
 
+  @doc """
+  Gets a single vacancy.
+
+  Returns `{:error, :not_found}` if the Vacancy does not exist.
+
+  ## Examples
+
+      iex> fetch_vacancy(123)
+      {:ok, %Vacancy{}}
+
+      iex> fetch_vacancy(456)
+      {:error, :not_found}
+
+  """
+  @spec fetch_vacancy(String.t() | integer()) :: {:ok, Vacancy.t()} | {:error, :not_found}
   def fetch_vacancy(id) do
     case Vacancy |> Repo.get(id) |> Repo.preload(organization: [:employer]) do
       nil -> {:error, :not_found}
@@ -181,6 +198,7 @@ defmodule Cen.Employers do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec create_vacancy(map()) :: {:ok, Vacancy.t()} | {:error, Ecto.Changeset.t()}
   def create_vacancy(attrs \\ %{}) do
     attrs
     |> Map.fetch!(:organization)
@@ -201,6 +219,7 @@ defmodule Cen.Employers do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec update_vacancy(Vacancy.t(), map()) :: {:ok, Vacancy.t()} | {:error, Ecto.Changeset.t()}
   def update_vacancy(%Vacancy{} = vacancy, attrs) do
     vacancy
     |> Vacancy.changeset(attrs)
@@ -219,6 +238,7 @@ defmodule Cen.Employers do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec delete_vacancy(Vacancy.t()) :: {:ok, Vacancy.t()} | {:error, Ecto.Changeset.t()}
   def delete_vacancy(%Vacancy{} = vacancy) do
     Repo.delete(vacancy)
   end
@@ -232,6 +252,7 @@ defmodule Cen.Employers do
       %Ecto.Changeset{data: %Vacancy{}}
 
   """
+  @spec change_vacancy(Vacancy.t(), map()) :: Ecto.Changeset.t()
   def change_vacancy(%Vacancy{} = vacancy, attrs \\ %{}) do
     Vacancy.changeset(vacancy, attrs)
   end

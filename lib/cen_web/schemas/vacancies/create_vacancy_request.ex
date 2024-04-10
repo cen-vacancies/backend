@@ -20,7 +20,7 @@ defmodule CenWeb.Schemas.CreateVacancyRequest do
           field_of_art: %Schema{type: :string, enum: Vacancy.field_of_arts()},
           min_years_of_work_experience: %Schema{type: :integer, default: 0},
           proposed_salary: %Schema{type: :integer, default: 0},
-          organization_id: %Schema{type: :integer},
+          organization_id: %Schema{type: :integer}
         }
       }
     },

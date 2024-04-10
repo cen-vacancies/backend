@@ -7,8 +7,7 @@ defmodule CenWeb.Schemas.VacancyResponse do
   OpenApiSpex.schema(%{
     title: "Vacancy response",
     type: :object,
-    required:
-      ~w[data]a,
+    required: ~w[data]a,
     properties: %{
       data: Vacancy.schema()
     },

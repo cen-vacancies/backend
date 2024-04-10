@@ -1,10 +1,11 @@
 defmodule CenWeb.VacancyJSON do
-  alias CenWeb.OrganizationJSON
   alias Cen.Employers.Vacancy
+  alias CenWeb.OrganizationJSON
 
   @doc """
   Renders a list of vacancies.
   """
+  @spec index(map()) :: map()
   def index(%{vacancies: vacancies}) do
     %{data: for(vacancy <- vacancies, do: data(vacancy))}
   end
@@ -12,10 +13,12 @@ defmodule CenWeb.VacancyJSON do
   @doc """
   Renders a single vacancy.
   """
+  @spec show(map()) :: map()
   def show(%{vacancy: vacancy}) do
     %{data: data(vacancy)}
   end
 
+  @spec data(Vacancy.t()) :: map()
   def data(%Vacancy{} = vacancy) do
     %{
       id: vacancy.id,
