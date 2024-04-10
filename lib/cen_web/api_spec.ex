@@ -21,7 +21,7 @@ defmodule CenWeb.ApiSpec do
       },
       paths: Paths.from_router(Router),
       components: %Components{
-        securitySchemes: %{"authorization" => %SecurityScheme{type: "http", scheme: "bearer", bearerFormat: "JWT"}}
+        securitySchemes: %{"user_auth" => %SecurityScheme{type: "http", scheme: "bearer", bearerFormat: "JWT"}}
       }
     })
   end

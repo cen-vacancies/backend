@@ -71,10 +71,10 @@ defmodule Cen.Accounts do
 
   ## Examples
 
-      iex> get_user!(123)
+      iex> fetch_user(123)
       {:ok, %User{}}
 
-      iex> get_user!(456)
+      iex> fetch_user(456)
       {:error, :not_found}
 
   """

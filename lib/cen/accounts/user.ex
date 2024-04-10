@@ -4,6 +4,8 @@ defmodule Cen.Accounts.User do
 
   import Ecto.Changeset
 
+  alias Cen.Employers.Organization
+
   @type t :: %__MODULE__{
           email: String.t() | nil,
           password: String.t() | nil,
@@ -11,7 +13,8 @@ defmodule Cen.Accounts.User do
           fullname: String.t() | nil,
           role: atom() | nil,
           birth_date: Date.t() | nil,
-          confirmed_at: NaiveDateTime.t() | nil
+          confirmed_at: NaiveDateTime.t() | nil,
+          organization: Organization.t() | Ecto.Association.NotLoaded.t()
         }
 
   @roles ~w[admin applicant employer]a
@@ -24,6 +27,8 @@ defmodule Cen.Accounts.User do
     field :role, Ecto.Enum, values: @roles
     field :birth_date, :date
     field :confirmed_at, :naive_datetime
+
+    has_one :organization, Organization, foreign_key: :employer_id
 
     timestamps(type: :utc_datetime)
   end

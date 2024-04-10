@@ -23,12 +23,6 @@ defmodule CenWeb.Router do
     plug OpenApiSpex.Plug.PutApiSpec, module: CenWeb.ApiSpec
   end
 
-  scope "/", CenWeb do
-    pipe_through :browser
-
-    get "/", PageController, :home
-  end
-
   scope "/" do
     pipe_through :browser
     get "/swaggerui", OpenApiSpex.Plug.SwaggerUI, path: "/api/openapi"
@@ -63,6 +57,16 @@ defmodule CenWeb.Router do
     pipe_through :api
 
     post "/tokens", TokenController, :create
+  end
+
+  scope "/api", CenWeb do
+    pipe_through [:api, :fetch_api_user]
+
+    post "/organizations", OrganizationController, :create
+
+    get "/organizations/:organization_id", OrganizationController, :show
+    patch "/organizations/:organization_id", OrganizationController, :update
+    delete "/organizations/:organization_id", OrganizationController, :delete
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

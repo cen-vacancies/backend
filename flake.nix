@@ -26,6 +26,8 @@
             elixir
             elixir_ls
             glibcLocales
+            libgcc
+            gnumake
           ] ++ optional stdenv.isLinux inotify-tools
           ++ optional stdenv.isDarwin terminal-notifier
           ++ optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [

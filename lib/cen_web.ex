@@ -50,6 +50,13 @@ defmodule CenWeb do
     end
   end
 
+  def controller_with_specs do
+    quote do
+      use CenWeb, :controller
+      use OpenApiSpex.ControllerSpecs
+    end
+  end
+
   def live_view do
     quote do
       use Phoenix.LiveView,
