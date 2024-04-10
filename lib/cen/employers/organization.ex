@@ -32,6 +32,10 @@ defmodule Cen.Employers.Organization do
   def changeset(organization, attrs) do
     organization
     |> cast(attrs, [:name, :logo, :description, :address, :contacts])
+    |> validate_length(:name, max: 255)
+    |> validate_length(:address, max: 255)
+    |> validate_length(:contacts, max: 255)
+    |> validate_length(:description, max: 2000)
     |> validate_required([:name, :description, :address, :contacts])
   end
 end

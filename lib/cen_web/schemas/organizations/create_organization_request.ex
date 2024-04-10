@@ -13,11 +13,11 @@ defmodule CenWeb.Schemas.CreateOrganizationRequest do
         type: :object,
         required: ~w[name description address contacts]a,
         properties: %{
-          name: %Schema{type: :string},
+          name: %Schema{type: :string, maximum: 255},
           logo: %Schema{type: :string},
-          description: %Schema{type: :string},
-          address: %Schema{type: :string},
-          contacts: %Schema{type: :string}
+          description: %Schema{type: :string, maximum: 2000},
+          address: %Schema{type: :string, maximum: 255},
+          contacts: %Schema{type: :string, maximum: 255}
         }
       }
     },
