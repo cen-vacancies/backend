@@ -7,6 +7,8 @@ defmodule CenWeb.FallbackController do
   """
   use CenWeb, :controller
 
+  alias Plug.Conn.Status
+
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
     |> put_status(:unprocessable_entity)
@@ -24,8 +26,15 @@ defmodule CenWeb.FallbackController do
   def call(conn, {:error, reason}) do
     template =
       reason
-      |> Plug.Conn.Status.code()
+      |> Status.code()
       |> Integer.to_string()
+      # It's safe, because of `Status.code/1`, which works only with HTTP status
+      # codes (which are finite and well-defined). Otherwise it raises error.
+      #
+      # So, there's no atom exhaustion.
+      #
+      # credo:disable-for-lines:2 Credo.Check.Warning.UnsafeToAtom
+      # sobelow_skip ["DOS.StringToAtom"]
       |> String.to_atom()
 
     conn
