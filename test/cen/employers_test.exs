@@ -30,6 +30,15 @@ defmodule Cen.EmployersTest do
       assert Employers.get_organization!(organization.id) == organization
     end
 
+    test "fetch_organization/1 returns {:error, :not_found} if id is invalid" do
+      assert {:error, :not_found} = Employers.fetch_organization(-1)
+    end
+
+    test "fetch_organization/1 returns the organization with the given id" do
+      %{id: id} = organization = organization_fixture()
+      assert {:ok, %Organization{id: ^id}} = Employers.fetch_organization(organization.id)
+    end
+
     test "create_organization/1 with valid data creates a organization" do
       valid_attrs = %{
         name: "some name",
