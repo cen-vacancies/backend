@@ -3,8 +3,6 @@ defmodule CenWeb.VacancyControllerTest do
 
   import Cen.EmployersFixtures
 
-  alias Cen.Accounts
-  alias Cen.AccountsFixtures
   alias Cen.Employers.Vacancy
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.VacancyResponse
@@ -37,16 +35,7 @@ defmodule CenWeb.VacancyControllerTest do
     proposed_salary: nil
   }
 
-  setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
-  end
-
-  setup %{conn: conn} do
-    token = Accounts.create_user_api_token(AccountsFixtures.user_fixture())
-
-    {:ok,
-     conn: conn |> put_req_header("accept", "application/json") |> put_req_header("authorization", "Bearer #{token}")}
-  end
+  setup :register_and_log_in_user
 
   describe "create vacancy" do
     setup [:create_organization]

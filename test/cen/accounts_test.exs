@@ -92,13 +92,13 @@ defmodule Cen.AccountsTest do
       assert "has already been taken" in errors_on(changeset).email
 
       # Now try with the upper cased email too, to check that email case is ignored.
-      {:error, changeset} = Accounts.register_user(%{email: String.upcase(email)})
-      assert "has already been taken" in errors_on(changeset).email
+      {:error, changeset_upcased} = Accounts.register_user(%{email: String.upcase(email)})
+      assert "has already been taken" in errors_on(changeset_upcased).email
     end
 
     test "registers users with a hashed password" do
       email = unique_user_email()
-      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
+      {:ok, user} = [email: email] |> valid_user_attributes() |> Accounts.register_user()
       assert user.email == email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
@@ -197,8 +197,8 @@ defmodule Cen.AccountsTest do
           Accounts.deliver_user_update_email_instructions(user, "current@example.com", url)
         end)
 
-      {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      {:ok, encoded_token} = Base.url_decode64(token, padding: false)
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, encoded_token))
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "change:current@example.com"
@@ -311,7 +311,9 @@ defmodule Cen.AccountsTest do
     end
 
     test "deletes all tokens for the given user", %{user: user} do
-      _ = Accounts.generate_user_session_token(user)
+      extract_user_token(fn url ->
+        Accounts.deliver_user_update_email_instructions(user, "current@example.com", url)
+      end)
 
       {:ok, _} =
         Accounts.update_user_password(user, valid_user_password(), %{
@@ -319,58 +321,6 @@ defmodule Cen.AccountsTest do
         })
 
       refute Repo.get_by(UserToken, user_id: user.id)
-    end
-  end
-
-  describe "generate_user_session_token/1" do
-    setup do
-      %{user: user_fixture()}
-    end
-
-    test "generates a token", %{user: user} do
-      token = Accounts.generate_user_session_token(user)
-      assert user_token = Repo.get_by(UserToken, token: token)
-      assert user_token.context == "session"
-
-      # Creating the same token for another user should fail
-      assert_raise Ecto.ConstraintError, fn ->
-        Repo.insert!(%UserToken{
-          token: user_token.token,
-          user_id: user_fixture().id,
-          context: "session"
-        })
-      end
-    end
-  end
-
-  describe "get_user_by_session_token/1" do
-    setup do
-      user = user_fixture()
-      token = Accounts.generate_user_session_token(user)
-      %{user: user, token: token}
-    end
-
-    test "returns user by token", %{user: user, token: token} do
-      assert session_user = Accounts.get_user_by_session_token(token)
-      assert session_user.id == user.id
-    end
-
-    test "does not return user for invalid token" do
-      refute Accounts.get_user_by_session_token("oops")
-    end
-
-    test "does not return user for expired token", %{token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      refute Accounts.get_user_by_session_token(token)
-    end
-  end
-
-  describe "delete_user_session_token/1" do
-    test "deletes the token" do
-      user = user_fixture()
-      token = Accounts.generate_user_session_token(user)
-      assert Accounts.delete_user_session_token(token) == :ok
-      refute Accounts.get_user_by_session_token(token)
     end
   end
 
@@ -385,8 +335,8 @@ defmodule Cen.AccountsTest do
           Accounts.deliver_user_confirmation_instructions(user, url)
         end)
 
-      {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      {:ok, encoded_token} = Base.url_decode64(token, padding: false)
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, encoded_token))
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "confirm"
@@ -438,8 +388,8 @@ defmodule Cen.AccountsTest do
           Accounts.deliver_user_reset_password_instructions(user, url)
         end)
 
-      {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      {:ok, encoded_token} = Base.url_decode64(token, padding: false)
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, encoded_token))
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "reset_password"
@@ -506,7 +456,10 @@ defmodule Cen.AccountsTest do
     end
 
     test "deletes all tokens for the given user", %{user: user} do
-      _ = Accounts.generate_user_session_token(user)
+      extract_user_token(fn url ->
+        Accounts.deliver_user_update_email_instructions(user, "current@example.com", url)
+      end)
+
       {:ok, _} = Accounts.reset_user_password(user, %{password: "new valid password"})
       refute Repo.get_by(UserToken, user_id: user.id)
     end
@@ -518,12 +471,39 @@ defmodule Cen.AccountsTest do
     end
   end
 
-  describe "create_user_api_token/1 and fetch_user_by_api_token/1" do
-    test "creates and fetches by token" do
-      user = user_fixture()
-      token = Accounts.create_user_api_token(user)
-      assert Accounts.fetch_user_by_api_token(token) == {:ok, user}
-      assert Accounts.fetch_user_by_api_token("invalid") == :error
+  describe "delete_user/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "deletes user", %{user: user} do
+      assert {:ok, _user} = Accounts.delete_user(user)
+      refute Repo.get(User, user.id)
+    end
+  end
+
+  describe "create_user_api_token/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "creates token", %{user: user} do
+      assert {:ok, _token} = Accounts.create_user_api_token(user)
+    end
+  end
+
+  describe "fetch_user_by_api_token/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "fetches by token", %{user: user} do
+      {:ok, token} = Accounts.create_user_api_token(user)
+      assert {:ok, ^user, _claims} = Accounts.fetch_user_by_api_token(token)
+    end
+
+    test "returns error on ivnalid token" do
+      assert {:error, :invalid_token} = Accounts.fetch_user_by_api_token("invalid")
     end
   end
 end

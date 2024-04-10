@@ -1,5 +1,5 @@
 defmodule CenWeb.VacancyController do
-  use CenWeb, :controller
+  use CenWeb, :controller_with_specs
 
   alias Cen.Employers
   alias Cen.Employers.Organization

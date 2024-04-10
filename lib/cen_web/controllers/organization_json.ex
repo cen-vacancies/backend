@@ -3,19 +3,14 @@ defmodule CenWeb.OrganizationJSON do
   alias CenWeb.UserJSON
 
   @doc """
-  Renders a list of organizations.
-  """
-  def index(%{organizations: organizations}) do
-    %{data: for(organization <- organizations, do: data(organization))}
-  end
-
-  @doc """
   Renders a single organization.
   """
+  @spec show(map()) :: map()
   def show(%{organization: organization}) do
     %{data: data(organization)}
   end
 
+  @spec data(Organization.t()) :: map()
   def data(%Organization{} = organization) do
     %{
       id: organization.id,

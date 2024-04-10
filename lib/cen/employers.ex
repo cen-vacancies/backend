@@ -18,6 +18,7 @@ defmodule Cen.Employers do
       [%Organization{}, ...]
 
   """
+  @spec list_organizations() :: [Organization.t()]
   def list_organizations do
     Repo.all(Organization)
   end
@@ -36,8 +37,24 @@ defmodule Cen.Employers do
       ** (Ecto.NoResultsError)
 
   """
+  @spec get_organization!(String.t() | integer()) :: Organization.t()
   def get_organization!(id), do: Repo.get!(Organization, id)
 
+  @doc """
+  Gets a single organization.
+
+  Returns `{:error, :not_found}` if the Organization does not exist.
+
+  ## Examples
+
+      iex> fetch_organization(123)
+      {:ok, %Organization{}}
+
+      iex> fetch_organization(456)
+      {:error, :not_found}
+
+  """
+  @spec fetch_organization(String.t() | integer()) :: {:ok, Organization.t()} | {:error, :not_found}
   def fetch_organization(id) do
     case Organization |> Repo.get(id) |> Repo.preload(:employer) do
       nil -> {:error, :not_found}
@@ -57,6 +74,7 @@ defmodule Cen.Employers do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec create_organization(map()) :: {:ok, Organization.t()} | {:error, Ecto.Changeset.t()}
   def create_organization(attrs \\ %{}) do
     attrs
     |> Map.fetch!(:employer)
@@ -77,6 +95,7 @@ defmodule Cen.Employers do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec update_organization(Organization.t(), map()) :: {:ok, Organization.t()} | {:error, Ecto.Changeset.t()}
   def update_organization(%Organization{} = organization, attrs) do
     organization
     |> Organization.changeset(attrs)
@@ -95,6 +114,7 @@ defmodule Cen.Employers do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec delete_organization(Organization.t()) :: {:ok, Organization.t()} | {:error, Ecto.Changeset.t()}
   def delete_organization(%Organization{} = organization) do
     Repo.delete(organization)
   end
@@ -108,6 +128,7 @@ defmodule Cen.Employers do
       %Ecto.Changeset{data: %Organization{}}
 
   """
+  @spec change_organization(Organization.t(), map()) :: Ecto.Changeset.t()
   def change_organization(%Organization{} = organization, attrs \\ %{}) do
     Organization.changeset(organization, attrs)
   end

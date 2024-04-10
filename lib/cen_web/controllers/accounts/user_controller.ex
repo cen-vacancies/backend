@@ -1,10 +1,9 @@
 defmodule CenWeb.UserController do
-  use CenWeb, :controller
+  use CenWeb, :controller_with_specs
 
   alias Cen.Accounts
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.CreateUserRequest
-  alias CenWeb.Schemas.NotFoundErrorResponse
   alias CenWeb.Schemas.UserResponse
 
   action_fallback CenWeb.FallbackController
@@ -19,23 +18,26 @@ defmodule CenWeb.UserController do
       unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}
     ]
 
+  @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def create(conn, %{"user" => user_params}) do
     with {:ok, user} <- Accounts.register_user(user_params) do
-      render(conn, :show, user: user)
+      conn
+      |> put_status(:created)
+      |> put_resp_header("location", ~p"/api/users/me")
+      |> render(:show, user: user)
     end
   end
 
   operation :show,
     summary: "Get user by ID",
-    parameters: [
-      user_id: [in: :path, description: "User ID", type: :integer, example: "10132"]
-    ],
     responses: [
-      ok: {"Requested user", "application/json", UserResponse},
-      not_found: {"User not found", "application/json", NotFoundErrorResponse}
+      ok: {"Requested user", "application/json", UserResponse}
     ]
 
-  def show(conn, %{"user_id" => user_id}) do
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def show(conn, _params) do
+    %{id: user_id} = conn.assigns.current_user
+
     with {:ok, user} <- Accounts.fetch_user(user_id) do
       render(conn, :show, user: user)
     end
@@ -43,36 +45,30 @@ defmodule CenWeb.UserController do
 
   operation :update_info,
     summary: "Update user",
-    parameters: [
-      user_id: [in: :path, description: "User ID", type: :string, example: "f3e99641-3214-431a-8d46-26cb4c2efee9"]
-    ],
     request_body: {"User params", "application/json", CreateUserRequest},
     responses: [
       ok: {"Updated user", "application/json", UserResponse},
-      not_found: {"User not found", "application/json", NotFoundErrorResponse},
       unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}
     ]
 
-  def update_info(conn, %{"user_id" => user_id, "user" => user_info}) do
-    with {:ok, user} <- Accounts.fetch_user(user_id),
-         {:ok, updated_user} <- Accounts.update_user_info(user, user_info) do
+  @spec update_info(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
+  def update_info(conn, %{"user" => user_info}) do
+    user = conn.assigns.current_user
+
+    with {:ok, updated_user} <- Accounts.update_user_info(user, user_info) do
       render(conn, :show, user: updated_user)
     end
   end
 
   operation :delete,
     summary: "Delete user",
-    parameters: [
-      user_id: [in: :path, description: "User ID", type: :string, example: "f3e99641-3214-431a-8d46-26cb4c2efee9"]
-    ],
     responses: [
       no_content: "User deleted"
     ]
 
-  def delete(conn, %{"user_id" => user_id}) do
-    with {:ok, user} <- Accounts.fetch_user(user_id) do
-      Accounts.delete_user(user)
-    end
+  @spec delete(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def delete(conn, _params) do
+    Accounts.delete_user(conn.assigns.current_user)
 
     send_resp(conn, :no_content, "")
   end

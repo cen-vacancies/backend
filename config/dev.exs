@@ -29,6 +29,8 @@ config :cen, CenWeb.Endpoint,
     tailwind: {Tailwind, :install_and_run, [:cen, ~w(--watch)]}
   ]
 
+config :cen, Cen.Token, secret_key: "g1ktKJ9eFHbYVA9agHY4KoycM4XCHOqwS1"
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

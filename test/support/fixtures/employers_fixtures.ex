@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Readability.Specs
 defmodule Cen.EmployersFixtures do
   @moduledoc """
   This module defines test helpers for creating

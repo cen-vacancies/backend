@@ -43,12 +43,17 @@ defmodule CenWeb do
         formats: [:html, :json],
         layouts: [html: CenWeb.Layouts]
 
-      use OpenApiSpex.ControllerSpecs
-
       import CenWeb.Gettext
       import Plug.Conn
 
       unquote(verified_routes())
+    end
+  end
+
+  def controller_with_specs do
+    quote do
+      use CenWeb, :controller
+      use OpenApiSpex.ControllerSpecs
     end
   end
 
