@@ -14,18 +14,10 @@ defmodule CenWeb.FallbackController do
     |> render("error.json", %{changeset: changeset})
   end
 
-  # This clause is an example of how to handle resources that cannot be found.
-  def call(conn, {:error, :not_found}) do
+  def call(conn, {:error, reason}) do
     conn
-    |> put_status(:not_found)
+    |> put_status(reason)
     |> put_view(html: CenWeb.ErrorHTML, json: CenWeb.ErrorJSON)
-    |> render(:"404")
-  end
-
-  def call(conn, {:error, :forbidden}) do
-    conn
-    |> put_status(:forbidden)
-    |> put_view(html: CenWeb.ErrorHTML, json: CenWeb.ErrorJSON)
-    |> render(:"403")
+    |> render(reason)
   end
 end
