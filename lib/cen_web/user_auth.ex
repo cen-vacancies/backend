@@ -21,5 +21,6 @@ defmodule CenWeb.UserAuth do
     end
   end
 
+  @spec fetch_current_user(Plug.Conn.t()) :: Accounts.User.t()
   def fetch_current_user(%{assigns: %{current_user: current_user}}), do: current_user
 end
