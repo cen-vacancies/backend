@@ -21,4 +21,11 @@ defmodule CenWeb.FallbackController do
     |> put_view(html: CenWeb.ErrorHTML, json: CenWeb.ErrorJSON)
     |> render(:"404")
   end
+
+  def call(conn, {:error, :forbidden}) do
+    conn
+    |> put_status(:forbidden)
+    |> put_view(html: CenWeb.ErrorHTML, json: CenWeb.ErrorJSON)
+    |> render(:"403")
+  end
 end

@@ -20,4 +20,6 @@ defmodule CenWeb.UserAuth do
         |> halt()
     end
   end
+
+  def fetch_current_user(%{assigns: %{current_user: current_user}}), do: current_user
 end

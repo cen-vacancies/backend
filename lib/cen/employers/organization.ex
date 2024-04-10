@@ -7,12 +7,14 @@ defmodule Cen.Employers.Organization do
   alias Cen.Accounts.User
 
   @type t :: %__MODULE__{
+          id: integer(),
           name: String.t(),
           address: String.t(),
           description: String.t(),
           logo: String.t(),
           contacts: String.t(),
-          employer: User.t() | Ecto.Association.NotLoaded.t()
+          employer: User.t() | Ecto.Association.NotLoaded.t(),
+          employer_id: integer()
         }
 
   schema "organizations" do

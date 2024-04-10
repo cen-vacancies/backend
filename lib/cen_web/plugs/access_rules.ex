@@ -1,0 +1,31 @@
+defmodule CenWeb.Plugs.AccessRules do
+  @moduledoc false
+  import Plug.Conn
+
+  @type init_params :: term()
+
+  @spec init(keyword()) :: init_params()
+  def init(options) do
+    fallback = Keyword.fetch!(options, :fallback)
+
+    verify_fun = Keyword.fetch!(options, :verify_fun)
+    args_keys = Keyword.fetch!(options, :args_keys)
+
+    {verify_fun, args_keys, fallback}
+  end
+
+  @spec call(Plug.Conn.t(), init_params()) :: Plug.Conn.t()
+  def call(conn, {verify_fun, args_keys, fallback}) do
+    args = fetch_args(conn, args_keys)
+
+    if apply(verify_fun, args) do
+      conn
+    else
+      conn |> fallback.call({:error, :forbidden}) |> halt()
+    end
+  end
+
+  defp fetch_args(%{assigns: assigns}, args_keys) do
+    Enum.map(args_keys, &Map.fetch!(assigns, &1))
+  end
+end

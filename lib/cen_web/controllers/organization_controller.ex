@@ -1,8 +1,10 @@
 defmodule CenWeb.OrganizationController do
   use CenWeb, :controller_with_specs
 
+  alias Cen.Accounts
   alias Cen.Employers
   alias Cen.Employers.Organization
+  alias CenWeb.Plugs.AccessRules
   alias CenWeb.Plugs.ResourceLoader
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.CreateOrganizationRequest
@@ -23,6 +25,22 @@ defmodule CenWeb.OrganizationController do
          ]
        ]
        when action in [:show, :update, :delete]
+
+  plug AccessRules,
+       [
+         fallback: fallback,
+         verify_fun: &Accounts.can_user_create_organization?/1,
+         args_keys: [:current_user]
+       ]
+       when action in [:create]
+
+  plug AccessRules,
+       [
+         fallback: fallback,
+         verify_fun: &Employers.can_user_edit?/2,
+         args_keys: [:organization, :current_user]
+       ]
+       when action in [:update, :delete]
 
   security [%{}, %{"user_auth" => ["employer"]}]
 
