@@ -3,12 +3,26 @@ defmodule CenWeb.OrganizationController do
 
   alias Cen.Employers
   alias Cen.Employers.Organization
+  alias CenWeb.Plugs.ResourceLoader
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.CreateOrganizationRequest
   alias CenWeb.Schemas.NotFoundErrorResponse
   alias CenWeb.Schemas.OrganizationResponse
 
-  action_fallback CenWeb.FallbackController
+  fallback = CenWeb.FallbackController
+  action_fallback fallback
+
+  plug ResourceLoader,
+       [
+         key: :organization,
+         fallback: fallback,
+         loader: [
+           module: ResourceLoader.GenLoader,
+           resource: {Employers, :fetch_organization},
+           param_key: "organization_id"
+         ]
+       ]
+       when action in [:show, :update, :delete]
 
   security [%{}, %{"user_auth" => ["employer"]}]
 
@@ -50,10 +64,8 @@ defmodule CenWeb.OrganizationController do
     ]
 
   @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def show(conn, %{"organization_id" => id}) do
-    with {:ok, organization} <- Employers.fetch_organization(id) do
-      render(conn, :show, organization: organization)
-    end
+  def show(conn, _params) do
+    render(conn, :show, organization: fetch_organization(conn))
   end
 
   operation :update,
@@ -69,9 +81,13 @@ defmodule CenWeb.OrganizationController do
     ]
 
   @spec update(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def update(conn, %{"organization_id" => id, "organization" => organization_params}) do
-    with {:ok, organization} <- Employers.fetch_organization(id),
-         {:ok, %Organization{} = organization} <- Employers.update_organization(organization, organization_params) do
+  def update(conn, %{"organization" => organization_params}) do
+    updating_result =
+      conn
+      |> fetch_organization()
+      |> Employers.update_organization(organization_params)
+
+    with {:ok, %Organization{} = organization} <- updating_result do
       render(conn, :show, organization: organization)
     end
   end
@@ -87,11 +103,13 @@ defmodule CenWeb.OrganizationController do
     ]
 
   @spec delete(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def delete(conn, %{"organization_id" => id}) do
-    with {:ok, organization} <- Employers.fetch_organization(id) do
-      Employers.delete_organization(organization)
-    end
+  def delete(conn, _params) do
+    conn
+    |> fetch_organization()
+    |> Employers.delete_organization()
 
     send_resp(conn, :no_content, "")
   end
+
+  defp fetch_organization(%{assigns: %{organization: organization}}), do: organization
 end
