@@ -30,7 +30,8 @@ defmodule CenWeb.OrganizationController do
        [
          fallback: fallback,
          verify_fun: &Accounts.can_user_create_organization?/1,
-         args_keys: [:current_user]
+         args_keys: [:current_user],
+         reason: "You are not the employer"
        ]
        when action in [:create]
 
@@ -38,7 +39,8 @@ defmodule CenWeb.OrganizationController do
        [
          fallback: fallback,
          verify_fun: &Employers.can_user_edit?/2,
-         args_keys: [:organization, :current_user]
+         args_keys: [:organization, :current_user],
+         reason: "You are not the owner"
        ]
        when action in [:update, :delete]
 
@@ -51,8 +53,9 @@ defmodule CenWeb.OrganizationController do
     request_body: {"Organization params", "application/json", CreateOrganizationRequest},
     responses: [
       created: {"Created organization", "application/json", OrganizationResponse},
+      unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse},
       unauthorized: "Unauthorized",
-      unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}
+      forbidden: "You are not employer"
     ]
 
   @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
@@ -77,8 +80,8 @@ defmodule CenWeb.OrganizationController do
     ],
     responses: [
       created: {"Requested organization", "application/json", OrganizationResponse},
-      unauthorized: "Unauthorized",
-      not_found: {"Organization not found", "application/json", NotFoundErrorResponse}
+      not_found: {"Organization not found", "application/json", NotFoundErrorResponse},
+      unauthorized: "Unauthorized"
     ]
 
   @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
@@ -94,8 +97,9 @@ defmodule CenWeb.OrganizationController do
     request_body: {"Organization params", "application/json", CreateOrganizationRequest},
     responses: [
       created: {"Requested organization", "application/json", OrganizationResponse},
+      not_found: {"Organization not found", "application/json", NotFoundErrorResponse},
       unauthorized: "Unauthorized",
-      not_found: {"Organization not found", "application/json", NotFoundErrorResponse}
+      forbidden: "You are not the owner"
     ]
 
   @spec update(Plug.Conn.t(), map()) :: Plug.Conn.t()
@@ -117,7 +121,8 @@ defmodule CenWeb.OrganizationController do
     ],
     responses: [
       no_content: "Organization deleted",
-      unauthorized: "Unauthorized"
+      unauthorized: "Unauthorized",
+      forbidden: "You are not the owner"
     ]
 
   @spec delete(Plug.Conn.t(), map()) :: Plug.Conn.t()

@@ -14,6 +14,13 @@ defmodule CenWeb.FallbackController do
     |> render("error.json", %{changeset: changeset})
   end
 
+  def call(conn, {:error, :forbidden, reason}) do
+    conn
+    |> put_status(:forbidden)
+    |> put_view(html: CenWeb.ErrorHTML, json: CenWeb.ErrorJSON)
+    |> render(:forbidden, reason: reason)
+  end
+
   def call(conn, {:error, reason}) do
     template =
       reason
