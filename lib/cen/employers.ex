@@ -39,6 +39,20 @@ defmodule Cen.Employers do
   @spec get_organization!(String.t() | integer()) :: Organization.t()
   def get_organization!(id), do: Repo.get!(Organization, id)
 
+  @doc """
+  Gets a single organization.
+
+  Returns `{:error, :not_found}` if the Organization does not exist.
+
+  ## Examples
+
+      iex> fetch_organization(123)
+      {:ok, %Organization{}}
+
+      iex> fetch_organization(456)
+      {:error, :not_found}
+
+  """
   @spec fetch_organization(String.t() | integer()) :: {:ok, Organization.t()} | {:error, :not_found}
   def fetch_organization(id) do
     case Organization |> Repo.get(id) |> Repo.preload(:employer) do
