@@ -15,9 +15,15 @@ defmodule CenWeb.FallbackController do
   end
 
   def call(conn, {:error, reason}) do
+    template =
+      reason
+      |> Plug.Conn.Status.code()
+      |> Integer.to_string()
+      |> String.to_atom()
+
     conn
     |> put_status(reason)
     |> put_view(html: CenWeb.ErrorHTML, json: CenWeb.ErrorJSON)
-    |> render(reason)
+    |> render(template)
   end
 end
