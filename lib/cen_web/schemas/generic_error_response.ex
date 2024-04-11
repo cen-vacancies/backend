@@ -13,7 +13,7 @@ defmodule CenWeb.Schemas.GenericErrorResponse do
         type: :object,
         required: ~w[detail]a,
         properties: %{
-          detail: %Schema{title: "Error reason",type: :string}
+          detail: %Schema{title: "Error reason", type: :string}
         }
       }
     },
