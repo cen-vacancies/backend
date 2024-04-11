@@ -100,7 +100,7 @@ defmodule Cen.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec register_user(map()) :: {:ok, User.t()}
+  @spec register_user(map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def register_user(attrs) do
     %User{}
     |> User.registration_changeset(attrs)
@@ -415,4 +415,12 @@ defmodule Cen.Accounts do
   def fetch_user_by_api_token(token) do
     Cen.Token.resource_from_token(token)
   end
+
+  ## Permissions
+
+  @doc """
+  Returns `true` if User is `admin` or `employer`
+  """
+  @spec can_user_create_organization?(User.t()) :: boolean()
+  def can_user_create_organization?(%User{role: role}), do: role in [:admin, :employer]
 end

@@ -5,6 +5,7 @@ defmodule Cen.Employers do
 
   import Ecto.Query, warn: false
 
+  alias Cen.Accounts.User
   alias Cen.Employers.Organization
   alias Cen.Employers.Vacancy
   alias Cen.Repo
@@ -131,6 +132,14 @@ defmodule Cen.Employers do
   @spec change_organization(Organization.t(), map()) :: Ecto.Changeset.t()
   def change_organization(%Organization{} = organization, attrs \\ %{}) do
     Organization.changeset(organization, attrs)
+  end
+
+  @doc """
+  Returns `true` when User is owner of given Organization.
+  """
+  @spec can_user_edit?(Organization.t(), User.t()) :: boolean()
+  def can_user_edit?(%Organization{} = organization, %User{} = user) do
+    organization.employer_id == user.id
   end
 
   @doc """

@@ -11,7 +11,7 @@ defmodule CenWeb.HealthCheckController do
   operation :check,
     summary: "Check health",
     responses: [
-      ok: {"User response", "application/json", HealthCheckResponse}
+      ok: {"Health response", "application/json", HealthCheckResponse}
     ]
 
   @spec check(Plug.Conn.t(), map()) :: Plug.Conn.t()

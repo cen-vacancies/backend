@@ -2,6 +2,7 @@ defmodule CenWeb.UserControllerTest do
   use CenWeb.ConnCase, async: true
 
   alias CenWeb.Schemas.ChangesetErrorsResponse
+  alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.UserResponse
 
   describe "POST /api/users" do
@@ -95,7 +96,8 @@ defmodule CenWeb.UserControllerTest do
         |> delete_req_header("authorization")
         |> get(~p"/api/users/me")
 
-      assert response(conn, 401)
+      json = json_response(conn, 401)
+      assert_schema GenericErrorResponse, json
     end
   end
 
@@ -140,7 +142,8 @@ defmodule CenWeb.UserControllerTest do
         |> delete_req_header("authorization")
         |> patch(~p"/api/users/me/info", %{user: valid_attrs})
 
-      assert response(conn, 401)
+      json = json_response(conn, 401)
+      assert_schema GenericErrorResponse, json
     end
   end
 
@@ -159,7 +162,8 @@ defmodule CenWeb.UserControllerTest do
         |> delete_req_header("authorization")
         |> delete(~p"/api/users/me")
 
-      assert "No access for you" = response(conn, 401)
+      json = json_response(conn, 401)
+      assert_schema GenericErrorResponse, json
     end
   end
 end

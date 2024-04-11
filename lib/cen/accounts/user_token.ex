@@ -17,10 +17,12 @@ defmodule Cen.Accounts.UserToken do
   @change_email_validity_in_days 7
 
   @type t :: %__MODULE__{
-          token: binary(),
-          context: String.t(),
-          sent_to: String.t(),
-          user: User.t() | Ecto.Association.NotLoaded.t()
+          id: integer() | nil,
+          token: binary() | nil,
+          context: String.t() | nil,
+          sent_to: String.t() | nil,
+          user: User.t() | Ecto.Association.NotLoaded.t(),
+          user_id: integer() | nil
         }
 
   schema "users_tokens" do
