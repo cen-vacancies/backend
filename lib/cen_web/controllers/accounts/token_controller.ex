@@ -1,6 +1,5 @@
 defmodule CenWeb.TokenController do
-  use CenWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use CenWeb, :controller_with_specs
 
   alias Cen.Accounts
   alias CenWeb.Schemas.TokenResponse
@@ -15,14 +14,14 @@ defmodule CenWeb.TokenController do
     request_body: {"credentials", "application/json", UserCredentials},
     responses: [
       ok: {"User's token", "application/json", TokenResponse},
-      unauthorized: "Wrong email or password"
+      unauthorized: {"Wrong email or password", "application/json", GenericErrorResponse}
     ]
 
   @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def create(conn, %{"user" => %{"email" => email, "password" => password}}) do
     case Accounts.get_user_by_email_and_password(email, password) do
       nil ->
-        send_resp(conn, :unauthorized, "")
+        {:error, :unauthorized}
 
       user ->
         with {:ok, token} <- Accounts.create_user_api_token(user) do

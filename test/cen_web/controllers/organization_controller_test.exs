@@ -5,6 +5,7 @@ defmodule CenWeb.OrganizationControllerTest do
 
   alias Cen.Employers.Organization
   alias CenWeb.Schemas.ChangesetErrorsResponse
+  alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.OrganizationResponse
 
   @create_attrs %{
@@ -23,7 +24,16 @@ defmodule CenWeb.OrganizationControllerTest do
   }
   @invalid_attrs %{name: nil, address: nil, description: nil, logo: nil, contacts: nil}
 
-  setup :register_and_log_in_user
+  setup %{conn: conn} do
+    employer = Cen.AccountsFixtures.user_fixture(role: :employer)
+    applicant = Cen.AccountsFixtures.user_fixture(role: :applicant)
+
+    %{
+      conn: log_in_user(conn, employer),
+      user: employer,
+      conn_applicant: log_in_user(conn, applicant)
+    }
+  end
 
   describe "create organization" do
     test "renders organization when data is valid", %{conn: conn} do
@@ -53,6 +63,13 @@ defmodule CenWeb.OrganizationControllerTest do
 
       assert json["errors"] != %{}
     end
+
+    test "renders forbidden error when user is applicant", %{conn_applicant: conn} do
+      conn = post(conn, ~p"/api/organizations", organization: @invalid_attrs)
+      json = json_response(conn, 403)
+
+      assert_schema GenericErrorResponse, json
+    end
   end
 
   describe "update organization" do
@@ -79,7 +96,17 @@ defmodule CenWeb.OrganizationControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn, organization: organization} do
       conn = patch(conn, ~p"/api/organizations/#{organization}", organization: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+      json = json_response(conn, 422)
+
+      assert_schema ChangesetErrorsResponse, json
+      assert json["errors"] != %{}
+    end
+
+    test "renders forbidden error when user is not owner", %{conn_applicant: conn, organization: organization} do
+      conn = patch(conn, ~p"/api/organizations/#{organization}", organization: @update_attrs)
+      json = json_response(conn, 403)
+
+      assert_schema GenericErrorResponse, json
     end
   end
 
@@ -93,10 +120,17 @@ defmodule CenWeb.OrganizationControllerTest do
       conn_get = get(conn, ~p"/api/organizations/#{organization}")
       assert response(conn_get, 404)
     end
+
+    test "renders forbidden error when user is not owner", %{conn_applicant: conn, organization: organization} do
+      conn = delete(conn, ~p"/api/organizations/#{organization}")
+      json = json_response(conn, 403)
+
+      assert_schema GenericErrorResponse, json
+    end
   end
 
-  defp create_organization(_attrs) do
-    organization = organization_fixture()
+  defp create_organization(%{user: user}) do
+    organization = organization_fixture(employer: user)
     %{organization: organization}
   end
 end

@@ -3,6 +3,7 @@ defmodule CenWeb.TokenControllerTest do
 
   import Cen.AccountsFixtures
 
+  alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.TokenResponse
 
   describe "POST /api/tokens" do
@@ -22,8 +23,9 @@ defmodule CenWeb.TokenControllerTest do
       user = user_fixture()
 
       conn = post(conn, ~p"/api/tokens", %{user: %{email: user.email, password: "INVALID_PASSWORD"}})
+      json = json_response(conn, 401)
 
-      assert "" = response(conn, 401)
+      assert_schema GenericErrorResponse, json
     end
   end
 end

@@ -1,27 +1,25 @@
-defmodule CenWeb.Schemas.NotFoundErrorResponse do
+defmodule CenWeb.Schemas.GenericErrorResponse do
   @moduledoc false
   alias OpenApiSpex.Schema
 
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "Resource not found",
+    title: "Error",
     type: :object,
     required: ~w[errors]a,
     properties: %{
       errors: %Schema{
         type: :object,
+        required: ~w[detail]a,
         properties: %{
-          detail: %Schema{
-            type: :string,
-            format: "Not Found"
-          }
+          detail: %Schema{title: "Error reason", type: :string}
         }
       }
     },
     example: %{
       "errors" => %{
-        "detail" => "Not Found"
+        "detail" => "Some error occurred"
       }
     }
   })

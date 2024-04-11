@@ -5,6 +5,7 @@ defmodule CenWeb.UserController do
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.CreateUserRequest
   alias CenWeb.Schemas.UserResponse
+  alias CenWeb.UserAuth
 
   action_fallback CenWeb.FallbackController
 
@@ -36,11 +37,7 @@ defmodule CenWeb.UserController do
 
   @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, _params) do
-    %{id: user_id} = conn.assigns.current_user
-
-    with {:ok, user} <- Accounts.fetch_user(user_id) do
-      render(conn, :show, user: user)
-    end
+    render(conn, :show, user: UserAuth.fetch_current_user(conn))
   end
 
   operation :update_info,
@@ -53,9 +50,12 @@ defmodule CenWeb.UserController do
 
   @spec update_info(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
   def update_info(conn, %{"user" => user_info}) do
-    user = conn.assigns.current_user
+    updating_result =
+      conn
+      |> UserAuth.fetch_current_user()
+      |> Accounts.update_user_info(user_info)
 
-    with {:ok, updated_user} <- Accounts.update_user_info(user, user_info) do
+    with {:ok, updated_user} <- updating_result do
       render(conn, :show, user: updated_user)
     end
   end
@@ -68,7 +68,9 @@ defmodule CenWeb.UserController do
 
   @spec delete(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def delete(conn, _params) do
-    Accounts.delete_user(conn.assigns.current_user)
+    conn
+    |> UserAuth.fetch_current_user()
+    |> Accounts.delete_user()
 
     send_resp(conn, :no_content, "")
   end

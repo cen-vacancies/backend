@@ -16,8 +16,11 @@ defmodule CenWeb.UserAuth do
     else
       _error ->
         conn
-        |> send_resp(:unauthorized, "No access for you")
+        |> CenWeb.FallbackController.call({:error, :unauthorized})
         |> halt()
     end
   end
+
+  @spec fetch_current_user(Plug.Conn.t()) :: Accounts.User.t()
+  def fetch_current_user(%{assigns: %{current_user: current_user}}), do: current_user
 end

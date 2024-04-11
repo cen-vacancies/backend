@@ -7,6 +7,7 @@ defmodule Cen.Accounts.User do
   alias Cen.Employers.Organization
 
   @type t :: %__MODULE__{
+          id: integer() | nil,
           email: String.t() | nil,
           password: String.t() | nil,
           hashed_password: String.t() | nil,
