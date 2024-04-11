@@ -5,6 +5,7 @@ defmodule CenWeb.OrganizationControllerTest do
 
   alias Cen.Employers.Organization
   alias CenWeb.Schemas.ChangesetErrorsResponse
+  alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.OrganizationResponse
 
   @create_attrs %{
@@ -65,7 +66,9 @@ defmodule CenWeb.OrganizationControllerTest do
 
     test "renders forbidden error when user is applicant", %{conn_applicant: conn} do
       conn = post(conn, ~p"/api/organizations", organization: @invalid_attrs)
-      assert json_response(conn, 403)
+      json = json_response(conn, 403)
+
+      assert_schema GenericErrorResponse, json
     end
   end
 
@@ -93,12 +96,17 @@ defmodule CenWeb.OrganizationControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn, organization: organization} do
       conn = patch(conn, ~p"/api/organizations/#{organization}", organization: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+      json = json_response(conn, 422)
+
+      assert_schema ChangesetErrorsResponse, json
+      assert json["errors"] != %{}
     end
 
     test "renders forbidden error when user is not owner", %{conn_applicant: conn, organization: organization} do
       conn = patch(conn, ~p"/api/organizations/#{organization}", organization: @update_attrs)
-      assert json_response(conn, 403)
+      json = json_response(conn, 403)
+
+      assert_schema GenericErrorResponse, json
     end
   end
 
@@ -115,7 +123,9 @@ defmodule CenWeb.OrganizationControllerTest do
 
     test "renders forbidden error when user is not owner", %{conn_applicant: conn, organization: organization} do
       conn = delete(conn, ~p"/api/organizations/#{organization}")
-      assert json_response(conn, 403)
+      json = json_response(conn, 403)
+
+      assert_schema GenericErrorResponse, json
     end
   end
 

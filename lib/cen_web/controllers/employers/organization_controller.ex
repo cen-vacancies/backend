@@ -8,7 +8,7 @@ defmodule CenWeb.OrganizationController do
   alias CenWeb.Plugs.ResourceLoader
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.CreateOrganizationRequest
-  alias CenWeb.Schemas.NotFoundErrorResponse
+  alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.OrganizationResponse
 
   fallback = CenWeb.FallbackController
@@ -54,8 +54,8 @@ defmodule CenWeb.OrganizationController do
     responses: [
       created: {"Created organization", "application/json", OrganizationResponse},
       unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse},
-      unauthorized: "Unauthorized",
-      forbidden: "You are not employer"
+      unauthorized: {"Unauthorized", "application/json", GenericErrorResponse},
+      forbidden: {"You are not employer", "application/json", GenericErrorResponse}
     ]
 
   @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
@@ -81,7 +81,7 @@ defmodule CenWeb.OrganizationController do
     responses: [
       created: {"Requested organization", "application/json", OrganizationResponse},
       not_found: {"Organization not found", "application/json", NotFoundErrorResponse},
-      unauthorized: "Unauthorized"
+      unauthorized: {"Unauthorized", "application/json", GenericErrorResponse}
     ]
 
   @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
@@ -98,8 +98,8 @@ defmodule CenWeb.OrganizationController do
     responses: [
       created: {"Requested organization", "application/json", OrganizationResponse},
       not_found: {"Organization not found", "application/json", NotFoundErrorResponse},
-      unauthorized: "Unauthorized",
-      forbidden: "You are not the owner"
+      unauthorized: {"Unauthorized", "application/json", GenericErrorResponse},
+      forbidden: {"You are not the owner", "application/json", GenericErrorResponse}
     ]
 
   @spec update(Plug.Conn.t(), map()) :: Plug.Conn.t()
@@ -121,8 +121,8 @@ defmodule CenWeb.OrganizationController do
     ],
     responses: [
       no_content: "Organization deleted",
-      unauthorized: "Unauthorized",
-      forbidden: "You are not the owner"
+      unauthorized: {"Unauthorized", "application/json", GenericErrorResponse},
+      forbidden: {"You are not the owner", "application/json", GenericErrorResponse}
     ]
 
   @spec delete(Plug.Conn.t(), map()) :: Plug.Conn.t()

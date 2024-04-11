@@ -16,7 +16,7 @@ defmodule CenWeb.UserAuth do
     else
       _error ->
         conn
-        |> send_resp(:unauthorized, "No access for you")
+        |> CenWeb.FallbackController.call({:error, :unauthorized})
         |> halt()
     end
   end
