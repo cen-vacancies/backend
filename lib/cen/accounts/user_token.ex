@@ -18,10 +18,11 @@ defmodule Cen.Accounts.UserToken do
 
   @type t :: %__MODULE__{
           id: integer() | nil,
-          token: binary(),
-          context: String.t(),
-          sent_to: String.t(),
-          user: User.t() | Ecto.Association.NotLoaded.t()
+          token: binary() | nil,
+          context: String.t() | nil,
+          sent_to: String.t() | nil,
+          user: User.t() | Ecto.Association.NotLoaded.t(),
+          user_id: integer() | nil
         }
 
   schema "users_tokens" do
