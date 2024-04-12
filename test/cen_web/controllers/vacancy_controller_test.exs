@@ -41,10 +41,10 @@ defmodule CenWeb.VacancyControllerTest do
     setup [:create_organization]
 
     test "renders vacancy when data is valid", %{conn: conn, organization: organization} do
-      conn = post(conn, ~p"/api/organizations/#{organization}/vacancies", vacancy: @create_attrs)
+      conn = post(conn, ~p"/api/organizations/#{organization}/new_vacancy", vacancy: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn_get = get(conn, ~p"/api/organizations/#{organization}/vacancies/#{id}")
+      conn_get = get(conn, ~p"/api/vacancies/#{id}")
       json = json_response(conn_get, 200)
 
       assert_schema VacancyResponse, json
@@ -62,7 +62,7 @@ defmodule CenWeb.VacancyControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, organization: organization} do
-      conn = post(conn, ~p"/api/organizations/#{organization}/vacancies", vacancy: @invalid_attrs)
+      conn = post(conn, ~p"/api/organizations/#{organization}/new_vacancy", vacancy: @invalid_attrs)
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
@@ -74,10 +74,10 @@ defmodule CenWeb.VacancyControllerTest do
     setup [:create_vacancy]
 
     test "renders vacancy when data is valid", %{conn: conn, vacancy: %Vacancy{id: id} = vacancy} do
-      conn = patch(conn, ~p"/api/organizations/#{vacancy.organization_id}/vacancies/#{vacancy}", vacancy: @update_attrs)
+      conn = patch(conn, ~p"/api/vacancies/#{vacancy}", vacancy: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn_get = get(conn, ~p"/api/organizations/#{vacancy.organization_id}/vacancies/#{id}")
+      conn_get = get(conn, ~p"/api/vacancies/#{id}")
       json = json_response(conn_get, 200)
 
       assert_schema VacancyResponse, json
@@ -97,7 +97,7 @@ defmodule CenWeb.VacancyControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, vacancy: vacancy} do
-      conn = patch(conn, ~p"/api/organizations/#{vacancy.organization_id}/vacancies/#{vacancy}", vacancy: @invalid_attrs)
+      conn = patch(conn, ~p"/api/vacancies/#{vacancy}", vacancy: @invalid_attrs)
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
@@ -110,10 +110,10 @@ defmodule CenWeb.VacancyControllerTest do
     setup [:create_vacancy]
 
     test "deletes chosen vacancy", %{conn: conn, vacancy: vacancy} do
-      conn = delete(conn, ~p"/api/organizations/#{vacancy.organization_id}/vacancies/#{vacancy}")
+      conn = delete(conn, ~p"/api/vacancies/#{vacancy}")
       assert response(conn, 204)
 
-      assert conn |> get(~p"/api/organizations/#{vacancy.organization_id}/vacancies/#{vacancy}") |> response(404)
+      assert conn |> get(~p"/api/vacancies/#{vacancy}") |> response(404)
     end
   end
 

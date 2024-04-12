@@ -6,7 +6,7 @@ defmodule CenWeb.VacancyController do
   alias Cen.Employers.Vacancy
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.CreateVacancyRequest
-  alias CenWeb.Schemas.NotFoundErrorResponse
+  alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.VacancyResponse
 
   action_fallback CenWeb.FallbackController
@@ -41,7 +41,7 @@ defmodule CenWeb.VacancyController do
 
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/organizations/#{organization}/vacancies/#{vacancy}")
+      |> put_resp_header("location", ~p"/api/vacancies/#{vacancy}")
       |> render(:show, vacancy: vacancy)
     end
   end
@@ -49,13 +49,12 @@ defmodule CenWeb.VacancyController do
   operation :show,
     summary: "Get vacancy",
     parameters: [
-      organization_id: [in: :path, description: "Organization ID", type: :integer, example: "10132"],
       vacancy_id: [in: :path, description: "Vacancy ID", type: :integer, example: "10132"]
     ],
     responses: [
       created: {"Requested vacancy", "application/json", VacancyResponse},
       unauthorized: "Unauthorized",
-      not_found: {"Vacancy not found", "application/json", NotFoundErrorResponse}
+      not_found: {"Vacancy not found", "application/json", GenericErrorResponse}
     ]
 
   @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
@@ -68,14 +67,13 @@ defmodule CenWeb.VacancyController do
   operation :update,
     summary: "Update vacancy",
     parameters: [
-      organization_id: [in: :path, description: "Organization ID", type: :integer, example: "10132"],
       vacancy_id: [in: :path, description: "Vacancy ID", type: :integer, example: "10132"]
     ],
     request_body: {"Vacancy params", "application/json", CreateVacancyRequest},
     responses: [
       created: {"Requested vacancy", "application/json", VacancyResponse},
       unauthorized: "Unauthorized",
-      not_found: {"Vacancy not found", "application/json", NotFoundErrorResponse}
+      not_found: {"Vacancy not found", "application/json", GenericErrorResponse}
     ]
 
   @spec update(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
@@ -89,7 +87,6 @@ defmodule CenWeb.VacancyController do
   operation :delete,
     summary: "Delete vacancy",
     parameters: [
-      organization_id: [in: :path, description: "Organization ID", type: :integer, example: "10132"],
       vacancy_id: [in: :path, description: "Vacancy ID", type: :integer, example: "10132"]
     ],
     responses: [

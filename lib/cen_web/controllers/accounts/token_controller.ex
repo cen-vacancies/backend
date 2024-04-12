@@ -2,6 +2,7 @@ defmodule CenWeb.TokenController do
   use CenWeb, :controller_with_specs
 
   alias Cen.Accounts
+  alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.TokenResponse
   alias CenWeb.Schemas.UserCredentials
 

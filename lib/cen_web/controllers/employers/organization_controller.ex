@@ -80,7 +80,7 @@ defmodule CenWeb.OrganizationController do
     ],
     responses: [
       created: {"Requested organization", "application/json", OrganizationResponse},
-      not_found: {"Organization not found", "application/json", NotFoundErrorResponse},
+      not_found: {"Organization not found", "application/json", GenericErrorResponse},
       unauthorized: {"Unauthorized", "application/json", GenericErrorResponse}
     ]
 
@@ -97,7 +97,7 @@ defmodule CenWeb.OrganizationController do
     request_body: {"Organization params", "application/json", CreateOrganizationRequest},
     responses: [
       created: {"Requested organization", "application/json", OrganizationResponse},
-      not_found: {"Organization not found", "application/json", NotFoundErrorResponse},
+      not_found: {"Organization not found", "application/json", GenericErrorResponse},
       unauthorized: {"Unauthorized", "application/json", GenericErrorResponse},
       forbidden: {"You are not the owner", "application/json", GenericErrorResponse}
     ]
