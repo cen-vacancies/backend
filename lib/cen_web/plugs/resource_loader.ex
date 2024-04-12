@@ -1,26 +1,35 @@
 defmodule CenWeb.Plugs.ResourceLoader do
-  @moduledoc ~S"""
-  This plug loads resource and put to conn assigns.
+  @moduledoc """
+  This plug loads resources and assigns them to the connection.
 
-  ## Using
-  Basic is:
+  ## Usage
+
+  Basic usage is as follows:
 
       plug ResourceLoader, key: :organization, context: Employers, fallback: fallback
 
-  This example uses the `key:` parameter to define the parameter path name,
-  loader function name, and key in `conn.assigns`
+  This example utilizes the `key:` option. Refer to the list of options below for more details.
 
-  For more fine-tuning, you can pass your own loader module and its parameters:
+  For more fine-tuning, you can provide your own loader module and its parameters:
 
       plug ResourceLoader,
         key: :organization,
         fallback: fallback,
-        loader: [
-          module: ResourceLoader.GenLoader,
+        loader_module: ResourceLoader.GenLoader,
+        loader_options: [
           resource: {Employers, :fetch_organization},
           param_key: "organization_id"
         ]
+
+  ## Options
+
+    * `key` - required, defines the parameter path name, loader function
+              name, and key in `conn.assigns`
+    * `fallback` - required, called when an error occurs in the loader
+    * `context` - optional, needed for automatically setting fields for the loader
+    * `loader` - optional, loader options, by default is uses `CenWeb.Plugs.ResourceLoader.GenLoader`
   """
+
   import Plug.Conn
 
   alias CenWeb.Plugs.ResourceLoader.GenLoader
@@ -34,13 +43,15 @@ defmodule CenWeb.Plugs.ResourceLoader do
 
     context = Keyword.get(options, :context)
 
+    loader_module = Keyword.get(options, :loader_module, GenLoader)
+
     loader_options =
       options
       |> Keyword.get(:loader, [])
       |> append_param_key(key)
       |> maybe_append_context(context, key)
 
-    loader = init_loader(loader_options)
+    loader = init_loader(loader_module, loader_options)
 
     {key, fallback_module, loader}
   end
@@ -63,9 +74,7 @@ defmodule CenWeb.Plugs.ResourceLoader do
     Keyword.put_new(options, :resource, {context, function_name})
   end
 
-  defp init_loader(options) do
-    module = Keyword.get(options, :module, GenLoader)
-
+  defp init_loader(module, options) do
     loader_init = module.init(options)
 
     fn conn ->
