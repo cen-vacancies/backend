@@ -62,6 +62,7 @@ defmodule Cen.Employers.Vacancy do
   def changeset(vacancy, attrs) do
     vacancy
     |> cast(attrs, @requried_fields ++ @optional_fields)
+    |> validate_length(:description, max: 2000)
     |> validate_required(@requried_fields)
   end
 end

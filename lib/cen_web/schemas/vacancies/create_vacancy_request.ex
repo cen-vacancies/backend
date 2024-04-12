@@ -13,7 +13,7 @@ defmodule CenWeb.Schemas.CreateVacancyRequest do
       vacancy: %Schema{
         required: ~w[description employment_type work_schedule education field_of_art organization_id]a,
         properties: %{
-          description: %Schema{type: :string},
+          description: %Schema{type: :string, maximum: 2000},
           employment_type: %Schema{type: :string, enum: Vacancy.employment_types()},
           work_schedule: %Schema{type: :string, enum: Vacancy.work_schedules()},
           education: %Schema{type: :string, enum: Vacancy.educations()},
