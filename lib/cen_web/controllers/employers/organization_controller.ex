@@ -15,15 +15,7 @@ defmodule CenWeb.OrganizationController do
   action_fallback fallback
 
   plug ResourceLoader,
-       [
-         key: :organization,
-         fallback: fallback,
-         loader: [
-           module: ResourceLoader.GenLoader,
-           resource: {Employers, :fetch_organization},
-           param_key: "organization_id"
-         ]
-       ]
+       [key: :organization, context: Employers, fallback: fallback]
        when action in [:show, :update, :delete]
 
   plug AccessRules,
