@@ -1,5 +1,26 @@
 defmodule CenWeb.Plugs.ResourceLoader do
-  @moduledoc false
+  @moduledoc ~S"""
+  This plug loads resource and put to conn assigns.
+
+  ## Using
+  Basic is:
+
+      plug ResourceLoader, key: :organization, context: Employers, fallback: fallback
+
+  This example uses the `key:` parameter to define the parameter path name,
+  loader function name, and key in `conn.assigns`
+
+  For more fine-tuning, you can pass your own loader module and its parameters:
+
+      plug ResourceLoader,
+        key: :organization,
+        fallback: fallback,
+        loader: [
+          module: ResourceLoader.GenLoader,
+          resource: {Employers, :fetch_organization},
+          param_key: "organization_id"
+        ]
+  """
   import Plug.Conn
 
   alias CenWeb.Plugs.ResourceLoader.GenLoader
