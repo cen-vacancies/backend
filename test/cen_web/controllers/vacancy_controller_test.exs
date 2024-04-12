@@ -5,6 +5,7 @@ defmodule CenWeb.VacancyControllerTest do
 
   alias Cen.Employers.Vacancy
   alias CenWeb.Schemas.ChangesetErrorsResponse
+  alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.VacancyResponse
 
   @create_attrs %{
@@ -35,7 +36,16 @@ defmodule CenWeb.VacancyControllerTest do
     proposed_salary: nil
   }
 
-  setup :register_and_log_in_user
+  setup %{conn: conn} do
+    employer = Cen.AccountsFixtures.user_fixture(role: :employer)
+    employer_not_owner = Cen.AccountsFixtures.user_fixture(role: :employer)
+
+    %{
+      conn: log_in_user(conn, employer),
+      user: employer,
+      conn_not_owner: log_in_user(conn, employer_not_owner)
+    }
+  end
 
   describe "create vacancy" do
     setup [:create_organization]
@@ -67,6 +77,16 @@ defmodule CenWeb.VacancyControllerTest do
 
       assert_schema ChangesetErrorsResponse, json
       assert json["errors"] != %{}
+    end
+
+    test "renders forbidden error when user not owner of organization", %{
+      conn_not_owner: conn,
+      organization: organization
+    } do
+      conn = post(conn, ~p"/api/organizations/#{organization}/new_vacancy", vacancy: @invalid_attrs)
+      json = json_response(conn, 403)
+
+      assert_schema GenericErrorResponse, json
     end
   end
 
@@ -104,6 +124,13 @@ defmodule CenWeb.VacancyControllerTest do
 
       assert json["errors"] != %{}
     end
+
+    test "renders forbidden error when user not owner of organization", %{conn_not_owner: conn, vacancy: vacancy} do
+      conn = patch(conn, ~p"/api/vacancies/#{vacancy}", vacancy: @update_attrs)
+      json = json_response(conn, 403)
+
+      assert_schema GenericErrorResponse, json
+    end
   end
 
   describe "delete vacancy" do
@@ -115,15 +142,23 @@ defmodule CenWeb.VacancyControllerTest do
 
       assert conn |> get(~p"/api/vacancies/#{vacancy}") |> response(404)
     end
+
+    test "renders forbidden error when user not owner of organization", %{conn_not_owner: conn, vacancy: vacancy} do
+      conn = delete(conn, ~p"/api/vacancies/#{vacancy}")
+      json = json_response(conn, 403)
+
+      assert_schema GenericErrorResponse, json
+    end
   end
 
-  defp create_vacancy(_context) do
-    vacancy = vacancy_fixture()
-    %{vacancy: vacancy}
-  end
-
-  defp create_organization(_context) do
-    organization = organization_fixture()
+  defp create_organization(%{user: user}) do
+    organization = organization_fixture(employer: user)
     %{organization: organization}
+  end
+
+  defp create_vacancy(%{user: user}) do
+    organization = organization_fixture(employer: user)
+    vacancy = vacancy_fixture(organization: organization)
+    %{vacancy: vacancy}
   end
 end

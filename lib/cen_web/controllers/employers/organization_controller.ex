@@ -29,7 +29,7 @@ defmodule CenWeb.OrganizationController do
   plug AccessRules,
        [
          fallback: fallback,
-         verify_fun: &Accounts.can_user_create_organization?/1,
+         verify_fun: &Accounts.has_employer_permissions?/1,
          args_keys: [:current_user],
          reason: "You are not the employer"
        ]
@@ -38,7 +38,7 @@ defmodule CenWeb.OrganizationController do
   plug AccessRules,
        [
          fallback: fallback,
-         verify_fun: &Employers.can_user_edit?/2,
+         verify_fun: &Employers.can_user_edit_organization?/2,
          args_keys: [:organization, :current_user],
          reason: "You are not the owner"
        ]
