@@ -22,8 +22,7 @@ defmodule CenWeb.VacancyJSON do
   def data(%Vacancy{} = vacancy) do
     %{
       id: vacancy.id,
-      published: vacancy.published,
-      reviewed: vacancy.reviewed,
+      title: vacancy.title,
       description: vacancy.description,
       employment_type: vacancy.employment_type,
       work_schedule: vacancy.work_schedule,

@@ -39,8 +39,6 @@ defmodule Cen.EmployersFixtures do
         field_of_art: :music,
         min_years_of_work_experience: 42,
         proposed_salary: 42,
-        published: true,
-        reviewed: true,
         work_schedule: :full_time,
         organization: organization_fixture()
       })

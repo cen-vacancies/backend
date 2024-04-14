@@ -56,6 +56,8 @@ defmodule CenWeb.Router do
   scope "/api", CenWeb do
     pipe_through :api
 
+    get "/vacancies/search", VacancyController, :search
+
     post "/tokens", TokenController, :create
   end
 

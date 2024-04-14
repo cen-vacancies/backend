@@ -8,6 +8,7 @@ defmodule Cen.Employers do
   alias Cen.Accounts.User
   alias Cen.Employers.Organization
   alias Cen.Employers.Vacancy
+  alias Cen.QueryUtils
   alias Cen.Repo
 
   @doc """
@@ -272,5 +273,20 @@ defmodule Cen.Employers do
   @spec change_vacancy(Vacancy.t(), map()) :: Ecto.Changeset.t()
   def change_vacancy(%Vacancy{} = vacancy, attrs \\ %{}) do
     Vacancy.changeset(vacancy, attrs)
+  end
+
+  @spec search_vacancies(map()) :: [Vacancy.t()]
+  def search_vacancies(options) do
+    Vacancy
+    |> where([vacancy], vacancy.published)
+    |> where([vacancy], vacancy.reviewed)
+    |> QueryUtils.filter(:employment_type, :in, options["employment_types"])
+    |> QueryUtils.filter(:work_schedule, :in, options["work_schedules"])
+    |> QueryUtils.filter(:education, :eq, options["education"])
+    |> QueryUtils.filter(:field_of_art, :eq, options["field_of_art"])
+    |> QueryUtils.filter(:min_years_of_work_experience, :not_gt, options["years_of_work_experience"])
+    |> QueryUtils.filter(:proposed_salary, :not_lt, options["preferred_salary"])
+    |> preload(organization: [:employer])
+    |> Repo.all()
   end
 end

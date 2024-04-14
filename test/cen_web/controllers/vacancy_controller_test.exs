@@ -6,6 +6,7 @@ defmodule CenWeb.VacancyControllerTest do
   alias Cen.Employers.Vacancy
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.GenericErrorResponse
+  alias CenWeb.Schemas.Vacancies.VacanciesQueryResponse
   alias CenWeb.Schemas.VacancyResponse
 
   @create_attrs %{
@@ -111,8 +112,6 @@ defmodule CenWeb.VacancyControllerTest do
                "field_of_art" => "visual",
                "min_years_of_work_experience" => 43,
                "proposed_salary" => 43,
-               "published" => false,
-               "reviewed" => false,
                "work_schedule" => "part_time"
              } = json["data"]
     end
@@ -149,6 +148,44 @@ defmodule CenWeb.VacancyControllerTest do
       json = json_response(conn, 403)
 
       assert_schema GenericErrorResponse, json
+    end
+  end
+
+  describe "search vacancies" do
+    test "list all without query", %{conn: conn} do
+      vacancy_fixture(employment_type: :main, published: true)
+      vacancy_fixture(employment_type: :secondary, published: true)
+
+      conn = get(conn, ~p"/api/vacancies/search")
+
+      json = json_response(conn, 200)
+
+      assert_schema VacanciesQueryResponse, json
+      assert length(json["data"]) == 2
+    end
+
+    test "list only published vacancies", %{conn: conn} do
+      vacancy_fixture(employment_type: :main)
+      vacancy_fixture(employment_type: :secondary, published: true)
+
+      conn = get(conn, ~p"/api/vacancies/search")
+
+      json = json_response(conn, 200)
+
+      assert_schema VacanciesQueryResponse, json
+      assert length(json["data"]) == 1
+    end
+
+    test "list only queried vacancies", %{conn: conn} do
+      vacancy_fixture(employment_type: :main, published: true)
+      vacancy_fixture(employment_type: :secondary, published: true)
+
+      conn = get(conn, ~p"/api/vacancies/search?employment_types[]=main")
+
+      json = json_response(conn, 200)
+
+      assert_schema VacanciesQueryResponse, json
+      assert length(json["data"]) == 1
     end
   end
 

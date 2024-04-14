@@ -57,7 +57,7 @@ defmodule Cen.Employers.Vacancy do
   end
 
   @requried_fields ~w[title description employment_type work_schedule education field_of_art]a
-  @optional_fields ~w[min_years_of_work_experience proposed_salary]a
+  @optional_fields ~w[published min_years_of_work_experience proposed_salary]a
 
   @doc false
   @spec changeset(t(), map()) :: Ecto.Changeset.t()
@@ -67,5 +67,6 @@ defmodule Cen.Employers.Vacancy do
     |> validate_length(:title, max: 255)
     |> validate_length(:description, max: 2000)
     |> validate_required(@requried_fields)
+    |> put_change(:reviewed, true)
   end
 end

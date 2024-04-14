@@ -173,7 +173,7 @@ defmodule Cen.EmployersTest do
       assert {:ok, %Vacancy{} = vacancy} = Employers.update_vacancy(vacancy, update_attrs)
       assert vacancy.description == "some updated description"
       assert vacancy.published == false
-      assert vacancy.reviewed == false
+      assert vacancy.reviewed == true
       assert vacancy.employment_type == :secondary
       assert vacancy.work_schedule == :part_time
       assert vacancy.education == :higher

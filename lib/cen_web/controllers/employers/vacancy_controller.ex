@@ -42,9 +42,45 @@ defmodule CenWeb.VacancyController do
   tags :vacancies
   security [%{}, %{"user_auth" => ["employer"]}]
 
-  @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
-  def index(conn, _params) do
-    vacancies = Employers.list_vacancies()
+  operation :search,
+    summary: "Search vacancies",
+    parameters: [
+      "employment_types[]": [
+        in: :query,
+        description: "Employment types",
+        schema: %OpenApiSpex.Schema{
+          type: :array,
+          items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.employment_types()}
+        }
+      ],
+      "work_schedules[]": [
+        in: :query,
+        description: "Employment types",
+        schema: %OpenApiSpex.Schema{
+          type: :array,
+          items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.work_schedules()}
+        }
+      ],
+      education: [
+        in: :query,
+        description: "Education",
+        schema: %OpenApiSpex.Schema{type: :string, enum: Vacancy.educations()}
+      ],
+      field_of_art: [
+        in: :query,
+        description: "Field of art",
+        schema: %OpenApiSpex.Schema{type: :string, enum: Vacancy.field_of_arts()}
+      ],
+      years_of_work_experience: [in: :query, description: "Years of work experience", type: :integer],
+      preferred_salary: [in: :query, description: "Preferred salary", type: :integer]
+    ],
+    responses: [
+      ok: {"Vacancies list", "application/json", VacanciesQueryResponse}
+    ]
+
+  @spec search(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
+  def search(conn, params) do
+    vacancies = Employers.search_vacancies(params)
     render(conn, :index, vacancies: vacancies)
   end
 
