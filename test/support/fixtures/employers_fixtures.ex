@@ -32,6 +32,7 @@ defmodule Cen.EmployersFixtures do
     {:ok, vacancy} =
       attrs
       |> Enum.into(%{
+        title: "some title",
         description: "some description",
         education: :none,
         employment_type: :main,

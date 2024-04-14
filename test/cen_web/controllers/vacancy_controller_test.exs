@@ -9,6 +9,7 @@ defmodule CenWeb.VacancyControllerTest do
   alias CenWeb.Schemas.VacancyResponse
 
   @create_attrs %{
+    title: "some title",
     description: "some description",
     employment_type: :main,
     work_schedule: :full_time,

@@ -6,6 +6,7 @@ defmodule Cen.Repo.Migrations.CreateVacancies do
       add :published, :boolean, default: false, null: false
       add :reviewed, :boolean, default: false, null: false
 
+      add :title, :string, null: false
       add :description, :text, null: false
       add :employment_type, :string, null: false
       add :work_schedule, :string, null: false

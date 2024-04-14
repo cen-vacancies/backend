@@ -25,6 +25,7 @@ defmodule Cen.Employers.Vacancy do
   @type t :: %__MODULE__{
           published: boolean(),
           reviewed: boolean(),
+          title: String.t(),
           description: String.t(),
           employment_type: atom(),
           work_schedule: atom(),
@@ -39,6 +40,7 @@ defmodule Cen.Employers.Vacancy do
     field :published, :boolean, default: false
     field :reviewed, :boolean, default: false
 
+    field :title, :string
     field :description, :string
 
     field :employment_type, Ecto.Enum, values: @employment_types
@@ -54,7 +56,7 @@ defmodule Cen.Employers.Vacancy do
     timestamps(type: :utc_datetime)
   end
 
-  @requried_fields ~w[description employment_type work_schedule education field_of_art]a
+  @requried_fields ~w[title description employment_type work_schedule education field_of_art]a
   @optional_fields ~w[min_years_of_work_experience proposed_salary]a
 
   @doc false
@@ -62,6 +64,7 @@ defmodule Cen.Employers.Vacancy do
   def changeset(vacancy, attrs) do
     vacancy
     |> cast(attrs, @requried_fields ++ @optional_fields)
+    |> validate_length(:title, max: 255)
     |> validate_length(:description, max: 2000)
     |> validate_required(@requried_fields)
   end

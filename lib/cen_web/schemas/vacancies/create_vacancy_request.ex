@@ -11,8 +11,9 @@ defmodule CenWeb.Schemas.CreateVacancyRequest do
     required: ~w[vacancy]a,
     properties: %{
       vacancy: %Schema{
-        required: ~w[description employment_type work_schedule education field_of_art organization_id]a,
+        required: ~w[title description employment_type work_schedule education field_of_art organization_id]a,
         properties: %{
+          title: %Schema{type: :string, maximum: 255},
           description: %Schema{type: :string, maximum: 2000},
           employment_type: %Schema{type: :string, enum: Vacancy.employment_types()},
           work_schedule: %Schema{type: :string, enum: Vacancy.work_schedules()},
@@ -26,6 +27,7 @@ defmodule CenWeb.Schemas.CreateVacancyRequest do
     },
     example: %{
       "vacancy" => %{
+        "title" => "Работник",
         "description" => "Ищем очень хорошего работника!",
         "employment_type" => "main",
         "work_schedule" => "full_time",

@@ -130,6 +130,7 @@ defmodule Cen.EmployersTest do
 
     test "create_vacancy/1 with valid data creates a vacancy" do
       valid_attrs = %{
+        title: "title",
         description: "some description",
         employment_type: :main,
         work_schedule: :full_time,
