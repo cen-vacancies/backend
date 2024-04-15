@@ -8,6 +8,7 @@ defmodule CenWeb.VacancyController do
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.CreateVacancyRequest
   alias CenWeb.Schemas.GenericErrorResponse
+  alias CenWeb.Schemas.Vacancies.VacanciesQueryResponse
   alias CenWeb.Schemas.VacancyResponse
 
   fallback = CenWeb.FallbackController
@@ -45,6 +46,11 @@ defmodule CenWeb.VacancyController do
   operation :search,
     summary: "Search vacancies",
     parameters: [
+      text: [
+        in: :query,
+        description: "Search text",
+        type: :string
+      ],
       "employment_types[]": [
         in: :query,
         description: "Employment types",

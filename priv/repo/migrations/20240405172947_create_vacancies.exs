@@ -17,9 +17,18 @@ defmodule Cen.Repo.Migrations.CreateVacancies do
       add :proposed_salary, :integer, default: 0, null: false
       add :organization_id, references(:organizations, on_delete: :delete_all), null: false
 
+      add :searchable, :tsvector,
+        generated: """
+        ALWAYS AS (
+          to_tsvector('russian', coalesce(title, '') || ' ' || coalesce(description, ''))
+        ) STORED
+        """
+
       timestamps(type: :utc_datetime)
     end
 
     create index(:vacancies, [:organization_id])
+
+    create index(:vacancies, [:searchable], using: "gin")
   end
 end

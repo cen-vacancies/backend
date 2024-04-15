@@ -280,6 +280,7 @@ defmodule Cen.Employers do
     Vacancy
     |> where([vacancy], vacancy.published)
     |> where([vacancy], vacancy.reviewed)
+    |> QueryUtils.filter(:searchable, :search, options["text"])
     |> QueryUtils.filter(:employment_type, :in, options["employment_types"])
     |> QueryUtils.filter(:work_schedule, :in, options["work_schedules"])
     |> QueryUtils.filter(:education, :eq, options["education"])

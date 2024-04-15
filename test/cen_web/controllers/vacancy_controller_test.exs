@@ -187,6 +187,18 @@ defmodule CenWeb.VacancyControllerTest do
       assert_schema VacanciesQueryResponse, json
       assert length(json["data"]) == 1
     end
+
+    test "list only vacancies that match the text query", %{conn: conn} do
+      vacancy_fixture(title: "Учитель танцев", published: true)
+      vacancy_fixture(published: true)
+
+      conn = get(conn, ~p"/api/vacancies/search?text=танцы")
+
+      json = json_response(conn, 200)
+
+      assert_schema VacanciesQueryResponse, json
+      assert length(json["data"]) == 1
+    end
   end
 
   defp create_organization(%{user: user}) do
