@@ -1,5 +1,12 @@
 defmodule CenWeb.Plugs.ResourceLoader.GenLoader do
-  @moduledoc false
+  @moduledoc """
+  Simply call the load function.
+
+  ## Options
+
+    * `resource` - a tuple containing the module and function to call
+    * `param_key` - the key for path parameters, the default is `"id"`
+  """
 
   @type loader :: (Plug.Conn.t() -> Plug.Conn.t())
 

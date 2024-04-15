@@ -15,21 +15,13 @@ defmodule CenWeb.OrganizationController do
   action_fallback fallback
 
   plug ResourceLoader,
-       [
-         key: :organization,
-         fallback: fallback,
-         loader: [
-           module: ResourceLoader.GenLoader,
-           resource: {Employers, :fetch_organization},
-           param_key: "organization_id"
-         ]
-       ]
+       [key: :organization, context: Employers, fallback: fallback]
        when action in [:show, :update, :delete]
 
   plug AccessRules,
        [
          fallback: fallback,
-         verify_fun: &Accounts.can_user_create_organization?/1,
+         verify_fun: &Accounts.has_employer_permissions?/1,
          args_keys: [:current_user],
          reason: "You are not the employer"
        ]
@@ -38,7 +30,7 @@ defmodule CenWeb.OrganizationController do
   plug AccessRules,
        [
          fallback: fallback,
-         verify_fun: &Employers.can_user_edit?/2,
+         verify_fun: &Employers.can_user_edit_organization?/2,
          args_keys: [:organization, :current_user],
          reason: "You are not the owner"
        ]
@@ -80,7 +72,7 @@ defmodule CenWeb.OrganizationController do
     ],
     responses: [
       created: {"Requested organization", "application/json", OrganizationResponse},
-      not_found: {"Organization not found", "application/json", NotFoundErrorResponse},
+      not_found: {"Organization not found", "application/json", GenericErrorResponse},
       unauthorized: {"Unauthorized", "application/json", GenericErrorResponse}
     ]
 
@@ -97,7 +89,7 @@ defmodule CenWeb.OrganizationController do
     request_body: {"Organization params", "application/json", CreateOrganizationRequest},
     responses: [
       created: {"Requested organization", "application/json", OrganizationResponse},
-      not_found: {"Organization not found", "application/json", NotFoundErrorResponse},
+      not_found: {"Organization not found", "application/json", GenericErrorResponse},
       unauthorized: {"Unauthorized", "application/json", GenericErrorResponse},
       forbidden: {"You are not the owner", "application/json", GenericErrorResponse}
     ]

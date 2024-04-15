@@ -24,4 +24,26 @@ defmodule Cen.EmployersFixtures do
 
     organization
   end
+
+  @doc """
+  Generate a vacancy.
+  """
+  def vacancy_fixture(attrs \\ %{}) do
+    {:ok, vacancy} =
+      attrs
+      |> Enum.into(%{
+        title: "some title",
+        description: "some description",
+        education: :none,
+        employment_type: :main,
+        field_of_art: :music,
+        min_years_of_work_experience: 42,
+        proposed_salary: 42,
+        work_schedule: :full_time,
+        organization: organization_fixture()
+      })
+      |> Cen.Employers.create_vacancy()
+
+    vacancy
+  end
 end

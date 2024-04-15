@@ -5,6 +5,7 @@ defmodule Cen.Employers.Organization do
   import Ecto.Changeset
 
   alias Cen.Accounts.User
+  alias Cen.Employers.Vacancy
 
   @type t :: %__MODULE__{
           id: integer() | nil,
@@ -25,6 +26,7 @@ defmodule Cen.Employers.Organization do
     field :contacts, :string
 
     belongs_to :employer, User
+    has_many :vacancies, Vacancy
 
     timestamps(type: :utc_datetime)
   end

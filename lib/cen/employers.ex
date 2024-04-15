@@ -7,6 +7,8 @@ defmodule Cen.Employers do
 
   alias Cen.Accounts.User
   alias Cen.Employers.Organization
+  alias Cen.Employers.Vacancy
+  alias Cen.QueryUtils
   alias Cen.Repo
 
   @doc """
@@ -136,8 +138,156 @@ defmodule Cen.Employers do
   @doc """
   Returns `true` when User is owner of given Organization.
   """
-  @spec can_user_edit?(Organization.t(), User.t()) :: boolean()
-  def can_user_edit?(%Organization{} = organization, %User{} = user) do
+  @spec can_user_edit_organization?(Organization.t(), User.t()) :: boolean()
+  def can_user_edit_organization?(%Organization{} = organization, %User{} = user) do
     organization.employer_id == user.id
+  end
+
+  @doc """
+  Returns `true` when User is owner of given Organization.
+  """
+  @spec can_user_edit_vacancy?(Vacancy.t(), User.t()) :: boolean()
+  def can_user_edit_vacancy?(%Vacancy{organization: organization}, %User{} = user) do
+    can_user_edit_organization?(organization, user)
+  end
+
+  @doc """
+  Returns the list of vacancies.
+
+  ## Examples
+
+      iex> list_vacancies()
+      [%Vacancy{}, ...]
+
+  """
+  @spec list_vacancies() :: [Vacancy.t()]
+  def list_vacancies do
+    Repo.all(Vacancy)
+  end
+
+  @doc """
+  Gets a single vacancy.
+
+  Raises `Ecto.NoResultsError` if the Vacancy does not exist.
+
+  ## Examples
+
+      iex> get_vacancy!(123)
+      %Vacancy{}
+
+      iex> get_vacancy!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  @spec get_vacancy!(String.t() | integer()) :: Vacancy.t()
+  def get_vacancy!(id), do: Repo.get!(Vacancy, id)
+
+  @doc """
+  Gets a single vacancy.
+
+  Returns `{:error, :not_found}` if the Vacancy does not exist.
+
+  ## Examples
+
+      iex> fetch_vacancy(123)
+      {:ok, %Vacancy{}}
+
+      iex> fetch_vacancy(456)
+      {:error, :not_found}
+
+  """
+  @spec fetch_vacancy(String.t() | integer()) :: {:ok, Vacancy.t()} | {:error, :not_found}
+  def fetch_vacancy(id) do
+    case Vacancy |> Repo.get(id) |> Repo.preload(organization: [:employer]) do
+      nil -> {:error, :not_found}
+      vacancy -> {:ok, vacancy}
+    end
+  end
+
+  @doc """
+  Creates a vacancy.
+
+  ## Examples
+
+      iex> create_vacancy(%{field: value})
+      {:ok, %Vacancy{}}
+
+      iex> create_vacancy(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec create_vacancy(map()) :: {:ok, Vacancy.t()} | {:error, Ecto.Changeset.t()}
+  def create_vacancy(attrs \\ %{}) do
+    attrs
+    |> Map.fetch!(:organization)
+    |> Ecto.build_assoc(:vacancies)
+    |> Vacancy.changeset(Map.delete(attrs, :organization))
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a vacancy.
+
+  ## Examples
+
+      iex> update_vacancy(vacancy, %{field: new_value})
+      {:ok, %Vacancy{}}
+
+      iex> update_vacancy(vacancy, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec update_vacancy(Vacancy.t(), map()) :: {:ok, Vacancy.t()} | {:error, Ecto.Changeset.t()}
+  def update_vacancy(%Vacancy{} = vacancy, attrs) do
+    vacancy
+    |> Vacancy.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a vacancy.
+
+  ## Examples
+
+      iex> delete_vacancy(vacancy)
+      {:ok, %Vacancy{}}
+
+      iex> delete_vacancy(vacancy)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  @spec delete_vacancy(Vacancy.t()) :: {:ok, Vacancy.t()} | {:error, Ecto.Changeset.t()}
+  def delete_vacancy(%Vacancy{} = vacancy) do
+    Repo.delete(vacancy)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking vacancy changes.
+
+  ## Examples
+
+      iex> change_vacancy(vacancy)
+      %Ecto.Changeset{data: %Vacancy{}}
+
+  """
+  @spec change_vacancy(Vacancy.t(), map()) :: Ecto.Changeset.t()
+  def change_vacancy(%Vacancy{} = vacancy, attrs \\ %{}) do
+    Vacancy.changeset(vacancy, attrs)
+  end
+
+  @spec search_vacancies(map()) :: Scrivener.Page.t()
+  def search_vacancies(options) do
+    Vacancy
+    |> where([vacancy], vacancy.published)
+    |> where([vacancy], vacancy.reviewed)
+    |> QueryUtils.filter(:searchable, :search, options["text"])
+    |> QueryUtils.filter(:employment_type, :in, options["employment_types"])
+    |> QueryUtils.filter(:work_schedule, :in, options["work_schedules"])
+    |> QueryUtils.filter(:education, :eq, options["education"])
+    |> QueryUtils.filter(:field_of_art, :eq, options["field_of_art"])
+    |> QueryUtils.filter(:min_years_of_work_experience, :not_gt, options["years_of_work_experience"])
+    |> QueryUtils.filter(:proposed_salary, :not_lt, options["preferred_salary"])
+    |> preload(organization: [:employer])
+    |> Repo.paginate(page: options["page"], page_size: options["page_size"])
   end
 end

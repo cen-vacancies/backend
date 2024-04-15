@@ -421,6 +421,6 @@ defmodule Cen.Accounts do
   @doc """
   Returns `true` if User is `admin` or `employer`
   """
-  @spec can_user_create_organization?(User.t()) :: boolean()
-  def can_user_create_organization?(%User{role: role}), do: role in [:admin, :employer]
+  @spec has_employer_permissions?(User.t()) :: boolean()
+  def has_employer_permissions?(%User{role: role}), do: role in [:admin, :employer]
 end
