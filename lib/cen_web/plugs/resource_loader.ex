@@ -34,7 +34,7 @@ defmodule CenWeb.Plugs.ResourceLoader do
 
   alias CenWeb.Plugs.ResourceLoader.GenLoader
 
-  @type init_params :: {atom(), module(), GenLoader.loader()}
+  @type init_params :: {atom(), module(), {module(), atom()}}
 
   @spec init(keyword()) :: init_params()
   def init(options) do
