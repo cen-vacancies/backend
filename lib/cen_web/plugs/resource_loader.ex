@@ -58,7 +58,7 @@ defmodule CenWeb.Plugs.ResourceLoader do
 
   @spec call(Plug.Conn.t(), init_params()) :: Plug.Conn.t()
   def call(conn, {key, fallback_module, loader}) do
-    case loader.(conn) do
+    case exec_loader(conn, loader) do
       {:ok, resource} -> assign(conn, key, resource)
       err -> conn |> fallback_module.call(err) |> halt()
     end
@@ -77,8 +77,10 @@ defmodule CenWeb.Plugs.ResourceLoader do
   defp init_loader(module, options) do
     loader_init = module.init(options)
 
-    fn conn ->
-      module.load(conn, loader_init)
-    end
+    {module, loader_init}
+  end
+
+  defp exec_loader(conn, {module, loader_init}) do
+    module.load(conn, loader_init)
   end
 end
