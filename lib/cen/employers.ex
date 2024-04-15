@@ -275,7 +275,7 @@ defmodule Cen.Employers do
     Vacancy.changeset(vacancy, attrs)
   end
 
-  @spec search_vacancies(map()) :: [Vacancy.t()]
+  @spec search_vacancies(map()) :: Scrivener.Page.t()
   def search_vacancies(options) do
     Vacancy
     |> where([vacancy], vacancy.published)
@@ -288,6 +288,6 @@ defmodule Cen.Employers do
     |> QueryUtils.filter(:min_years_of_work_experience, :not_gt, options["years_of_work_experience"])
     |> QueryUtils.filter(:proposed_salary, :not_lt, options["preferred_salary"])
     |> preload(organization: [:employer])
-    |> Repo.all()
+    |> Repo.paginate(page: options["page"], page_size: options["page_size"])
   end
 end

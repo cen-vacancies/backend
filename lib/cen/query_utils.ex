@@ -26,21 +26,22 @@ defmodule Cen.QueryUtils do
   end
 
   def filter(query, field_name, :search, value) do
-    from(from record in query,
-      where:
-        fragment(
-          "? @@ websearch_to_tsquery('russian', ?)",
-          field(record, ^field_name),
-          ^value
-        ),
-      order_by: {
-        :desc,
-        fragment(
-          "ts_rank_cd(?, websearch_to_tsquery('russian', ?))",
-          field(record, ^field_name),
-          ^value
-        )
-      }
+    from(
+      from record in query,
+        where:
+          fragment(
+            "? @@ websearch_to_tsquery('russian', ?)",
+            field(record, ^field_name),
+            ^value
+          ),
+        order_by: {
+          :desc,
+          fragment(
+            "ts_rank_cd(?, websearch_to_tsquery('russian', ?))",
+            field(record, ^field_name),
+            ^value
+          )
+        }
     )
   end
 end

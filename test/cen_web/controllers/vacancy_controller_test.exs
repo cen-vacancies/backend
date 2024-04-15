@@ -199,6 +199,51 @@ defmodule CenWeb.VacancyControllerTest do
       assert_schema VacanciesQueryResponse, json
       assert length(json["data"]) == 1
     end
+
+    test "pagination works", %{conn: conn} do
+      Enum.each(1..55, fn _num -> vacancy_fixture(published: true) end)
+
+      conn = get(conn, ~p"/api/vacancies/search")
+
+      json = json_response(conn, 200)
+
+      assert_schema VacanciesQueryResponse, json
+
+      assert json["page"] == %{
+               "page_number" => 1,
+               "page_size" => 10,
+               "total_entries" => 55,
+               "total_pages" => 6
+             }
+    end
+
+    test "set page size", %{conn: conn} do
+      conn = get(conn, ~p"/api/vacancies/search?page_size=15")
+
+      json = json_response(conn, 200)
+
+      assert_schema VacanciesQueryResponse, json
+      assert json["page"]["page_size"] == 15
+    end
+
+    test "set page number", %{conn: conn} do
+      first_vacancy = vacancy_fixture(published: true)
+      secondary_vacancy = vacancy_fixture(published: true)
+
+      first_conn = get(conn, ~p"/api/vacancies/search?page=1&page_size=1")
+
+      first_json = json_response(first_conn, 200)
+
+      assert_schema VacanciesQueryResponse, first_json
+      assert first_json |> Map.fetch!("data") |> Enum.at(0) |> Map.fetch!("id") == first_vacancy.id
+
+      second_conn = get(conn, ~p"/api/vacancies/search?page=2&page_size=1")
+
+      second_json = json_response(second_conn, 200)
+
+      assert_schema VacanciesQueryResponse, second_json
+      assert second_json |> Map.fetch!("data") |> Enum.at(0) |> Map.fetch!("id") == secondary_vacancy.id
+    end
   end
 
   defp create_organization(%{user: user}) do

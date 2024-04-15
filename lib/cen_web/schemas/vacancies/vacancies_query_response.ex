@@ -1,5 +1,6 @@
 defmodule CenWeb.Schemas.Vacancies.VacanciesQueryResponse do
   @moduledoc false
+  alias CenWeb.Schemas.Page
   alias CenWeb.Schemas.Vacancy
   alias OpenApiSpex.Schema
 
@@ -13,10 +14,12 @@ defmodule CenWeb.Schemas.Vacancies.VacanciesQueryResponse do
       data: %Schema{
         type: :array,
         items: Vacancy.schema()
-      }
+      },
+      page: Page.schema()
     },
     example: %{
-      "data" => [Vacancy.schema().example]
+      "data" => [Vacancy.schema().example],
+      "page" => Page.schema().example
     }
   })
 end

@@ -78,7 +78,9 @@ defmodule CenWeb.VacancyController do
         schema: %OpenApiSpex.Schema{type: :string, enum: Vacancy.field_of_arts()}
       ],
       years_of_work_experience: [in: :query, description: "Years of work experience", type: :integer],
-      preferred_salary: [in: :query, description: "Preferred salary", type: :integer]
+      preferred_salary: [in: :query, description: "Preferred salary", type: :integer],
+      page: [in: :query, description: "Page number", type: :integer],
+      page_size: [in: :query, description: "Page size", type: :integer]
     ],
     responses: [
       ok: {"Vacancies list", "application/json", VacanciesQueryResponse}
@@ -86,8 +88,8 @@ defmodule CenWeb.VacancyController do
 
   @spec search(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
   def search(conn, params) do
-    vacancies = Employers.search_vacancies(params)
-    render(conn, :index, vacancies: vacancies)
+    page = Employers.search_vacancies(params)
+    render(conn, :index, page: page)
   end
 
   operation :create,
