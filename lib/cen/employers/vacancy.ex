@@ -49,7 +49,7 @@ defmodule Cen.Employers.Vacancy do
     field :field_of_art, Ecto.Enum, values: @field_of_arts
 
     field :min_years_of_work_experience, :integer, default: 0
-    field :proposed_salary, :integer, default: 0
+    field :proposed_salary, :integer
 
     belongs_to :organization, Organization
 

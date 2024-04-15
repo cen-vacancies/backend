@@ -10,7 +10,7 @@ defmodule CenWeb.Schemas.Vacancy do
     title: "Vacancy",
     type: :object,
     required:
-      ~w[id title description employment_type work_schedule education field_of_art min_years_of_work_experience proposed_salary organization]a,
+      ~w[id title description employment_type work_schedule education field_of_art min_years_of_work_experience organization]a,
     properties: %{
       id: %Schema{type: :integer},
       title: %Schema{type: :string},

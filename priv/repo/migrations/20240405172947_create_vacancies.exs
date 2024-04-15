@@ -14,7 +14,7 @@ defmodule Cen.Repo.Migrations.CreateVacancies do
       add :field_of_art, :string, null: false
 
       add :min_years_of_work_experience, :integer, default: 0, null: false
-      add :proposed_salary, :integer, default: 0, null: false
+      add :proposed_salary, :integer
       add :organization_id, references(:organizations, on_delete: :delete_all), null: false
 
       add :searchable, :tsvector,

@@ -200,6 +200,18 @@ defmodule CenWeb.VacancyControllerTest do
       assert length(json["data"]) == 1
     end
 
+    test "list vacancies without salary with any filter", %{conn: conn} do
+      vacancy_fixture(proposed_salary: 15_000, published: true)
+      vacancy_fixture(proposed_salary: nil, published: true)
+
+      conn = get(conn, ~p"/api/vacancies/search?preferred_salary=20000")
+
+      json = json_response(conn, 200)
+
+      assert_schema VacanciesQueryResponse, json
+      assert length(json["data"]) == 1
+    end
+
     test "pagination works", %{conn: conn} do
       Enum.each(1..55, fn _num -> vacancy_fixture(published: true) end)
 
