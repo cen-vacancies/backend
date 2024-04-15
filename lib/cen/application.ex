@@ -7,6 +7,8 @@ defmodule Cen.Application do
 
   @impl Application
   def start(_type, _args) do
+    {:ok, _} = EctoBootMigration.migrate(:cen)
+
     children = [
       CenWeb.Telemetry,
       Cen.Repo,
