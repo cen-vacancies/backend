@@ -6,7 +6,7 @@ defmodule CenWeb.Schemas.CreateUserRequest do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "User params",
+    title: "CreateUserRequest",
     type: :object,
     required: ~w[user]a,
     properties: %{

@@ -6,7 +6,7 @@ defmodule CenWeb.Schemas.CreateVacancyRequest do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "Vacancy params",
+    title: "CreateVacancyRequest",
     type: :object,
     required: ~w[vacancy]a,
     properties: %{

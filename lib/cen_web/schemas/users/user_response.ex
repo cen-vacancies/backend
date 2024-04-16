@@ -5,7 +5,7 @@ defmodule CenWeb.Schemas.UserResponse do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "User response",
+    title: "UserResponse",
     type: :object,
     required: ~w[data]a,
     properties: %{

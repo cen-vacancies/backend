@@ -5,7 +5,7 @@ defmodule CenWeb.Schemas.TokenResponse do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "User's token",
+    title: "TokenResponse",
     type: :object,
     required: ~w[data]a,
     properties: %{

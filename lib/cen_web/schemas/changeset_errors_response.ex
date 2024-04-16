@@ -5,7 +5,7 @@ defmodule CenWeb.Schemas.ChangesetErrorsResponse do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "Unprocessable entity",
+    title: "ChangesetErrorsResponse",
     type: :object,
     required: ~w[errors]a,
     properties: %{

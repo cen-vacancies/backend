@@ -5,7 +5,7 @@ defmodule CenWeb.Schemas.CreateOrganizationRequest do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "Organization params",
+    title: "CreateOrganizationRequest",
     type: :object,
     required: ~w[organization]a,
     properties: %{

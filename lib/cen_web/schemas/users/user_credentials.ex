@@ -5,7 +5,7 @@ defmodule CenWeb.Schemas.UserCredentials do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "User's credentials",
+    title: "UserCredentials",
     type: :object,
     required: ~w[user]a,
     properties: %{

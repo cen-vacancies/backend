@@ -7,7 +7,7 @@ defmodule CenWeb.Schemas.Vacancies.VacanciesQueryResponse do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "Vacancy response",
+    title: "VacanciesQueryResponse",
     type: :object,
     required: ~w[data]a,
     properties: %{

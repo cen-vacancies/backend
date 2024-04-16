@@ -5,7 +5,7 @@ defmodule CenWeb.Schemas.GenericErrorResponse do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "Error",
+    title: "GenericErrorResponse",
     type: :object,
     required: ~w[errors]a,
     properties: %{
@@ -13,7 +13,7 @@ defmodule CenWeb.Schemas.GenericErrorResponse do
         type: :object,
         required: ~w[detail]a,
         properties: %{
-          detail: %Schema{title: "Error reason", type: :string}
+          detail: %Schema{description: "Error reason", type: :string}
         }
       }
     },

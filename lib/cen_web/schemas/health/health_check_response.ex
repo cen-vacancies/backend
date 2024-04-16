@@ -5,7 +5,7 @@ defmodule CenWeb.Schemas.HealthCheckResponse do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "Health check response",
+    title: "HealthCheckResponse",
     type: :object,
     properties: %{
       status: %Schema{type: :string, description: "API status", pattern: "ok"}

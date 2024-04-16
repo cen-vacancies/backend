@@ -5,7 +5,7 @@ defmodule CenWeb.Schemas.OrganizationResponse do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "Organization",
+    title: "OrganizationResponse",
     type: :object,
     required: ~w[data]a,
     properties: %{
