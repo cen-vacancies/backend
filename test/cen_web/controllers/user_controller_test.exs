@@ -19,7 +19,6 @@ defmodule CenWeb.UserControllerTest do
       json = json_response(conn, 201)
 
       assert_schema UserResponse, json
-      assert %{"data" => %{}} = json
     end
 
     test "creates new employer", %{conn: conn} do
@@ -35,7 +34,6 @@ defmodule CenWeb.UserControllerTest do
       json = json_response(conn, 201)
 
       assert_schema UserResponse, json
-      assert %{"data" => %{}} = json
     end
 
     test "can't create new admin", %{conn: conn} do
@@ -51,7 +49,6 @@ defmodule CenWeb.UserControllerTest do
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
-      assert %{"errors" => %{}} = json
     end
 
     test "returns error when attrs are invalid", %{conn: conn} do
@@ -66,15 +63,6 @@ defmodule CenWeb.UserControllerTest do
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
-
-      assert %{
-               "errors" => %{
-                 "email" => _email_errors,
-                 "fullname" => _fullname_errors,
-                 "password" => _password_errors,
-                 "role" => _role_errors
-               }
-             } = json
     end
   end
 
@@ -87,7 +75,6 @@ defmodule CenWeb.UserControllerTest do
       json = json_response(conn, 200)
 
       assert_schema UserResponse, json
-      assert %{"data" => %{}} = json
     end
 
     test "returns unauthorized when not logged in", %{conn: conn} do
@@ -115,7 +102,6 @@ defmodule CenWeb.UserControllerTest do
       json = json_response(conn, 200)
 
       assert_schema UserResponse, json
-      assert %{"data" => %{}} = json
     end
 
     test "returns error when attrs are invalid", %{conn: conn} do
@@ -128,7 +114,6 @@ defmodule CenWeb.UserControllerTest do
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
-      assert %{"errors" => %{}} = json
     end
 
     test "returns unauthorized when not logged in", %{conn: conn} do

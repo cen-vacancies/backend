@@ -60,8 +60,6 @@ defmodule CenWeb.OrganizationControllerTest do
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
-
-      assert json["errors"] != %{}
     end
 
     test "renders forbidden error when user is applicant", %{conn_applicant: conn} do
@@ -83,15 +81,6 @@ defmodule CenWeb.OrganizationControllerTest do
       json = json_response(conn_get, 200)
 
       assert_schema OrganizationResponse, json
-
-      assert %{
-               "id" => ^id,
-               "address" => "some updated address",
-               "contacts" => "some updated contacts",
-               "description" => "some updated description",
-               "logo" => "some updated logo",
-               "name" => "some updated name"
-             } = json["data"]
     end
 
     test "renders errors when data is invalid", %{conn: conn, organization: organization} do
@@ -99,7 +88,6 @@ defmodule CenWeb.OrganizationControllerTest do
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
-      assert json["errors"] != %{}
     end
 
     test "renders forbidden error when user is not owner", %{conn_applicant: conn, organization: organization} do

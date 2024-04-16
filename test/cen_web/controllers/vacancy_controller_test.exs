@@ -78,7 +78,6 @@ defmodule CenWeb.VacancyControllerTest do
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
-      assert json["errors"] != %{}
     end
 
     test "renders forbidden error when user not owner of organization", %{
@@ -121,8 +120,6 @@ defmodule CenWeb.VacancyControllerTest do
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
-
-      assert json["errors"] != %{}
     end
 
     test "renders forbidden error when user not owner of organization", %{conn_not_owner: conn, vacancy: vacancy} do

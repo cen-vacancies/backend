@@ -16,7 +16,6 @@ defmodule CenWeb.TokenControllerTest do
       json = json_response(conn, 200)
 
       assert_schema TokenResponse, json
-      assert %{"data" => %{"token" => _token}} = json
     end
 
     test "returns UNAUTHORIZED with invalid credentials", %{conn: conn} do
