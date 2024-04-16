@@ -10,6 +10,7 @@ defmodule CenWeb.OrganizationController do
   alias CenWeb.Schemas.CreateOrganizationRequest
   alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.OrganizationResponse
+  alias CenWeb.Schemas.Organizations.UpdateOrganizationRequest
 
   fallback = CenWeb.FallbackController
   action_fallback fallback
@@ -88,7 +89,7 @@ defmodule CenWeb.OrganizationController do
     parameters: [
       organization_id: [in: :path, description: "Organization ID", type: :integer, example: "10132"]
     ],
-    request_body: {"Organization params", "application/json", CreateOrganizationRequest},
+    request_body: {"Organization params", "application/json", UpdateOrganizationRequest},
     responses: [
       created: {"Requested organization", "application/json", OrganizationResponse},
       not_found: {"Organization not found", "application/json", GenericErrorResponse},

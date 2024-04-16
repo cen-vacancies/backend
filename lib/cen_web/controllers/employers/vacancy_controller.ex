@@ -8,6 +8,7 @@ defmodule CenWeb.VacancyController do
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.CreateVacancyRequest
   alias CenWeb.Schemas.GenericErrorResponse
+  alias CenWeb.Schemas.Vacancies.UpdateVacancyRequest
   alias CenWeb.Schemas.Vacancies.VacanciesQueryResponse
   alias CenWeb.Schemas.VacancyResponse
 
@@ -142,7 +143,7 @@ defmodule CenWeb.VacancyController do
     parameters: [
       vacancy_id: [in: :path, description: "Vacancy ID", type: :integer, example: "10132"]
     ],
-    request_body: {"Vacancy params", "application/json", CreateVacancyRequest},
+    request_body: {"Vacancy params", "application/json", UpdateVacancyRequest},
     responses: [
       created: {"Requested vacancy", "application/json", VacancyResponse},
       unauthorized: "Unauthorized",

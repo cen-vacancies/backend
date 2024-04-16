@@ -4,6 +4,7 @@ defmodule CenWeb.UserController do
   alias Cen.Accounts
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.CreateUserRequest
+  alias CenWeb.Schemas.UpdateUserInfoRequest
   alias CenWeb.Schemas.UserResponse
   alias CenWeb.UserAuth
 
@@ -44,7 +45,7 @@ defmodule CenWeb.UserController do
 
   operation :update_info,
     summary: "Update user",
-    request_body: {"User params", "application/json", CreateUserRequest},
+    request_body: {"User params", "application/json", UpdateUserInfoRequest},
     responses: [
       ok: {"Updated user", "application/json", UserResponse},
       unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}

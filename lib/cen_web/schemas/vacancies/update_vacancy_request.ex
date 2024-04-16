@@ -1,5 +1,5 @@
 # credo:disable-for-this-file Credo.Check.Design.DuplicatedCode
-defmodule CenWeb.Schemas.CreateVacancyRequest do
+defmodule CenWeb.Schemas.Vacancies.UpdateVacancyRequest do
   @moduledoc false
   alias Cen.Employers.Vacancy
   alias OpenApiSpex.Schema
@@ -7,12 +7,11 @@ defmodule CenWeb.Schemas.CreateVacancyRequest do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
-    title: "CreateVacancyRequest",
+    title: "UpdateVacancyRequest",
     type: :object,
     required: ~w[vacancy]a,
     properties: %{
       vacancy: %Schema{
-        required: ~w[title description employment_type work_schedule education field_of_art organization_id]a,
         properties: %{
           title: %Schema{type: :string, maximum: 255},
           description: %Schema{type: :string, maximum: 2000},
