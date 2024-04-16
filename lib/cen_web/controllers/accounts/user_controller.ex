@@ -7,6 +7,8 @@ defmodule CenWeb.UserController do
   alias CenWeb.Schemas.UserResponse
   alias CenWeb.UserAuth
 
+  plug CenWeb.Plugs.CastAndValidate
+
   action_fallback CenWeb.FallbackController
 
   tags "users"

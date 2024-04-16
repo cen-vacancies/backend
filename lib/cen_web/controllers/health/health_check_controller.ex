@@ -4,6 +4,8 @@ defmodule CenWeb.HealthCheckController do
 
   alias CenWeb.Schemas.HealthCheckResponse
 
+  plug CenWeb.Plugs.CastAndValidate
+
   action_fallback CenWeb.FallbackController
 
   tags ["health_check"]

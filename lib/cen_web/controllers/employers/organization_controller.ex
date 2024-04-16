@@ -36,6 +36,8 @@ defmodule CenWeb.OrganizationController do
        ]
        when action in [:update, :delete]
 
+  plug CenWeb.Plugs.CastAndValidate
+
   security [%{}, %{"user_auth" => ["employer"]}]
 
   tags :organizations

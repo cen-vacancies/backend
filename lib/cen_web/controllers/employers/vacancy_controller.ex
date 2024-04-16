@@ -40,6 +40,8 @@ defmodule CenWeb.VacancyController do
        ]
        when action in [:update, :delete]
 
+  plug CenWeb.Plugs.CastAndValidate
+
   tags :vacancies
   security [%{}, %{"user_auth" => ["employer"]}]
 

@@ -6,6 +6,8 @@ defmodule CenWeb.TokenController do
   alias CenWeb.Schemas.TokenResponse
   alias CenWeb.Schemas.UserCredentials
 
+  plug CenWeb.Plugs.CastAndValidate
+
   action_fallback CenWeb.FallbackController
 
   tags "authorization"

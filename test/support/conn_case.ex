@@ -38,6 +38,10 @@ defmodule CenWeb.ConnCase do
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 
+  setup %{conn: conn} do
+    {:ok, conn: Plug.Conn.put_req_header(conn, "content-type", "application/json")}
+  end
+
   @doc """
   Setup helper that registers and logs in users.
 
