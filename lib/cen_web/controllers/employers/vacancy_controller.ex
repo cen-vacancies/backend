@@ -44,7 +44,6 @@ defmodule CenWeb.VacancyController do
   plug CenWeb.Plugs.CastAndValidate
 
   tags :vacancies
-  security [%{}, %{"user_auth" => ["employer"]}]
 
   operation :search,
     summary: "Search vacancies",
@@ -94,6 +93,8 @@ defmodule CenWeb.VacancyController do
     page = Employers.search_vacancies(params)
     render(conn, :index, page: page)
   end
+
+  security [%{"user_auth" => ["employer"]}]
 
   operation :create,
     summary: "Create vacancy",
