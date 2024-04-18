@@ -2,6 +2,7 @@ defmodule Cen.Accounts.User do
   @moduledoc false
   use Ecto.Schema
 
+  import Cen.ChangesetUtils
   import Ecto.Changeset
 
   alias Cen.Employers.Organization
@@ -22,6 +23,7 @@ defmodule Cen.Accounts.User do
 
   schema "users" do
     field :email, :string
+    field :phone, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :fullname, :string
@@ -63,9 +65,10 @@ defmodule Cen.Accounts.User do
   @spec registration_changeset(t(), map(), keyword()) :: Ecto.Changeset.t()
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, ~w[email password fullname role birth_date]a)
+    |> cast(attrs, ~w[email password fullname role birth_date phone]a)
     |> validate_email(opts)
     |> validate_password(opts)
+    |> validate_phone()
     |> validate_required(~w[fullname role]a)
     |> validate_exclusion(:role, ~w[admin]a)
   end
@@ -196,7 +199,15 @@ defmodule Cen.Accounts.User do
   @spec info_changeset(t(), map()) :: Ecto.Changeset.t()
   def info_changeset(user, attrs) do
     user
-    |> cast(attrs, ~w[fullname birth_date]a)
+    |> cast(attrs, ~w[fullname birth_date phone]a)
     |> validate_required(~w[fullname]a)
+    |> validate_phone()
+  end
+
+  defp validate_phone(changeset) do
+    changeset
+    |> validate_required([:phone])
+    |> validate_length(:phone, min: 9, max: 16)
+    |> validate_starts_with(:phone, "+")
   end
 end

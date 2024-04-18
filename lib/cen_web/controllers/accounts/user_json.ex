@@ -13,7 +13,8 @@ defmodule CenWeb.UserJSON do
       email: user.email,
       fullname: user.fullname,
       role: user.role,
-      birth_date: user.birth_date
+      birth_date: user.birth_date,
+      phone: user.phone
     }
   end
 end

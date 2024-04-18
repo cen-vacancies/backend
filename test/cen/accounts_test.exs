@@ -109,7 +109,7 @@ defmodule Cen.AccountsTest do
   describe "change_user_registration/2" do
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:fullname, :role, :password, :email]
+      assert changeset.required == [:fullname, :role, :phone, :password, :email]
     end
 
     test "allows fields to be set" do

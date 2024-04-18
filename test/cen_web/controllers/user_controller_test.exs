@@ -12,7 +12,8 @@ defmodule CenWeb.UserControllerTest do
         email: "username@domain.org",
         fullname: "Иванов Иван Иванович",
         role: "applicant",
-        birth_date: "2000-01-01"
+        birth_date: "2000-01-01",
+        phone: "+78001234567"
       }
 
       conn = post(conn, ~p"/api/users", %{user: applicant_attrs})
@@ -27,7 +28,8 @@ defmodule CenWeb.UserControllerTest do
         email: "username@domain.org",
         fullname: "Иванов Иван Иванович",
         role: "employer",
-        birth_date: "2000-01-01"
+        birth_date: "2000-01-01",
+        phone: "+78001234567"
       }
 
       conn = post(conn, ~p"/api/users", %{user: employer_attrs})
