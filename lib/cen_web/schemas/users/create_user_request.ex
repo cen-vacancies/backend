@@ -1,27 +1,22 @@
 defmodule CenWeb.Schemas.CreateUserRequest do
   @moduledoc false
   alias Cen.Accounts.User
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "CreateUserRequest",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[user]a,
-    additionalProperties: false,
     properties: %{
-      user: %Schema{
+      user: %{
         type: :object,
-        required: ~w[password email fullname role phone]a,
-        additionalProperties: false,
+        optional: [:birth_date],
         properties: %{
-          email: %Schema{type: :string},
-          password: %Schema{type: :string},
-          fullname: %Schema{type: :string},
-          role: %Schema{type: :string, enum: User.roles() -- ~w[admin]a},
-          birth_date: %Schema{type: :string, format: :date},
-          phone: %Schema{type: :string, format: :phone, pattern: ~r/\+\d{9,16}/}
+          email: %{type: :string},
+          password: %{type: :string},
+          fullname: %{type: :string},
+          role: %{type: :string, enum: User.roles() -- ~w[admin]a},
+          birth_date: %{type: :string, format: :date},
+          phone: %{type: :string, format: :phone, pattern: ~r/\+\d{9,16}/}
         }
       }
     },

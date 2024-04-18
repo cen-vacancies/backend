@@ -1,19 +1,15 @@
 defmodule CenWeb.Schemas.TokenResponse do
   @moduledoc false
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "TokenResponse",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[data]a,
     properties: %{
-      data: %Schema{
+      data: %{
         type: :object,
-        required: ~w[token]a,
         properties: %{
-          token: %Schema{type: :string, format: "JWT"}
+          token: %{type: :string, format: "JWT"}
         }
       }
     },

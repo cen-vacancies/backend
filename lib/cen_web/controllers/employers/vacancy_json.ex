@@ -21,21 +21,19 @@ defmodule CenWeb.VacancyJSON do
 
   @spec data(Vacancy.t()) :: map()
   def data(%Vacancy{} = vacancy) do
-    map = %{
+    %{
       id: vacancy.id,
+      reviewed: vacancy.reviewed,
+      published: vacancy.published,
       title: vacancy.title,
       description: vacancy.description,
       employment_type: vacancy.employment_type,
       work_schedule: vacancy.work_schedule,
       education: vacancy.education,
       field_of_art: vacancy.field_of_art,
+      proposed_salary: vacancy.proposed_salary,
       min_years_of_work_experience: vacancy.min_years_of_work_experience,
       organization: OrganizationJSON.data(vacancy.organization)
     }
-
-    maybe_add(map, :proposed_salary, vacancy.proposed_salary)
   end
-
-  defp maybe_add(map, _key, nil), do: map
-  defp maybe_add(map, key, value), do: Map.put(map, key, value)
 end

@@ -2,12 +2,10 @@ defmodule CenWeb.Schemas.VacancyResponse do
   @moduledoc false
   alias CenWeb.Schemas.Vacancy
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "VacancyResponse",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[data]a,
     properties: %{
       data: Vacancy.schema()
     },

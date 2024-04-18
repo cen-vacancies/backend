@@ -1,20 +1,16 @@
 defmodule CenWeb.Schemas.UserCredentials do
   @moduledoc false
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "UserCredentials",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[user]a,
     properties: %{
-      user: %Schema{
+      user: %{
         type: :object,
-        required: ~w[email password]a,
         properties: %{
-          email: %Schema{type: :string},
-          password: %Schema{type: :string}
+          email: %{type: :string},
+          password: %{type: :string}
         }
       }
     },

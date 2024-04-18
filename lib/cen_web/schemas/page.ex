@@ -1,18 +1,15 @@
 defmodule CenWeb.Schemas.Page do
   @moduledoc false
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "Page",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[page_number page_size total_entries total_pages]a,
     properties: %{
-      page_number: %Schema{type: :integer},
-      page_size: %Schema{type: :integer},
-      total_entries: %Schema{type: :integer},
-      total_pages: %Schema{type: :integer}
+      page_number: %{type: :integer},
+      page_size: %{type: :integer},
+      total_entries: %{type: :integer},
+      total_pages: %{type: :integer}
     },
     example: %{
       "page_number" => 1,

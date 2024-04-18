@@ -1,19 +1,15 @@
 defmodule CenWeb.Schemas.GenericErrorResponse do
   @moduledoc false
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "GenericErrorResponse",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[errors]a,
     properties: %{
-      errors: %Schema{
+      errors: %{
         type: :object,
-        required: ~w[detail]a,
         properties: %{
-          detail: %Schema{description: "Error reason", type: :string}
+          detail: %{description: "Error reason", type: :string}
         }
       }
     },

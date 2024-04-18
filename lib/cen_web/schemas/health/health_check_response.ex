@@ -1,16 +1,13 @@
 defmodule CenWeb.Schemas.HealthCheckResponse do
   @moduledoc false
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "HealthCheckResponse",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
     properties: %{
-      status: %Schema{type: :string, description: "API status", pattern: "ok"}
+      status: %{type: :string, description: "API status", pattern: "ok"}
     },
-    required: [:status],
     example: %{
       "status" => "ok"
     }

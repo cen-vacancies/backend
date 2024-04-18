@@ -1,29 +1,25 @@
 defmodule CenWeb.Schemas.Organization do
   @moduledoc false
   alias CenWeb.Schemas.User
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
   user_emplyer_schema =
     User.schema()
     |> update_in([Access.key!(:properties), :role], fn _role_schema ->
-      %Schema{type: :string, format: "employer"}
+      %OpenApiSpex.Schema{type: :string, format: "employer"}
     end)
     |> update_in([Access.key!(:example), "role"], fn _role -> "employer" end)
-    |> Map.put(:nullable, true)
 
-  OpenApiSpex.schema(%{
-    title: "Organization",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[id name logo description address contacts employer]a,
     properties: %{
-      id: %Schema{type: :integer},
-      name: %Schema{type: :string},
-      logo: %Schema{type: :string},
-      description: %Schema{type: :string},
-      address: %Schema{type: :string},
-      contacts: %Schema{type: :string},
+      id: %{type: :integer},
+      name: %{type: :string},
+      logo: %{type: :string},
+      description: %{type: :string},
+      address: %{type: :string},
+      contacts: %{type: :string},
       employer: user_emplyer_schema
     },
     example: %{

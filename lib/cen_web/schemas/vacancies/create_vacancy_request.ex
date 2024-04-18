@@ -2,27 +2,24 @@
 defmodule CenWeb.Schemas.CreateVacancyRequest do
   @moduledoc false
   alias Cen.Employers.Vacancy
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "CreateVacancyRequest",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[vacancy]a,
     properties: %{
-      vacancy: %Schema{
-        required: ~w[title description employment_type work_schedule education field_of_art organization_id]a,
+      vacancy: %{
+        type: :object,
+        optional: [:min_years_of_work_experience, :proposed_salary],
         properties: %{
-          title: %Schema{type: :string, maximum: 255},
-          description: %Schema{type: :string, maximum: 2000},
-          employment_type: %Schema{type: :string, enum: Vacancy.employment_types()},
-          work_schedule: %Schema{type: :string, enum: Vacancy.work_schedules()},
-          education: %Schema{type: :string, enum: Vacancy.educations()},
-          field_of_art: %Schema{type: :string, enum: Vacancy.field_of_arts()},
-          min_years_of_work_experience: %Schema{type: :integer, default: 0},
-          proposed_salary: %Schema{type: :integer, default: 0},
-          organization_id: %Schema{type: :integer}
+          title: %{type: :string, maximum: 255},
+          description: %{type: :string, maximum: 2000},
+          employment_type: %{type: :string, enum: Vacancy.employment_types()},
+          work_schedule: %{type: :string, enum: Vacancy.work_schedules()},
+          education: %{type: :string, enum: Vacancy.educations()},
+          field_of_art: %{type: :string, enum: Vacancy.field_of_arts()},
+          min_years_of_work_experience: %{type: :integer, default: 0},
+          proposed_salary: %{type: :integer, default: 0}
         }
       }
     },
@@ -35,8 +32,7 @@ defmodule CenWeb.Schemas.CreateVacancyRequest do
         "education" => "higher",
         "field_of_art" => "other",
         "min_years_of_work_experience" => 5,
-        "proposed_salary" => "20000",
-        "organization_id" => 100
+        "proposed_salary" => "20000"
       }
     }
   })

@@ -2,12 +2,10 @@ defmodule CenWeb.Schemas.UserResponse do
   @moduledoc false
   alias CenWeb.Schemas.User
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "UserResponse",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[data]a,
     properties: %{
       data: User.schema()
     },

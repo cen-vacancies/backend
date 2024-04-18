@@ -2,26 +2,24 @@
 defmodule CenWeb.Schemas.Vacancies.UpdateVacancyRequest do
   @moduledoc false
   alias Cen.Employers.Vacancy
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "UpdateVacancyRequest",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[vacancy]a,
     properties: %{
-      vacancy: %Schema{
+      vacancy: %{
+        type: :object,
+        optional: :all,
         properties: %{
-          title: %Schema{type: :string, maximum: 255},
-          description: %Schema{type: :string, maximum: 2000},
-          employment_type: %Schema{type: :string, enum: Vacancy.employment_types()},
-          work_schedule: %Schema{type: :string, enum: Vacancy.work_schedules()},
-          education: %Schema{type: :string, enum: Vacancy.educations()},
-          field_of_art: %Schema{type: :string, enum: Vacancy.field_of_arts()},
-          min_years_of_work_experience: %Schema{type: :integer, default: 0},
-          proposed_salary: %Schema{type: :integer, default: 0},
-          organization_id: %Schema{type: :integer}
+          title: %{type: :string, maximum: 255},
+          description: %{type: :string, maximum: 2000},
+          employment_type: %{type: :string, enum: Vacancy.employment_types()},
+          work_schedule: %{type: :string, enum: Vacancy.work_schedules()},
+          education: %{type: :string, enum: Vacancy.educations()},
+          field_of_art: %{type: :string, enum: Vacancy.field_of_arts()},
+          min_years_of_work_experience: %{type: :integer, default: 0},
+          proposed_salary: %{type: :integer, default: 0}
         }
       }
     },
@@ -34,8 +32,7 @@ defmodule CenWeb.Schemas.Vacancies.UpdateVacancyRequest do
         "education" => "higher",
         "field_of_art" => "other",
         "min_years_of_work_experience" => 5,
-        "proposed_salary" => "20000",
-        "organization_id" => 100
+        "proposed_salary" => "20000"
       }
     }
   })

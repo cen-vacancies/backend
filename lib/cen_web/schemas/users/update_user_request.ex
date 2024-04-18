@@ -1,22 +1,18 @@
 defmodule CenWeb.Schemas.UpdateUserInfoRequest do
   @moduledoc false
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "UpdateUserRequest",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[user]a,
-    additionalProperties: false,
     properties: %{
-      user: %Schema{
+      user: %{
         type: :object,
-        additionalProperties: false,
+        optional: :all,
         properties: %{
-          fullname: %Schema{type: :string},
-          birth_date: %Schema{type: :string, format: :date},
-          phone: %Schema{type: :string, format: :phone, pattern: ~r/\+\d{9,16}/}
+          fullname: %{type: :string},
+          birth_date: %{type: :string, format: :date},
+          phone: %{type: :string, format: :phone, pattern: ~r/\+\d{9,16}/}
         }
       }
     },

@@ -1,16 +1,14 @@
 defmodule CenWeb.Schemas.ChangesetErrorsResponse do
   @moduledoc false
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "ChangesetErrorsResponse",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[errors]a,
     properties: %{
-      errors: %Schema{
+      errors: %{
         type: :object,
+        additionalProperties: true,
         description: "Errors map. Keys are fields and values are array of errors"
       }
     },

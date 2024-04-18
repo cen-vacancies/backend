@@ -1,22 +1,18 @@
 defmodule CenWeb.Schemas.User do
   @moduledoc false
   alias Cen.Accounts.User
-  alias OpenApiSpex.Schema
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "User",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[id email fullname role phone]a,
-    additionalProperties: false,
     properties: %{
-      id: %Schema{type: :integer},
-      email: %Schema{type: :string},
-      fullname: %Schema{type: :string},
-      role: %Schema{type: :string, enum: User.roles()},
-      birth_date: %Schema{type: :string, format: :date, nullable: true},
-      phone: %Schema{type: :string, format: :phone, pattern: ~r/\+\d{9,16}/}
+      id: %{type: :integer},
+      email: %{type: :string},
+      fullname: %{type: :string},
+      role: %{type: :string, enum: User.roles()},
+      birth_date: %{type: :string, format: :date, nullable: true},
+      phone: %{type: :string, format: :phone, pattern: ~r/\+\d{9,16}/}
     },
     example: %{
       "id" => "756",

@@ -1,23 +1,20 @@
 defmodule CenWeb.Schemas.Organizations.UpdateOrganizationRequest do
   @moduledoc false
 
-  alias OpenApiSpex.Schema
+  require CenWeb.StrictAPISchema
 
-  require OpenApiSpex
-
-  OpenApiSpex.schema(%{
-    title: "CreateOrganizationRequest",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[organization]a,
     properties: %{
-      organization: %Schema{
+      organization: %{
         type: :object,
+        optional: :all,
         properties: %{
-          name: %Schema{type: :string, maximum: 255},
-          logo: %Schema{type: :string},
-          description: %Schema{type: :string, maximum: 2000},
-          address: %Schema{type: :string, maximum: 255},
-          contacts: %Schema{type: :string, maximum: 255}
+          name: %{type: :string, maximum: 255},
+          logo: %{type: :string},
+          description: %{type: :string, maximum: 2000},
+          address: %{type: :string, maximum: 255},
+          contacts: %{type: :string, maximum: 255}
         }
       }
     },

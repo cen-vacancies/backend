@@ -2,12 +2,10 @@ defmodule CenWeb.Schemas.OrganizationResponse do
   @moduledoc false
   alias CenWeb.Schemas.Organization
 
-  require OpenApiSpex
+  require CenWeb.StrictAPISchema
 
-  OpenApiSpex.schema(%{
-    title: "OrganizationResponse",
+  CenWeb.StrictAPISchema.schema(%{
     type: :object,
-    required: ~w[data]a,
     properties: %{
       data: Organization.schema()
     },
