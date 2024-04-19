@@ -155,6 +155,22 @@ defmodule Cen.EmployersTest do
       assert {:error, %Ecto.Changeset{}} = Employers.create_vacancy(invalid_attrs)
     end
 
+    test "create_vacancy/1 with empty arrays return error changeset" do
+      attrs = %{
+        title: "title",
+        description: "some description",
+        employment_types: [],
+        work_schedules: [],
+        educations: [],
+        field_of_art: :music,
+        min_years_of_work_experience: 42,
+        proposed_salary: 42,
+        organization: organization_fixture()
+      }
+
+      assert {:error, %Ecto.Changeset{}} = Employers.create_vacancy(attrs)
+    end
+
     test "update_vacancy/2 with valid data updates the vacancy" do
       vacancy = vacancy_fixture()
 

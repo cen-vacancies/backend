@@ -43,9 +43,9 @@ defmodule Cen.Employers.Vacancy do
     field :title, :string
     field :description, :string
 
-    field :employment_types, {:array, Ecto.Enum}, values: @employment_types, default: []
-    field :work_schedules, {:array, Ecto.Enum}, values: @work_schedules, default: []
-    field :educations, {:array, Ecto.Enum}, values: @educations, default: []
+    field :employment_types, {:array, Ecto.Enum}, values: @employment_types
+    field :work_schedules, {:array, Ecto.Enum}, values: @work_schedules
+    field :educations, {:array, Ecto.Enum}, values: @educations
 
     field :field_of_art, Ecto.Enum, values: @field_of_arts
 
@@ -67,6 +67,9 @@ defmodule Cen.Employers.Vacancy do
     |> cast(attrs, @requried_fields ++ @optional_fields)
     |> validate_length(:title, max: 255)
     |> validate_length(:description, max: 2000)
+    |> validate_length(:employment_types, min: 1)
+    |> validate_length(:work_schedules, min: 1)
+    |> validate_length(:educations, min: 1)
     |> validate_required(@requried_fields)
     |> put_change(:reviewed, true)
   end
