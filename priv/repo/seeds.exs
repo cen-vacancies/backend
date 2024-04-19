@@ -17,6 +17,7 @@ if Mix.env() == :dev do
       fullname: "Иванов Иван Иванович",
       # Password is "password-from-seed"
       hashed_password: "$2b$12$eQvcD.hsuKO9LxbDWTJx/.kY0qNuWIDEGiYkoH2xarWo7udRo8hba",
+      phone: "+78001234567",
       role: :employer
     })
 
@@ -37,9 +38,9 @@ if Mix.env() == :dev do
         reviewed: true,
         title: "Танцор под электронную музыку",
         description: "Нужно танцевать и прыгать. Много прыгать.",
-        employment_type: :main,
-        work_schedule: :full_time,
-        education: :secondary,
+        employment_types: [:main, :secondary],
+        work_schedules: [:full_time],
+        educations: [:secondary],
         field_of_art: :choreography,
         min_years_of_work_experience: 5,
         proposed_salary: 40_000,
@@ -50,9 +51,9 @@ if Mix.env() == :dev do
         reviewed: true,
         title: "Пианист",
         description: "Нужно играть на пианино",
-        employment_type: :secondary,
-        work_schedule: :full_time,
-        education: :higher,
+        employment_types: [:secondary],
+        work_schedules: [:full_time],
+        educations: [:higher, :secondary],
         field_of_art: :music,
         min_years_of_work_experience: 5,
         proposed_salary: 37_000,

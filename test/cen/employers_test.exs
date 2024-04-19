@@ -132,9 +132,9 @@ defmodule Cen.EmployersTest do
       valid_attrs = %{
         title: "title",
         description: "some description",
-        employment_type: :main,
-        work_schedule: :full_time,
-        education: :none,
+        employment_types: [:main],
+        work_schedules: [:full_time],
+        educations: [:none],
         field_of_art: :music,
         min_years_of_work_experience: 42,
         proposed_salary: 42,
@@ -143,9 +143,9 @@ defmodule Cen.EmployersTest do
 
       assert {:ok, %Vacancy{} = vacancy} = Employers.create_vacancy(valid_attrs)
       assert vacancy.description == "some description"
-      assert vacancy.employment_type == :main
-      assert vacancy.work_schedule == :full_time
-      assert vacancy.education == :none
+      assert vacancy.employment_types == [:main]
+      assert vacancy.work_schedules == [:full_time]
+      assert vacancy.educations == [:none]
       assert vacancy.field_of_art == :music
       assert vacancy.min_years_of_work_experience == 42
       assert vacancy.proposed_salary == 42
@@ -162,9 +162,9 @@ defmodule Cen.EmployersTest do
         description: "some updated description",
         published: false,
         reviewed: false,
-        employment_type: :secondary,
-        work_schedule: :part_time,
-        education: :higher,
+        employment_types: [:secondary],
+        work_schedules: [:part_time],
+        educations: [:higher],
         field_of_art: :visual,
         min_years_of_work_experience: 43,
         proposed_salary: 43
@@ -174,9 +174,9 @@ defmodule Cen.EmployersTest do
       assert vacancy.description == "some updated description"
       assert vacancy.published == false
       assert vacancy.reviewed == true
-      assert vacancy.employment_type == :secondary
-      assert vacancy.work_schedule == :part_time
-      assert vacancy.education == :higher
+      assert vacancy.employment_types == [:secondary]
+      assert vacancy.work_schedules == [:part_time]
+      assert vacancy.educations == [:higher]
       assert vacancy.field_of_art == :visual
       assert vacancy.min_years_of_work_experience == 43
       assert vacancy.proposed_salary == 43

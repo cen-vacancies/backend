@@ -12,18 +12,18 @@ defmodule CenWeb.VacancyControllerTest do
   @create_attrs %{
     title: "some title",
     description: "some description",
-    employment_type: :main,
-    work_schedule: :full_time,
-    education: :none,
+    employment_types: [:main],
+    work_schedules: [:full_time],
+    educations: [:none],
     field_of_art: :music,
     min_years_of_work_experience: 42,
     proposed_salary: 42
   }
   @update_attrs %{
     description: "some updated description",
-    employment_type: :secondary,
-    work_schedule: :part_time,
-    education: :higher,
+    employment_types: [:secondary],
+    work_schedules: [:part_time],
+    educations: [:higher],
     field_of_art: :visual,
     min_years_of_work_experience: 43,
     proposed_salary: 43
@@ -64,12 +64,12 @@ defmodule CenWeb.VacancyControllerTest do
       assert %{
                "id" => ^id,
                "description" => "some description",
-               "education" => "none",
-               "employment_type" => "main",
+               "educations" => ["none"],
+               "employment_types" => ["main"],
                "field_of_art" => "music",
                "min_years_of_work_experience" => 42,
                "proposed_salary" => 42,
-               "work_schedule" => "full_time"
+               "work_schedules" => ["full_time"]
              } = json["data"]
     end
 
@@ -106,12 +106,12 @@ defmodule CenWeb.VacancyControllerTest do
       assert %{
                "id" => ^id,
                "description" => "some updated description",
-               "education" => "higher",
-               "employment_type" => "secondary",
+               "educations" => ["higher"],
+               "employment_types" => ["secondary"],
                "field_of_art" => "visual",
                "min_years_of_work_experience" => 43,
                "proposed_salary" => 43,
-               "work_schedule" => "part_time"
+               "work_schedules" => ["part_time"]
              } = json["data"]
     end
 
@@ -150,8 +150,8 @@ defmodule CenWeb.VacancyControllerTest do
 
   describe "search vacancies" do
     test "list all without query", %{conn: conn} do
-      vacancy_fixture(employment_type: :main, published: true)
-      vacancy_fixture(employment_type: :secondary, published: true)
+      vacancy_fixture(employment_types: [:main], published: true)
+      vacancy_fixture(employment_types: [:secondary], published: true)
 
       conn = get(conn, ~p"/api/vacancies/search")
 
@@ -162,8 +162,8 @@ defmodule CenWeb.VacancyControllerTest do
     end
 
     test "list only published vacancies", %{conn: conn} do
-      vacancy_fixture(employment_type: :main)
-      vacancy_fixture(employment_type: :secondary, published: true)
+      vacancy_fixture(employment_types: [:main])
+      vacancy_fixture(employment_types: [:secondary], published: true)
 
       conn = get(conn, ~p"/api/vacancies/search")
 
@@ -174,8 +174,8 @@ defmodule CenWeb.VacancyControllerTest do
     end
 
     test "list only queried vacancies", %{conn: conn} do
-      vacancy_fixture(employment_type: :main, published: true)
-      vacancy_fixture(employment_type: :secondary, published: true)
+      vacancy_fixture(employment_types: [:main], published: true)
+      vacancy_fixture(employment_types: [:secondary], published: true)
 
       conn = get(conn, ~p"/api/vacancies/search?employment_types[]=main")
 

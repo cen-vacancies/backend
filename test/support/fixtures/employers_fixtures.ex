@@ -34,12 +34,12 @@ defmodule Cen.EmployersFixtures do
       |> Enum.into(%{
         title: "some title",
         description: "some description",
-        education: :none,
-        employment_type: :main,
+        educations: [:none, :secondary],
+        employment_types: [:main, :secondary],
         field_of_art: :music,
         min_years_of_work_experience: 42,
         proposed_salary: 42,
-        work_schedule: :full_time,
+        work_schedules: [:full_time],
         organization: organization_fixture()
       })
       |> Cen.Employers.create_vacancy()

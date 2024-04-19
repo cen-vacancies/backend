@@ -27,9 +27,9 @@ defmodule Cen.Employers.Vacancy do
           reviewed: boolean(),
           title: String.t(),
           description: String.t(),
-          employment_type: atom(),
-          work_schedule: atom(),
-          education: atom(),
+          employment_types: [atom()],
+          work_schedules: [atom()],
+          educations: [atom()],
           field_of_art: atom(),
           min_years_of_work_experience: integer(),
           proposed_salary: integer(),
@@ -43,9 +43,10 @@ defmodule Cen.Employers.Vacancy do
     field :title, :string
     field :description, :string
 
-    field :employment_type, Ecto.Enum, values: @employment_types
-    field :work_schedule, Ecto.Enum, values: @work_schedules
-    field :education, Ecto.Enum, values: @educations
+    field :employment_types, {:array, Ecto.Enum}, values: @employment_types, default: []
+    field :work_schedules, {:array, Ecto.Enum}, values: @work_schedules, default: []
+    field :educations, {:array, Ecto.Enum}, values: @educations, default: []
+
     field :field_of_art, Ecto.Enum, values: @field_of_arts
 
     field :min_years_of_work_experience, :integer, default: 0
@@ -56,7 +57,7 @@ defmodule Cen.Employers.Vacancy do
     timestamps(type: :utc_datetime)
   end
 
-  @requried_fields ~w[title description employment_type work_schedule education field_of_art]a
+  @requried_fields ~w[title description employment_types work_schedules educations field_of_art]a
   @optional_fields ~w[published min_years_of_work_experience proposed_salary]a
 
   @doc false

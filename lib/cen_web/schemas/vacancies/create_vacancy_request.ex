@@ -14,9 +14,9 @@ defmodule CenWeb.Schemas.CreateVacancyRequest do
         properties: %{
           title: %{type: :string, maximum: 255},
           description: %{type: :string, maximum: 2000},
-          employment_type: %{type: :string, enum: Vacancy.employment_types()},
-          work_schedule: %{type: :string, enum: Vacancy.work_schedules()},
-          education: %{type: :string, enum: Vacancy.educations()},
+          employment_types: %{type: :array, items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.employment_types()}},
+          work_schedules: %{type: :array, items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.work_schedules()}},
+          educations: %{type: :array, items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.educations()}},
           field_of_art: %{type: :string, enum: Vacancy.field_of_arts()},
           min_years_of_work_experience: %{type: :integer, default: 0},
           proposed_salary: %{type: :integer, default: 0}
@@ -27,9 +27,9 @@ defmodule CenWeb.Schemas.CreateVacancyRequest do
       "vacancy" => %{
         "title" => "Работник",
         "description" => "Ищем очень хорошего работника!",
-        "employment_type" => "main",
-        "work_schedule" => "full_time",
-        "education" => "higher",
+        "employment_types" => ["main"],
+        "work_schedules" => ["full_time"],
+        "educations" => ["higher"],
         "field_of_art" => "other",
         "min_years_of_work_experience" => 5,
         "proposed_salary" => "20000"
