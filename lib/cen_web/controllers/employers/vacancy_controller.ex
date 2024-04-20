@@ -69,13 +69,10 @@ defmodule CenWeb.VacancyController do
           items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.work_schedules()}
         }
       ],
-      "educations[]": [
+      education: [
         in: :query,
-        description: "Educations",
-        schema: %OpenApiSpex.Schema{
-          type: :array,
-          items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.educations()}
-        }
+        description: "Education",
+        schema: %OpenApiSpex.Schema{type: :string, enum: Vacancy.educations()}
       ],
       field_of_art: [
         in: :query,
