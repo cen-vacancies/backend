@@ -2,7 +2,7 @@ defmodule Cen.QueryUtils do
   @moduledoc false
   import Ecto.Query, warn: false
 
-  @type operator :: :eq | :in | :intersection | :not_gt | :not_lt | :search | :is_nil
+  @type operator :: :eq | :value_in_field | :intersection | :not_gt | :not_lt | :search | :is_nil
 
   @spec filter(Ecto.Queryable.t(), term(), operator, term()) :: Ecto.Query.t()
   def filter(query, field_name, operator, value)
@@ -13,8 +13,8 @@ defmodule Cen.QueryUtils do
     where(query, [record], field(record, ^field_name) == ^value)
   end
 
-  def filter(query, field_name, :in, values) do
-    where(query, [record], field(record, ^field_name) in ^values)
+  def filter(query, field_name, :value_in_field, value) do
+    where(query, [record], ^value in field(record, ^field_name))
   end
 
   def filter(query, field_name, :intersection, values) do

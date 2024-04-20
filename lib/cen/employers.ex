@@ -283,7 +283,7 @@ defmodule Cen.Employers do
     |> QueryUtils.filter(:searchable, :search, options["text"])
     |> QueryUtils.filter(:employment_types, :intersection, options["employment_types"])
     |> QueryUtils.filter(:work_schedules, :intersection, options["work_schedules"])
-    |> QueryUtils.filter(:educations, :intersection, options["education"])
+    |> QueryUtils.filter(:educations, :value_in_field, options["education"])
     |> QueryUtils.filter(:field_of_art, :eq, options["field_of_art"])
     |> QueryUtils.filter(:min_years_of_work_experience, :not_gt, options["years_of_work_experience"])
     |> QueryUtils.filter(:proposed_salary, :not_lt, options["preferred_salary"])
