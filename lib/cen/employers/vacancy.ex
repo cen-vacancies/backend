@@ -6,22 +6,6 @@ defmodule Cen.Employers.Vacancy do
 
   alias Cen.Employers.Organization
 
-  @spec employment_types() :: [atom(), ...]
-  @employment_types ~w[main secondary practice internship]a
-  def employment_types, do: @employment_types
-
-  @spec work_schedules() :: [atom(), ...]
-  @work_schedules ~w[full_time part_time remote_working hybrid_working flexible_schedule]a
-  def work_schedules, do: @work_schedules
-
-  @spec educations() :: [atom(), ...]
-  @educations ~w[none higher secondary secondary_vocational]a
-  def educations, do: @educations
-
-  @spec field_of_arts() :: [atom(), ...]
-  @field_of_arts ~w[music visual performing choreography folklore other]a
-  def field_of_arts, do: @field_of_arts
-
   @type t :: %__MODULE__{
           published: boolean(),
           reviewed: boolean(),
@@ -43,11 +27,11 @@ defmodule Cen.Employers.Vacancy do
     field :title, :string
     field :description, :string
 
-    field :employment_types, {:array, Ecto.Enum}, values: @employment_types
-    field :work_schedules, {:array, Ecto.Enum}, values: @work_schedules
-    field :educations, {:array, Ecto.Enum}, values: @educations
+    field :employment_types, {:array, Ecto.Enum}, values: Cen.Enums.employment_types()
+    field :work_schedules, {:array, Ecto.Enum}, values: Cen.Enums.work_schedules()
+    field :educations, {:array, Ecto.Enum}, values: Cen.Enums.educations()
 
-    field :field_of_art, Ecto.Enum, values: @field_of_arts
+    field :field_of_art, Ecto.Enum, values: Cen.Enums.field_of_arts()
 
     field :min_years_of_work_experience, :integer, default: 0
     field :proposed_salary, :integer

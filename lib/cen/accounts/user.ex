@@ -19,15 +19,13 @@ defmodule Cen.Accounts.User do
           organization: Organization.t() | Ecto.Association.NotLoaded.t()
         }
 
-  @roles ~w[admin applicant employer]a
-
   schema "users" do
     field :email, :string
     field :phone, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :fullname, :string
-    field :role, Ecto.Enum, values: @roles
+    field :role, Ecto.Enum, values: Cen.Enums.user_roles()
     field :birth_date, :date
     field :confirmed_at, :naive_datetime
 
@@ -35,9 +33,6 @@ defmodule Cen.Accounts.User do
 
     timestamps(type: :utc_datetime)
   end
-
-  @spec roles() :: [atom(), ...]
-  def roles, do: @roles
 
   @doc """
   A user changeset for registration.

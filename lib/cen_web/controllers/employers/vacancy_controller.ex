@@ -58,7 +58,7 @@ defmodule CenWeb.VacancyController do
         description: "Employment types",
         schema: %OpenApiSpex.Schema{
           type: :array,
-          items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.employment_types()}
+          items: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.employment_types()}
         }
       ],
       "work_schedules[]": [
@@ -66,18 +66,18 @@ defmodule CenWeb.VacancyController do
         description: "Employment types",
         schema: %OpenApiSpex.Schema{
           type: :array,
-          items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.work_schedules()}
+          items: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.work_schedules()}
         }
       ],
       education: [
         in: :query,
         description: "Education",
-        schema: %OpenApiSpex.Schema{type: :string, enum: Vacancy.educations()}
+        schema: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.educations()}
       ],
       field_of_art: [
         in: :query,
         description: "Field of art",
-        schema: %OpenApiSpex.Schema{type: :string, enum: Vacancy.field_of_arts()}
+        schema: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.field_of_arts()}
       ],
       years_of_work_experience: [in: :query, description: "Years of work experience", type: :integer],
       preferred_salary: [in: :query, description: "Preferred salary", type: :integer],

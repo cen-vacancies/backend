@@ -1,6 +1,6 @@
 defmodule CenWeb.Schemas.Vacancy do
   @moduledoc false
-  alias Cen.Employers.Vacancy
+
   alias CenWeb.Schemas.Organization
 
   require CenWeb.StrictAPISchema
@@ -11,10 +11,10 @@ defmodule CenWeb.Schemas.Vacancy do
       id: %{type: :integer},
       title: %{type: :string},
       description: %{type: :string},
-      employment_types: %{type: :array, items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.employment_types()}},
-      work_schedules: %{type: :array, items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.work_schedules()}},
-      educations: %{type: :array, items: %OpenApiSpex.Schema{type: :string, enum: Vacancy.educations()}},
-      field_of_art: %{type: :string, enum: Vacancy.field_of_arts()},
+      employment_types: %{type: :array, items: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.employment_types()}},
+      work_schedules: %{type: :array, items: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.work_schedules()}},
+      educations: %{type: :array, items: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.educations()}},
+      field_of_art: %{type: :string, enum: Cen.Enums.field_of_arts()},
       min_years_of_work_experience: %{type: :integer, default: 0},
       proposed_salary: %{type: :integer, nullable: true},
       published: %{type: :boolean},
