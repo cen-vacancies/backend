@@ -1,7 +1,8 @@
 defmodule CenWeb.Schemas.CreateUserRequest do
   @moduledoc false
-
   use CenWeb.StrictAPISchema
+
+  alias CenWeb.Schemas.User
 
   CenWeb.StrictAPISchema.schema(%{
     type: :object,
@@ -9,25 +10,19 @@ defmodule CenWeb.Schemas.CreateUserRequest do
       user: %{
         type: :object,
         optional: [:birth_date],
-        properties: %{
-          email: %{type: :string},
-          password: %{type: :string},
-          fullname: %{type: :string},
-          role: %{type: :string, enum: Cen.Enums.user_roles() -- ~w[admin]a},
-          birth_date: %{type: :string, format: :date},
-          phone: %{type: :string, format: :phone, pattern: ~r/\+\d{9,16}/}
-        }
+        properties:
+          using_properties(User.schema(),
+            only: ~w[email password fullname birth_date phone]a,
+            add: %{role: %{type: :string, enum: Cen.Enums.user_roles() -- ~w[admin]a}, password: %{type: :string}}
+          )
       }
     },
     example: %{
-      "user" => %{
-        "password" => "123456qwerty",
-        "email" => "username@domain.org",
-        "fullname" => "Иванов Иван Иванович",
-        "role" => "applicant",
-        "birth_date" => "2000-01-01",
-        "phone" => "+78001234567"
-      }
+      "user" =>
+        using_example(User.schema(),
+          only: ~w(email password fullname birth_date phone),
+          add: %{"role" => "applicant", "password" => "123456qwerty"}
+        )
     }
   })
 end

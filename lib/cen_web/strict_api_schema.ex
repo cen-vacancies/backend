@@ -4,10 +4,30 @@ defmodule CenWeb.StrictAPISchema do
 
   defmacro __using__(_options) do
     quote do
-      import unquote(__MODULE__), only: [schema: 1]
+      import unquote(__MODULE__)
 
       require unquote(__MODULE__)
     end
+  end
+
+  def using_properties(%{properties: properties}, options \\ []) do
+    properties
+    |> using_map(options)
+    |> Map.new(fn {key, value} -> {key, to_open_api_spex_schema(value)} end)
+  end
+
+  def using_example(%{example: example}, options \\ []) do
+    using_map(example, options)
+  end
+
+  def using_map(map, options \\ []) do
+    only = Keyword.get(options, :only)
+    to_add = Keyword.get(options, :add, %{})
+    to_remove = Keyword.get(options, :remove, [])
+
+    map
+    |> Map.reject(fn {key, _value} -> key in to_remove or (only && key not in only) end)
+    |> Map.merge(to_add)
   end
 
   defmacro schema(api_schema) do
