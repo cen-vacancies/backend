@@ -2,6 +2,14 @@
 defmodule CenWeb.StrictAPISchema do
   @moduledoc false
 
+  defmacro __using__(_options) do
+    quote do
+      import unquote(__MODULE__), only: [schema: 1]
+
+      require unquote(__MODULE__)
+    end
+  end
+
   defmacro schema(api_schema) do
     quote do
       require OpenApiSpex

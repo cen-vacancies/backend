@@ -1,8 +1,8 @@
 defmodule CenWeb.Schemas.Organization do
   @moduledoc false
-  alias CenWeb.Schemas.User
+  use CenWeb.StrictAPISchema
 
-  require CenWeb.StrictAPISchema
+  alias CenWeb.Schemas.User
 
   CenWeb.StrictAPISchema.schema(%{
     type: :object,

@@ -1,7 +1,7 @@
 defmodule CenWeb.Schemas.ChangesetErrorsResponse do
   @moduledoc false
 
-  require CenWeb.StrictAPISchema
+  use CenWeb.StrictAPISchema
 
   CenWeb.StrictAPISchema.schema(%{
     type: :object,

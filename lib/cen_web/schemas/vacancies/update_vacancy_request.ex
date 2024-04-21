@@ -1,7 +1,7 @@
 # credo:disable-for-this-file Credo.Check.Design.DuplicatedCode
 defmodule CenWeb.Schemas.Vacancies.UpdateVacancyRequest do
   @moduledoc false
-  require CenWeb.StrictAPISchema
+  use CenWeb.StrictAPISchema
 
   CenWeb.StrictAPISchema.schema(%{
     type: :object,

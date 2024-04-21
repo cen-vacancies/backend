@@ -1,8 +1,8 @@
 defmodule CenWeb.Schemas.VacancyResponse do
   @moduledoc false
-  alias CenWeb.Schemas.Vacancy
+  use CenWeb.StrictAPISchema
 
-  require CenWeb.StrictAPISchema
+  alias CenWeb.Schemas.Vacancy
 
   CenWeb.StrictAPISchema.schema(%{
     type: :object,
