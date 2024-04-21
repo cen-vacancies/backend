@@ -11,8 +11,7 @@ defmodule CenWeb.Schemas.Vacancies.UpdateVacancyRequest do
       vacancy: %{
         type: :object,
         optional: :all,
-        properties:
-          using_properties(Vacancy.schema(), remove: ~w[id organization reviewed]a)
+        properties: using_properties(Vacancy.schema(), remove: ~w[id organization reviewed]a)
       }
     },
     example: %{
