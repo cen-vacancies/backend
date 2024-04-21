@@ -49,7 +49,7 @@ defmodule CenWeb.Schemas.CV do
           "educational_institution" => "УрФУ",
           "department" => nil,
           "specialization" => "Архитектура зданий и сооружений. Творческие концепции архитектурной деятельности",
-          "year_of_graduation" => "2024"
+          "year_of_graduation" => 2024
         }
       ]
     }

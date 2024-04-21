@@ -28,7 +28,7 @@ defmodule Cen.ApplicantsFixtures do
             educational_institution: "УрФУ",
             department: "Архитектурный факультет",
             specialization: "Архитектура зданий и сооружений. Творческие концепции архитектурной деятельности",
-            year_of_graduation: "2024"
+            year_of_graduation: 2024
           }
         ]
       })

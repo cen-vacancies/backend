@@ -25,7 +25,7 @@ defmodule Cen.Applicants.CV do
           educational_institution: String.t(),
           department: String.t(),
           specialization: String.t(),
-          year_of_graduation: String.t()
+          year_of_graduation: integer()
         }
 
   schema "applicants_cvs" do
@@ -43,7 +43,7 @@ defmodule Cen.Applicants.CV do
       field :educational_institution, :string, default: nil
       field :department, :string, default: nil
       field :specialization, :string, default: nil
-      field :year_of_graduation, :string, default: nil
+      field :year_of_graduation, :integer, default: nil
     end
 
     belongs_to :applicant, User
