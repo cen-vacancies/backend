@@ -14,9 +14,18 @@ defmodule Cen.Repo.Migrations.CreateApplicantsCVs do
       add :applicant_id, references(:users, on_delete: :delete_all), null: false
       add :educations, {:array, :map}, null: false, default: []
 
+      add :searchable, :tsvector,
+        null: false,
+        generated: """
+        ALWAYS AS (
+          to_tsvector('russian', coalesce(title, '') || ' ' || coalesce(summary, ''))
+        ) STORED
+        """
+
       timestamps(type: :utc_datetime)
     end
 
     create index(:applicants_cvs, [:applicant_id])
+    create index(:applicants_cvs, [:searchable], using: "gin")
   end
 end

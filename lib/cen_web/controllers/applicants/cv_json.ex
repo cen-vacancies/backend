@@ -1,12 +1,15 @@
 # credo:disable-for-this-file Credo.Check.Readability.Specs
 defmodule CenWeb.CVJSON do
+  @moduledoc false
+
   alias Cen.Applicants.CV
+  alias CenWeb.PageJSON
 
   @doc """
   Renders a list of cvs.
   """
-  def index(%{cvs: cvs}) do
-    %{data: for(cv <- cvs, do: data(cv))}
+  def index(%{page: %{entries: cvs} = page}) do
+    %{data: for(cv <- cvs, do: data(cv)), page: PageJSON.show(page)}
   end
 
   @doc """

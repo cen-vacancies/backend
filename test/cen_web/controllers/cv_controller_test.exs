@@ -7,6 +7,7 @@ defmodule CenWeb.CVControllerTest do
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.CVResponse
   alias CenWeb.Schemas.GenericErrorResponse
+  alias CenWeb.Schemas.Vacancies.CVsQueryResponse
 
   @create_attrs %{
     title: "some title",
@@ -132,6 +133,101 @@ defmodule CenWeb.CVControllerTest do
       conn
       |> get(~p"/api/cvs/#{cv}")
       |> response(404)
+    end
+  end
+
+  describe "search cvs" do
+    test "list all without query", %{conn: conn} do
+      cv_fixture(employment_types: [:main], published: true)
+      cv_fixture(employment_types: [:secondary], published: true)
+
+      conn = get(conn, ~p"/api/cvs/search")
+
+      json = json_response(conn, 200)
+
+      assert_schema CVsQueryResponse, json
+      assert length(json["data"]) == 2
+    end
+
+    test "list only published cvs", %{conn: conn} do
+      cv_fixture(employment_types: [:main], published: false)
+      cv_fixture(employment_types: [:secondary], published: true)
+
+      conn = get(conn, ~p"/api/cvs/search")
+
+      json = json_response(conn, 200)
+
+      assert_schema CVsQueryResponse, json
+      assert length(json["data"]) == 1
+    end
+
+    test "list only queried cvs", %{conn: conn} do
+      cv_fixture(employment_types: [:main], published: true)
+      cv_fixture(employment_types: [:secondary], published: true)
+
+      conn = get(conn, ~p"/api/cvs/search?employment_types[]=main")
+
+      json = json_response(conn, 200)
+
+      assert_schema CVsQueryResponse, json
+      assert length(json["data"]) == 1
+    end
+
+    test "list only cvs that match the text query", %{conn: conn} do
+      cv_fixture(title: "Учитель танцев", published: true)
+      cv_fixture(published: true)
+
+      conn = get(conn, ~p"/api/cvs/search?text=танцыё")
+
+      json = json_response(conn, 200)
+
+      assert_schema CVsQueryResponse, json
+      assert length(json["data"]) == 1
+    end
+
+    test "pagination works", %{conn: conn} do
+      Enum.each(1..55, fn _num -> cv_fixture(published: true) end)
+
+      conn = get(conn, ~p"/api/cvs/search")
+
+      json = json_response(conn, 200)
+
+      assert_schema CVsQueryResponse, json
+
+      assert json["page"] == %{
+               "page_number" => 1,
+               "page_size" => 10,
+               "total_entries" => 55,
+               "total_pages" => 6
+             }
+    end
+
+    test "set page size", %{conn: conn} do
+      conn = get(conn, ~p"/api/cvs/search?page_size=15")
+
+      json = json_response(conn, 200)
+
+      assert_schema CVsQueryResponse, json
+      assert json["page"]["page_size"] == 15
+    end
+
+    test "set page number", %{conn: conn} do
+      first_vacancy = cv_fixture(published: true)
+      secondary_vacancy = cv_fixture(published: true)
+
+      first_conn = get(conn, ~p"/api/cvs/search?page=1&page_size=1")
+
+      first_json = json_response(first_conn, 200)
+
+      assert_schema CVsQueryResponse, first_json
+      assert first_json |> Map.fetch!("data") |> Enum.at(0) |> Map.fetch!("id") == first_vacancy.id
+
+      second_conn = get(conn, ~p"/api/cvs/search?page=2&page_size=1")
+
+      second_json = json_response(second_conn, 200)
+
+      assert_schema CVsQueryResponse, second_json
+      assert second_json |> Map.fetch!("data") |> Enum.at(0) |> Map.fetch!("id") == secondary_vacancy.id
     end
   end
 

@@ -11,6 +11,7 @@ defmodule CenWeb.CVController do
   alias CenWeb.Schemas.CVResponse
   alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.UpdateCVRequest
+  alias CenWeb.Schemas.Vacancies.CVsQueryResponse
 
   fallback = CenWeb.FallbackController
   action_fallback fallback
@@ -39,9 +40,57 @@ defmodule CenWeb.CVController do
 
   plug CenWeb.Plugs.CastAndValidate
 
-  security [%{}, %{"user_auth" => ["applicant"]}]
-
   tags :cvs
+
+  operation :search,
+    summary: "Search CVs",
+    parameters: [
+      text: [
+        in: :query,
+        description: "Search text",
+        type: :string
+      ],
+      "employment_types[]": [
+        in: :query,
+        description: "Employment types",
+        schema: %OpenApiSpex.Schema{
+          type: :array,
+          items: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.employment_types()}
+        }
+      ],
+      "work_schedules[]": [
+        in: :query,
+        description: "Employment types",
+        schema: %OpenApiSpex.Schema{
+          type: :array,
+          items: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.work_schedules()}
+        }
+      ],
+      education: [
+        in: :query,
+        description: "Education",
+        schema: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.educations()}
+      ],
+      field_of_art: [
+        in: :query,
+        description: "Field of art",
+        schema: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.field_of_arts()}
+      ],
+      min_years_of_work_experience: [in: :query, description: "Minimum years of work experience", type: :integer],
+      page: [in: :query, description: "Page number", type: :integer],
+      page_size: [in: :query, description: "Page size", type: :integer]
+    ],
+    responses: [
+      ok: {"CVs list", "application/json", CVsQueryResponse}
+    ]
+
+  @spec search(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def search(conn, params) do
+    page = Applicants.search_cvs(params)
+    render(conn, :index, page: page)
+  end
+
+  security [%{}, %{"user_auth" => ["applicant"]}]
 
   operation :create,
     summary: "Create CV",

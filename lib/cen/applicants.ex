@@ -7,6 +7,7 @@ defmodule Cen.Applicants do
 
   alias Cen.Accounts.User
   alias Cen.Applicants.CV
+  alias Cen.QueryUtils
   alias Cen.Repo
 
   @doc """
@@ -124,5 +125,29 @@ defmodule Cen.Applicants do
   @spec can_user_edit_cv?(CV.t(), User.t()) :: boolean()
   def can_user_edit_cv?(%CV{} = cv, %User{} = user) do
     cv.applicant_id == user.id
+  end
+
+  @spec search_cvs(map()) :: Scrivener.Page.t()
+  def search_cvs(options) do
+    CV
+    |> where([cv], cv.published)
+    |> where([cv], cv.reviewed)
+    |> QueryUtils.filter(:searchable, :search, options["text"])
+    |> QueryUtils.filter(:employment_types, :intersection, options["employment_types"])
+    |> QueryUtils.filter(:work_schedules, :intersection, options["work_schedules"])
+    |> QueryUtils.filter(:field_of_art, :eq, options["field_of_art"])
+    |> QueryUtils.filter(:years_of_work_experience, :not_lt, options["min_years_of_work_experience"])
+    |> filter_education(options["education"])
+    |> preload(:applicant)
+    |> Repo.paginate(page: options["page"], page_size: options["page_size"])
+  end
+
+  defp filter_education(query, nil), do: query
+
+  defp filter_education(query, education) do
+    from(cv in query,
+      where:
+        fragment("EXISTS (SELECT * FROM unnest(?) AS education WHERE education->>'level' = ?)", cv.educations, ^education)
+    )
   end
 end
