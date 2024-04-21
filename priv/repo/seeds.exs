@@ -11,6 +11,15 @@
 # and so on) as they will fail if something goes wrong.
 
 if Mix.env() == :dev do
+  Cen.Repo.insert!(%Cen.Accounts.User{
+    email: "apusername@domain.org",
+    fullname: "Иванов Иван Иванович",
+    # Password is "password-from-seed"
+    hashed_password: "$2b$12$eQvcD.hsuKO9LxbDWTJx/.kY0qNuWIDEGiYkoH2xarWo7udRo8hba",
+    phone: "+78001234567",
+    role: :applicant
+  })
+
   employer =
     Cen.Repo.insert!(%Cen.Accounts.User{
       email: "username@domain.org",

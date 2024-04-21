@@ -423,4 +423,10 @@ defmodule Cen.Accounts do
   """
   @spec has_employer_permissions?(User.t()) :: boolean()
   def has_employer_permissions?(%User{role: role}), do: role in [:admin, :employer]
+
+  @doc """
+  Returns `true` if User is `admin` or `applicant`
+  """
+  @spec has_applicant_permissions?(User.t()) :: boolean()
+  def has_applicant_permissions?(%User{role: role}), do: role in [:admin, :applicant]
 end

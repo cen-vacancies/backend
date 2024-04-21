@@ -57,6 +57,7 @@ defmodule CenWeb.Router do
     pipe_through :api
 
     get "/vacancies/search", VacancyController, :search
+    get "/cvs/search", CVController, :search
 
     post "/tokens", TokenController, :create
   end
@@ -75,6 +76,11 @@ defmodule CenWeb.Router do
     get "/vacancies/:vacancy_id", VacancyController, :show
     patch "/vacancies/:vacancy_id", VacancyController, :update
     delete "/vacancies/:vacancy_id", VacancyController, :delete
+
+    post "/cvs", CVController, :create
+    get "/cvs/:cv_id", CVController, :show
+    patch "/cvs/:cv_id", CVController, :update
+    delete "/cvs/:cv_id", CVController, :delete
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
