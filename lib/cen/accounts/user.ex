@@ -5,6 +5,7 @@ defmodule Cen.Accounts.User do
   import Cen.ChangesetUtils
   import Ecto.Changeset
 
+  alias Cen.Applicants.CV
   alias Cen.Employers.Organization
 
   @type t :: %__MODULE__{
@@ -16,7 +17,8 @@ defmodule Cen.Accounts.User do
           role: atom() | nil,
           birth_date: Date.t() | nil,
           confirmed_at: NaiveDateTime.t() | nil,
-          organization: Organization.t() | Ecto.Association.NotLoaded.t()
+          organization: Organization.t() | Ecto.Association.NotLoaded.t(),
+          cvs: [CV.t()] | Ecto.Association.NotLoaded.t()
         }
 
   schema "users" do
@@ -30,6 +32,7 @@ defmodule Cen.Accounts.User do
     field :confirmed_at, :naive_datetime
 
     has_one :organization, Organization, foreign_key: :employer_id
+    has_many :cvs, CV, foreign_key: :applicant_id
 
     timestamps(type: :utc_datetime)
   end

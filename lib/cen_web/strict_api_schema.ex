@@ -99,11 +99,15 @@ defmodule CenWeb.StrictAPISchema do
   end
 
   defp traverse_schema(api_schema, fun) do
-    map_update_thruly(api_schema, :properties, fn
+    api_schema
+    |> map_update_thruly(:properties, fn
       properties ->
         Map.new(properties, fn {key, value} ->
           {key, fun.(value)}
         end)
+    end)
+    |> map_update_thruly(:items, fn
+      value -> fun.(value)
     end)
   end
 end

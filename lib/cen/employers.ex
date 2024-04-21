@@ -144,7 +144,7 @@ defmodule Cen.Employers do
   end
 
   @doc """
-  Returns `true` when User is owner of given Organization.
+  Returns `true` when User is owner of given Vacancy.
   """
   @spec can_user_edit_vacancy?(Vacancy.t(), User.t()) :: boolean()
   def can_user_edit_vacancy?(%Vacancy{organization: organization}, %User{} = user) do
