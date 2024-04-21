@@ -42,7 +42,7 @@ defmodule CenWeb.SchemasTest do
   with {:ok, modules} <- :application.get_key(:cen, :modules) do
     for module <- modules,
         match?(["CenWeb", "Schemas" | _rest], Module.split(module)),
-        Keyword.has_key?(module.__info__(:functions), :schema) do
+        :functions |> module.__info__() |> Keyword.has_key?(:schema) do
       ["CenWeb", "Schemas" | shortname_list] = Module.split(module)
       shortname = Enum.join(shortname_list, ".")
 
