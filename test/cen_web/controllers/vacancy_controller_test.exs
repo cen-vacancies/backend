@@ -253,6 +253,18 @@ defmodule CenWeb.VacancyControllerTest do
       assert_schema VacanciesQueryResponse, second_json
       assert second_json |> Map.fetch!("data") |> Enum.at(0) |> Map.fetch!("id") == secondary_vacancy.id
     end
+
+    test "shows with given education and higher", %{conn: conn} do
+      vacancy_fixture(educations: [:none], published: true)
+      vacancy_fixture(educations: [:secondary], published: true)
+      vacancy_fixture(educations: [:higher], published: true)
+
+      conn = get(conn, ~p"/api/vacancies/search?education=secondary")
+      json = json_response(conn, 200)
+
+      assert_schema VacanciesQueryResponse, json
+      assert json["page"]["total_entries"] == 2
+    end
   end
 
   defp create_organization(%{user: user}) do

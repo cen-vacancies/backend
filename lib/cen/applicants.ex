@@ -142,12 +142,20 @@ defmodule Cen.Applicants do
     |> Repo.paginate(page: options["page"], page_size: options["page_size"])
   end
 
+  @educations Enum.map(Cen.Enums.educations(), &to_string/1)
+
   defp filter_education(query, nil), do: query
 
   defp filter_education(query, education) do
+    educations = Enum.drop_while(@educations, &(&1 != education))
+
     from(cv in query,
       where:
-        fragment("EXISTS (SELECT * FROM unnest(?) AS education WHERE education->>'level' = ?)", cv.educations, ^education)
+        fragment(
+          "EXISTS (SELECT * FROM unnest(?) AS education WHERE education->>'level' = ANY(?))",
+          cv.educations,
+          ^educations
+        )
     )
   end
 end

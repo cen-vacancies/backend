@@ -283,11 +283,21 @@ defmodule Cen.Employers do
     |> QueryUtils.filter(:searchable, :search, options["text"])
     |> QueryUtils.filter(:employment_types, :intersection, options["employment_types"])
     |> QueryUtils.filter(:work_schedules, :intersection, options["work_schedules"])
-    |> QueryUtils.filter(:educations, :value_in_field, options["education"])
     |> QueryUtils.filter(:field_of_art, :eq, options["field_of_art"])
     |> QueryUtils.filter(:min_years_of_work_experience, :not_gt, options["years_of_work_experience"])
     |> QueryUtils.filter(:proposed_salary, :not_lt, options["preferred_salary"])
+    |> filter_education(options["education"])
     |> preload(organization: [:employer])
     |> Repo.paginate(page: options["page"], page_size: options["page_size"])
+  end
+
+  @reversed_educations Cen.Enums.educations() |> Enum.map(&to_string/1) |> Enum.reverse()
+
+  defp filter_education(query, nil), do: query
+
+  defp filter_education(query, education) do
+    educations = @reversed_educations |> Enum.drop_while(&(&1 != education)) |> dbg()
+
+    QueryUtils.filter(query, :educations, :intersection, educations)
   end
 end

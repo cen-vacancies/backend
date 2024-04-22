@@ -10,8 +10,13 @@ defmodule Cen.Enums do
   @spec work_schedules() :: [atom(), ...]
   def work_schedules, do: ~w[full_time part_time remote_working hybrid_working flexible_schedule]a
 
+  @doc """
+  Educations enum.
+
+  This is a comparable enumeration, the entities are arranged in ascending order.
+  """
   @spec educations() :: [atom(), ...]
-  def educations, do: ~w[none higher secondary secondary_vocational]a
+  def educations, do: ~w[none secondary secondary_vocational higher]a
 
   @spec field_of_arts() :: [atom(), ...]
   def field_of_arts, do: ~w[music visual performing choreography folklore other]a
