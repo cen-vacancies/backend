@@ -5,7 +5,7 @@ defmodule CenWeb.UserControllerTest do
   alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.UserResponse
 
-  describe "POST /api/users" do
+  describe "POST /api/user" do
     test "creates new applicant", %{conn: conn} do
       applicant_attrs = %{
         password: "123456qwerty",
@@ -16,7 +16,7 @@ defmodule CenWeb.UserControllerTest do
         phone: "+78001234567"
       }
 
-      conn = post(conn, ~p"/api/users", %{user: applicant_attrs})
+      conn = post(conn, ~p"/api/user", %{user: applicant_attrs})
       json = json_response(conn, 201)
 
       assert_schema UserResponse, json
@@ -32,7 +32,7 @@ defmodule CenWeb.UserControllerTest do
         phone: "+78001234567"
       }
 
-      conn = post(conn, ~p"/api/users", %{user: employer_attrs})
+      conn = post(conn, ~p"/api/user", %{user: employer_attrs})
       json = json_response(conn, 201)
 
       assert_schema UserResponse, json
@@ -47,7 +47,7 @@ defmodule CenWeb.UserControllerTest do
         birth_date: "2000-01-01"
       }
 
-      conn = post(conn, ~p"/api/users", %{user: admin_attrs})
+      conn = post(conn, ~p"/api/user", %{user: admin_attrs})
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
@@ -60,7 +60,7 @@ defmodule CenWeb.UserControllerTest do
         "role" => "admin"
       }
 
-      conn = post(conn, ~p"/api/users", %{user: invalid_attrs})
+      conn = post(conn, ~p"/api/user", %{user: invalid_attrs})
 
       json = json_response(conn, 422)
 
@@ -68,11 +68,11 @@ defmodule CenWeb.UserControllerTest do
     end
   end
 
-  describe "GET /api/users/me" do
+  describe "GET /api/user" do
     setup :register_and_log_in_user
 
     test "shows user", %{conn: conn} do
-      conn = get(conn, ~p"/api/users/me")
+      conn = get(conn, ~p"/api/user")
 
       json = json_response(conn, 200)
 
@@ -83,14 +83,14 @@ defmodule CenWeb.UserControllerTest do
       conn =
         conn
         |> delete_req_header("authorization")
-        |> get(~p"/api/users/me")
+        |> get(~p"/api/user")
 
       json = json_response(conn, 401)
       assert_schema GenericErrorResponse, json
     end
   end
 
-  describe "PATCH /api/users/me/info" do
+  describe "PATCH /api/user/info" do
     setup :register_and_log_in_user
 
     test "updates user info", %{conn: conn} do
@@ -99,7 +99,7 @@ defmodule CenWeb.UserControllerTest do
         fullname: "Васильев Василий Васильевич"
       }
 
-      conn = patch(conn, ~p"/api/users/me/info", %{user: valid_attrs})
+      conn = patch(conn, ~p"/api/user/info", %{user: valid_attrs})
 
       json = json_response(conn, 200)
 
@@ -111,7 +111,7 @@ defmodule CenWeb.UserControllerTest do
         fullname: ""
       }
 
-      conn = patch(conn, ~p"/api/users/me/info", %{user: invalid_attrs})
+      conn = patch(conn, ~p"/api/user/info", %{user: invalid_attrs})
 
       json = json_response(conn, 422)
 
@@ -127,18 +127,18 @@ defmodule CenWeb.UserControllerTest do
       conn =
         conn
         |> delete_req_header("authorization")
-        |> patch(~p"/api/users/me/info", %{user: valid_attrs})
+        |> patch(~p"/api/user/info", %{user: valid_attrs})
 
       json = json_response(conn, 401)
       assert_schema GenericErrorResponse, json
     end
   end
 
-  describe "DELETE /api/users/me" do
+  describe "DELETE /api/user" do
     setup :register_and_log_in_user
 
     test "deletes user", %{conn: conn} do
-      conn = delete(conn, ~p"/api/users/me")
+      conn = delete(conn, ~p"/api/user")
 
       assert "" = response(conn, 204)
     end
@@ -147,7 +147,7 @@ defmodule CenWeb.UserControllerTest do
       conn =
         conn
         |> delete_req_header("authorization")
-        |> delete(~p"/api/users/me")
+        |> delete(~p"/api/user")
 
       json = json_response(conn, 401)
       assert_schema GenericErrorResponse, json

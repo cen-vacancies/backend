@@ -29,7 +29,7 @@ defmodule CenWeb.Router do
   end
 
   scope "/api" do
-    pipe_through [:api]
+    pipe_through :api
     get "/openapi", OpenApiSpex.Plug.RenderSpec, []
   end
 
@@ -37,50 +37,34 @@ defmodule CenWeb.Router do
     pipe_through :api
 
     get "/health/check", HealthCheckController, :check
-  end
 
-  scope "/api", CenWeb do
-    pipe_through :api
-
-    post "/users", UserController, :create
-
-    scope "/" do
-      pipe_through :fetch_api_user
-
-      get "/users/me", UserController, :show
-      patch "/users/me/info", UserController, :update_info
-      delete "/users/me", UserController, :delete
-    end
-  end
-
-  scope "/api", CenWeb do
-    pipe_through :api
+    post "/user", UserController, :create
+    post "/token", TokenController, :create
 
     get "/vacancies/search", VacancyController, :search
     get "/cvs/search", CVController, :search
-
-    post "/tokens", TokenController, :create
   end
 
   scope "/api", CenWeb do
     pipe_through [:api, :fetch_api_user]
 
-    post "/organizations", OrganizationController, :create
+    resources "/user", UserController, singleton: true, only: [:show, :delete]
+    put "/user/info", UserController, :update_info
+    patch "/user/info", UserController, :update_info
 
-    get "/organizations/:organization_id", OrganizationController, :show
-    patch "/organizations/:organization_id", OrganizationController, :update
-    delete "/organizations/:organization_id", OrganizationController, :delete
+    resources "/organizations", OrganizationController,
+      param: "organization_id",
+      only: [:create, :show, :update, :delete]
 
     post "/organizations/:organization_id/new_vacancy", VacancyController, :create
 
-    get "/vacancies/:vacancy_id", VacancyController, :show
-    patch "/vacancies/:vacancy_id", VacancyController, :update
-    delete "/vacancies/:vacancy_id", VacancyController, :delete
+    resources "/vacancies", VacancyController,
+      param: "vacancy_id",
+      only: [:show, :update, :delete]
 
-    post "/cvs", CVController, :create
-    get "/cvs/:cv_id", CVController, :show
-    patch "/cvs/:cv_id", CVController, :update
-    delete "/cvs/:cv_id", CVController, :delete
+    resources "/cvs", CVController,
+      param: "cv_id",
+      only: [:create, :show, :update, :delete]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

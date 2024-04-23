@@ -39,7 +39,7 @@ defmodule CenWeb.OrganizationController do
 
   plug CenWeb.Plugs.CastAndValidate
 
-  security [%{}, %{"user_auth" => ["employer"]}]
+  security [%{"user_auth" => ["employer"]}]
 
   tags :organizations
 

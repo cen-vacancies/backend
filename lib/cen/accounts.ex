@@ -188,7 +188,7 @@ defmodule Cen.Accounts do
 
   ## Examples
 
-      iex> deliver_user_update_email_instructions(user, current_email, &url(~p"/users/settings/confirm_email/#{&1})")
+      iex> deliver_user_update_email_instructions(user, current_email, &url(~p"/user/settings/confirm_email/#{&1})")
       {:ok, %{to: ..., body: ...}}
 
   """
@@ -264,10 +264,10 @@ defmodule Cen.Accounts do
 
   ## Examples
 
-      iex> deliver_user_confirmation_instructions(user, &url(~p"/users/confirm/#{&1}"))
+      iex> deliver_user_confirmation_instructions(user, &url(~p"/user/confirm/#{&1}"))
       {:ok, %{to: ..., body: ...}}
 
-      iex> deliver_user_confirmation_instructions(confirmed_user, &url(~p"/users/confirm/#{&1}"))
+      iex> deliver_user_confirmation_instructions(confirmed_user, &url(~p"/user/confirm/#{&1}"))
       {:error, :already_confirmed}
 
   """
@@ -314,7 +314,7 @@ defmodule Cen.Accounts do
 
   ## Examples
 
-      iex> deliver_user_reset_password_instructions(user, &url(~p"/users/reset_password/#{&1}"))
+      iex> deliver_user_reset_password_instructions(user, &url(~p"/user/reset_password/#{&1}"))
       {:ok, %{to: ..., body: ...}}
 
   """

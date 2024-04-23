@@ -90,7 +90,7 @@ defmodule CenWeb.CVController do
     render(conn, :index, page: page)
   end
 
-  security [%{}, %{"user_auth" => ["applicant"]}]
+  security [%{"user_auth" => ["applicant"]}]
 
   operation :create,
     summary: "Create CV",

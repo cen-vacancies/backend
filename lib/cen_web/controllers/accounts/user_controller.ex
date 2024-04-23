@@ -27,13 +27,15 @@ defmodule CenWeb.UserController do
     with {:ok, user} <- Accounts.register_user(user_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/users/me")
+      |> put_resp_header("location", ~p"/api/user")
       |> render(:show, user: user)
     end
   end
 
+  security [%{"user_auth" => []}]
+
   operation :show,
-    summary: "Get user by ID",
+    summary: "Get current user",
     responses: [
       ok: {"Requested user", "application/json", UserResponse}
     ]
