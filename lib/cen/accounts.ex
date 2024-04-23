@@ -79,12 +79,7 @@ defmodule Cen.Accounts do
 
   """
   @spec fetch_user(String.t() | integer()) :: {:ok, User.t()} | {:error, :not_found}
-  def fetch_user(id) do
-    case Repo.get(User, id) do
-      nil -> {:error, :not_found}
-      user -> {:ok, user}
-    end
-  end
+  def fetch_user(id), do: Repo.fetch(User, id)
 
   ## User registration
 

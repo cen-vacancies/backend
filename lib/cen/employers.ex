@@ -58,9 +58,8 @@ defmodule Cen.Employers do
   """
   @spec fetch_organization(String.t() | integer()) :: {:ok, Organization.t()} | {:error, :not_found}
   def fetch_organization(id) do
-    case Organization |> Repo.get(id) |> Repo.preload(:employer) do
-      nil -> {:error, :not_found}
-      organization -> {:ok, organization}
+    with {:ok, organization} <- Repo.fetch(Organization, id) do
+      {:ok, Repo.preload(organization, :employer)}
     end
   end
 
@@ -198,9 +197,8 @@ defmodule Cen.Employers do
   """
   @spec fetch_vacancy(String.t() | integer()) :: {:ok, Vacancy.t()} | {:error, :not_found}
   def fetch_vacancy(id) do
-    case Vacancy |> Repo.get(id) |> Repo.preload(organization: [:employer]) do
-      nil -> {:error, :not_found}
-      vacancy -> {:ok, vacancy}
+    with {:ok, vacancy} <- Repo.fetch(Vacancy, id) do
+      {:ok, Repo.preload(vacancy, organization: [:employer])}
     end
   end
 
