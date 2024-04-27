@@ -23,7 +23,7 @@ defmodule CenWeb.VacancyControllerTest do
     description: "some updated description",
     employment_types: [:secondary],
     work_schedules: [:part_time],
-    educations: [:higher],
+    educations: [:bachelor],
     field_of_art: :visual,
     min_years_of_work_experience: 43,
     proposed_salary: 43
@@ -106,7 +106,7 @@ defmodule CenWeb.VacancyControllerTest do
       assert %{
                "id" => ^id,
                "description" => "some updated description",
-               "educations" => ["higher"],
+               "educations" => ["bachelor"],
                "employment_types" => ["secondary"],
                "field_of_art" => "visual",
                "min_years_of_work_experience" => 43,
@@ -254,10 +254,10 @@ defmodule CenWeb.VacancyControllerTest do
       assert second_json |> Map.fetch!("data") |> Enum.at(0) |> Map.fetch!("id") == secondary_vacancy.id
     end
 
-    test "shows with given education and higher", %{conn: conn} do
+    test "shows with given education and bachelor", %{conn: conn} do
       vacancy_fixture(educations: [:none], published: true)
       vacancy_fixture(educations: [:secondary], published: true)
-      vacancy_fixture(educations: [:higher], published: true)
+      vacancy_fixture(educations: [:bachelor], published: true)
 
       conn = get(conn, ~p"/api/vacancies/search?education=secondary")
       json = json_response(conn, 200)

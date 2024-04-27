@@ -16,7 +16,7 @@ defmodule Cen.Enums do
   This is a comparable enumeration, the entities are arranged in ascending order.
   """
   @spec educations() :: [atom(), ...]
-  def educations, do: ~w[none secondary secondary_vocational higher]a
+  def educations, do: ~w[none secondary secondary_vocational bachelor master]a
 
   @spec field_of_arts() :: [atom(), ...]
   def field_of_arts, do: ~w[music visual performing choreography folklore other]a

@@ -180,7 +180,7 @@ defmodule Cen.EmployersTest do
         reviewed: false,
         employment_types: [:secondary],
         work_schedules: [:part_time],
-        educations: [:higher],
+        educations: [:bachelor],
         field_of_art: :visual,
         min_years_of_work_experience: 43,
         proposed_salary: 43
@@ -192,7 +192,7 @@ defmodule Cen.EmployersTest do
       assert vacancy.reviewed == true
       assert vacancy.employment_types == [:secondary]
       assert vacancy.work_schedules == [:part_time]
-      assert vacancy.educations == [:higher]
+      assert vacancy.educations == [:bachelor]
       assert vacancy.field_of_art == :visual
       assert vacancy.min_years_of_work_experience == 43
       assert vacancy.proposed_salary == 43

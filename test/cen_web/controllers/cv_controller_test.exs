@@ -230,10 +230,10 @@ defmodule CenWeb.CVControllerTest do
       assert second_json |> Map.fetch!("data") |> Enum.at(0) |> Map.fetch!("id") == secondary_vacancy.id
     end
 
-    test "shows with given education and higher", %{conn: conn} do
+    test "shows with given education and bachelor", %{conn: conn} do
       cv_fixture(educations: [%{level: :none}], published: true)
       cv_fixture(educations: [%{level: :secondary}], published: true)
-      cv_fixture(educations: [%{level: :higher}], published: true)
+      cv_fixture(educations: [%{level: :bachelor}], published: true)
 
       conn = get(conn, ~p"/api/cvs/search?education=secondary")
       json = json_response(conn, 200)

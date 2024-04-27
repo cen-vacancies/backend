@@ -29,7 +29,7 @@ defmodule CenWeb.Schemas.Vacancy do
       "description" => "Ищем очень хорошего работника!",
       "employment_types" => ["main"],
       "work_schedules" => ["full_time"],
-      "educations" => ["higher"],
+      "educations" => ["bachelor"],
       "field_of_art" => "other",
       "min_years_of_work_experience" => 5,
       "proposed_salary" => "20000",
