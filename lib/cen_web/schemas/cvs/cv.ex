@@ -19,6 +19,7 @@ defmodule CenWeb.Schemas.CV do
       applicant: User.schema(),
       educations: %{
         type: :array,
+        minItems: 1,
         items: %{
           type: :object,
           optional: ~w[educational_institution department specialization year_of_graduation],

@@ -59,13 +59,21 @@ defmodule Cen.Applicants.CV do
   def changeset(cv, attrs) do
     cv
     |> cast(attrs, @requried_fields ++ @optional_fields)
-    |> cast_embed(:educations, with: &education_changeset/2)
+    |> cast_embed(:educations, with: &education_changeset/2, requried: true)
     |> validate_length(:title, max: 255)
     |> validate_length(:summary, max: 2000)
     |> validate_length(:employment_types, min: 1)
     |> validate_length(:work_schedules, min: 1)
+    |> validate_educations_provided()
     |> validate_required(@requried_fields)
     |> put_change(:reviewed, true)
+  end
+
+  defp validate_educations_provided(changeset) do
+    case get_embed(changeset, :educations) do
+      [] -> add_error(changeset, :educations, "should be at least %{count} character(s)", count: 1)
+      _educations -> changeset
+    end
   end
 
   @spec education_changeset(education(), map()) :: Ecto.Changeset.t()

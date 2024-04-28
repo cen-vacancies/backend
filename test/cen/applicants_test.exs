@@ -40,6 +40,15 @@ defmodule Cen.ApplicantsTest do
         reviewed: true,
         employment_types: [:main],
         work_schedules: [:full_time, :part_time],
+        educations: [
+          %{
+            level: :bachelor,
+            educational_institution: nil,
+            department: nil,
+            specialization: nil,
+            year_of_graduation: nil
+          }
+        ],
         field_of_art: :folklore,
         years_of_work_experience: 42,
         applicant: AccountsFixtures.user_fixture()

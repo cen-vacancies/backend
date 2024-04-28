@@ -18,7 +18,15 @@ defmodule CenWeb.CVControllerTest do
     work_schedules: [:remote_working],
     field_of_art: :visual,
     years_of_work_experience: 42,
-    educations: []
+    educations: [
+      %{
+        level: :bachelor,
+        educational_institution: nil,
+        department: nil,
+        specialization: nil,
+        year_of_graduation: nil
+      }
+    ]
   }
   @update_attrs %{
     title: "some updated title",
@@ -29,7 +37,15 @@ defmodule CenWeb.CVControllerTest do
     work_schedules: [:hybrid_working],
     field_of_art: :music,
     years_of_work_experience: 43,
-    educations: []
+    educations: [
+      %{
+        level: :bachelor,
+        educational_institution: nil,
+        department: nil,
+        specialization: nil,
+        year_of_graduation: nil
+      }
+    ]
   }
   @invalid_attrs %{
     title: nil,
@@ -40,7 +56,7 @@ defmodule CenWeb.CVControllerTest do
     work_schedules: nil,
     field_of_art: nil,
     years_of_work_experience: nil,
-    education: nil
+    educations: []
   }
 
   setup %{conn: conn} do
@@ -75,6 +91,16 @@ defmodule CenWeb.CVControllerTest do
                "work_schedules" => ["remote_working"],
                "years_of_work_experience" => 42
              } = json["data"]
+    end
+
+    test "error on create cv without educations", %{conn: conn} do
+      attrs = Map.put(@create_attrs, :educations, [])
+      conn = post(conn, ~p"/api/cvs", cv: attrs)
+
+      json = json_response(conn, 422)
+
+      assert json["errors"] != %{}
+      assert_schema ChangesetErrorsResponse, json
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
