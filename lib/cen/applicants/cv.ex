@@ -39,7 +39,7 @@ defmodule Cen.Applicants.CV do
     field :years_of_work_experience, :integer, default: 0
 
     embeds_many :educations, Education, on_replace: :delete do
-      field :level, Ecto.Enum, values: Cen.Enums.educations()
+      field :level, Ecto.Enum, values: Cen.Enums.cv_educations()
       field :educational_institution, :string, default: nil
       field :department, :string, default: nil
       field :specialization, :string, default: nil

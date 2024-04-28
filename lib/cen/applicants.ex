@@ -142,12 +142,10 @@ defmodule Cen.Applicants do
     |> Repo.paginate(page: options["page"], page_size: options["page_size"])
   end
 
-  @educations Enum.map(Cen.Enums.educations(), &to_string/1)
-
   defp filter_education(query, nil), do: query
 
   defp filter_education(query, education) do
-    educations = Enum.drop_while(@educations, &(&1 != education))
+    educations = smaller_educations(education)
 
     from(cv in query,
       where:
@@ -158,4 +156,9 @@ defmodule Cen.Applicants do
         )
     )
   end
+
+  @educations Enum.map(Cen.Enums.educations(), &to_string/1)
+
+  defp smaller_educations(:none), do: @educations
+  defp smaller_educations(education), do: Enum.drop_while(@educations, &(&1 != education))
 end

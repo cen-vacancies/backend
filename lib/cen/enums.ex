@@ -18,6 +18,9 @@ defmodule Cen.Enums do
   @spec educations() :: [atom(), ...]
   def educations, do: ~w[none secondary secondary_vocational bachelor master doctor]a
 
+  @spec cv_educations() :: [atom(), ...]
+  def cv_educations, do: educations() -- [:none]
+
   @spec field_of_arts() :: [atom(), ...]
   def field_of_arts, do: ~w[music visual performing choreography folklore other]a
 end

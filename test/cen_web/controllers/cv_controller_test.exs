@@ -257,11 +257,11 @@ defmodule CenWeb.CVControllerTest do
     end
 
     test "shows with given education and bachelor", %{conn: conn} do
-      cv_fixture(educations: [%{level: :none}], published: true)
       cv_fixture(educations: [%{level: :secondary}], published: true)
+      cv_fixture(educations: [%{level: :secondary_vocational}], published: true)
       cv_fixture(educations: [%{level: :bachelor}], published: true)
 
-      conn = get(conn, ~p"/api/cvs/search?education=secondary")
+      conn = get(conn, ~p"/api/cvs/search?education=secondary_vocational")
       json = json_response(conn, 200)
 
       assert_schema CVsQueryResponse, json

@@ -24,7 +24,7 @@ defmodule CenWeb.Schemas.CV do
           type: :object,
           optional: ~w[educational_institution department specialization year_of_graduation],
           properties: %{
-            level: %{type: :string, enum: Cen.Enums.educations()},
+            level: %{type: :string, enum: Cen.Enums.cv_educations()},
             educational_institution: %{type: :string, nullable: true},
             department: %{type: :string, nullable: true},
             specialization: %{type: :string, nullable: true},
