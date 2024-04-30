@@ -41,8 +41,13 @@ defmodule CenWeb.Router do
     post "/user", UserController, :create
     post "/token", TokenController, :create
 
+    get "/organizations/:organization_id", OrganizationController, :show
+
     get "/vacancies/search", VacancyController, :search
+    get "/vacancies/:vacancy_id", VacancyController, :show
+
     get "/cvs/search", CVController, :search
+    get "/cvs/:cv_id", CVController, :show
   end
 
   scope "/api", CenWeb do
@@ -54,17 +59,17 @@ defmodule CenWeb.Router do
 
     resources "/organizations", OrganizationController,
       param: "organization_id",
-      only: [:create, :show, :update, :delete]
+      only: [:create, :update, :delete]
 
     post "/organizations/:organization_id/new_vacancy", VacancyController, :create
 
     resources "/vacancies", VacancyController,
       param: "vacancy_id",
-      only: [:show, :update, :delete]
+      only: [:update, :delete]
 
     resources "/cvs", CVController,
       param: "cv_id",
-      only: [:create, :show, :update, :delete]
+      only: [:create, :update, :delete]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

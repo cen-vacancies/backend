@@ -39,9 +39,25 @@ defmodule CenWeb.OrganizationController do
 
   plug CenWeb.Plugs.CastAndValidate
 
-  security [%{"user_auth" => ["employer"]}]
-
   tags :organizations
+
+  operation :show,
+    summary: "Get organization",
+    parameters: [
+      organization_id: [in: :path, description: "Organization ID", type: :integer, example: "10132"]
+    ],
+    responses: [
+      created: {"Requested organization", "application/json", OrganizationResponse},
+      not_found: {"Organization not found", "application/json", GenericErrorResponse},
+      unauthorized: {"Unauthorized", "application/json", GenericErrorResponse}
+    ]
+
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def show(conn, _params) do
+    render(conn, :show, organization: fetch_organization(conn))
+  end
+
+  security [%{"user_auth" => ["employer"]}]
 
   operation :create,
     summary: "Create organization",
@@ -66,22 +82,6 @@ defmodule CenWeb.OrganizationController do
       |> put_resp_header("location", ~p"/api/organizations/#{organization}")
       |> render(:show, organization: organization)
     end
-  end
-
-  operation :show,
-    summary: "Get organization",
-    parameters: [
-      organization_id: [in: :path, description: "Organization ID", type: :integer, example: "10132"]
-    ],
-    responses: [
-      created: {"Requested organization", "application/json", OrganizationResponse},
-      not_found: {"Organization not found", "application/json", GenericErrorResponse},
-      unauthorized: {"Unauthorized", "application/json", GenericErrorResponse}
-    ]
-
-  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def show(conn, _params) do
-    render(conn, :show, organization: fetch_organization(conn))
   end
 
   operation :update,

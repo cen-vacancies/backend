@@ -94,6 +94,22 @@ defmodule CenWeb.VacancyController do
     render(conn, :index, page: page)
   end
 
+  operation :show,
+    summary: "Get vacancy",
+    parameters: [
+      vacancy_id: [in: :path, description: "Vacancy ID", type: :integer, example: "10132"]
+    ],
+    responses: [
+      created: {"Requested vacancy", "application/json", VacancyResponse},
+      unauthorized: "Unauthorized",
+      not_found: {"Vacancy not found", "application/json", GenericErrorResponse}
+    ]
+
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
+  def show(conn, _params) do
+    render(conn, :show, vacancy: fetch_vacancy(conn))
+  end
+
   security [%{"user_auth" => ["employer"]}]
 
   operation :create,
@@ -121,22 +137,6 @@ defmodule CenWeb.VacancyController do
       |> put_resp_header("location", ~p"/api/vacancies/#{vacancy}")
       |> render(:show, vacancy: vacancy)
     end
-  end
-
-  operation :show,
-    summary: "Get vacancy",
-    parameters: [
-      vacancy_id: [in: :path, description: "Vacancy ID", type: :integer, example: "10132"]
-    ],
-    responses: [
-      created: {"Requested vacancy", "application/json", VacancyResponse},
-      unauthorized: "Unauthorized",
-      not_found: {"Vacancy not found", "application/json", GenericErrorResponse}
-    ]
-
-  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
-  def show(conn, _params) do
-    render(conn, :show, vacancy: fetch_vacancy(conn))
   end
 
   operation :update,

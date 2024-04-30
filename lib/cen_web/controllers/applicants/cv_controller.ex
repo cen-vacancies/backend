@@ -90,6 +90,23 @@ defmodule CenWeb.CVController do
     render(conn, :index, page: page)
   end
 
+  operation :show,
+    summary: "Get CV",
+    parameters: [
+      cv_id: [in: :path, description: "CV ID", type: :integer, example: "10132"]
+    ],
+    responses: [
+      ok: {"Requested CV", "application/json", CVResponse},
+      not_found: {"CV not found", "application/json", GenericErrorResponse},
+      unauthorized: {"Unauthorized", "application/json", GenericErrorResponse}
+    ]
+
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def show(conn, _params) do
+    cv = get_cv(conn)
+    render(conn, :show, cv: cv)
+  end
+
   security [%{"user_auth" => ["applicant"]}]
 
   operation :create,
@@ -115,23 +132,6 @@ defmodule CenWeb.CVController do
       |> put_resp_header("location", ~p"/api/cvs/#{cv}")
       |> render(:show, cv: cv)
     end
-  end
-
-  operation :show,
-    summary: "Get CV",
-    parameters: [
-      cv_id: [in: :path, description: "CV ID", type: :integer, example: "10132"]
-    ],
-    responses: [
-      ok: {"Requested CV", "application/json", CVResponse},
-      not_found: {"CV not found", "application/json", GenericErrorResponse},
-      unauthorized: {"Unauthorized", "application/json", GenericErrorResponse}
-    ]
-
-  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def show(conn, _params) do
-    cv = get_cv(conn)
-    render(conn, :show, cv: cv)
   end
 
   operation :update,
