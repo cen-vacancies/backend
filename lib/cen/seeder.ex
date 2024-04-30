@@ -5,6 +5,8 @@ defmodule Cen.Repo.Seeder do
   def seed do
     insert_vacancies()
     insert_cvs()
+
+    :ok
   end
 
   def insert_vacancies do
@@ -527,6 +529,14 @@ defmodule Cen.Repo.Seeder do
     |> IO.iodata_to_binary()
   end
 
+  defp random_date do
+    year = Enum.random(1979..2006)
+    month = Enum.random(1..12)
+    day = Enum.random(1..28)
+
+    Date.new!(year, month, day)
+  end
+
   defp random_applicant(fullname) do
     %Cen.Accounts.User{
       email: "#{random_string(7)}@example.org",
@@ -534,7 +544,8 @@ defmodule Cen.Repo.Seeder do
       # Password is "password-from-seed"
       hashed_password: "$2b$12$eQvcD.hsuKO9LxbDWTJx/.kY0qNuWIDEGiYkoH2xarWo7udRo8hba",
       phone: "+7958#{Enum.random(1_000_000..9_999_999)}",
-      role: :applicant
+      role: :applicant,
+      birth_date: random_date()
     }
   end
 
