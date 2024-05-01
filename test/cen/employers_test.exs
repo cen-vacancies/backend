@@ -15,7 +15,6 @@ defmodule Cen.EmployersTest do
         address: nil,
         description: nil,
         logo: nil,
-        contacts: nil,
         employer: AccountsFixtures.user_fixture()
       })
     end
@@ -45,7 +44,6 @@ defmodule Cen.EmployersTest do
         address: "some address",
         description: "some description",
         logo: "some logo",
-        contacts: "some contacts",
         employer: AccountsFixtures.user_fixture()
       }
 
@@ -54,7 +52,6 @@ defmodule Cen.EmployersTest do
       assert organization.address == "some address"
       assert organization.description == "some description"
       assert organization.logo == "some logo"
-      assert organization.contacts == "some contacts"
     end
 
     test "create_organization/1 with invalid data returns error changeset", %{invalid_attrs: invalid_attrs} do
@@ -68,8 +65,7 @@ defmodule Cen.EmployersTest do
         name: "some updated name",
         address: "some updated address",
         description: "some updated description",
-        logo: "some updated logo",
-        contacts: "some updated contacts"
+        logo: "some updated logo"
       }
 
       assert {:ok, %Organization{} = organization} = Employers.update_organization(organization, update_attrs)
@@ -77,7 +73,6 @@ defmodule Cen.EmployersTest do
       assert organization.address == "some updated address"
       assert organization.description == "some updated description"
       assert organization.logo == "some updated logo"
-      assert organization.contacts == "some updated contacts"
     end
 
     test "update_organization/2 with invalid data returns error changeset", %{invalid_attrs: invalid_attrs} do

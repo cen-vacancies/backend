@@ -12,7 +12,10 @@ defmodule CenWeb.Schemas.Organization do
       logo: %{type: :string},
       description: %{type: :string},
       address: %{type: :string},
-      contacts: %{type: :string},
+      phone: %{type: :string},
+      email: %{type: :string},
+      website: %{type: :string},
+      social_link: %{type: :string},
       employer: User.schema()
     },
     example: %{
@@ -21,7 +24,10 @@ defmodule CenWeb.Schemas.Organization do
       "logo" => "/uploads/urfu.png",
       "description" => "applicant",
       "address" => "620002, Свердловская область, г. Екатеринбург, ул. Мира, д. 19",
-      "contacts" => "+78005553535",
+      "phone" => "+7001005044",
+      "email" => "contact@urfu.ru",
+      "website" => "https://urfu.me",
+      "social_link" => "https://vk.com/ural.federal.university",
       "employer" => User.schema().example
     }
   })

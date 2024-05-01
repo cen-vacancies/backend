@@ -13,9 +13,12 @@ defmodule Cen.Employers.Organization do
           address: String.t(),
           description: String.t(),
           logo: String.t(),
-          contacts: String.t(),
           employer: User.t() | Ecto.Association.NotLoaded.t(),
-          employer_id: integer()
+          employer_id: integer(),
+          phone: String.t() | nil,
+          email: String.t() | nil,
+          website: String.t() | nil,
+          social_link: String.t() | nil
         }
 
   schema "organizations" do
@@ -23,7 +26,11 @@ defmodule Cen.Employers.Organization do
     field :address, :string
     field :description, :string
     field :logo, :string
-    field :contacts, :string
+
+    field :phone, :string
+    field :email, :string
+    field :website, :string
+    field :social_link, :string
 
     belongs_to :employer, User
     has_many :vacancies, Vacancy
@@ -31,15 +38,17 @@ defmodule Cen.Employers.Organization do
     timestamps(type: :utc_datetime)
   end
 
+  @required_fields ~w[name description address]a
+  @optional_fields ~w[logo phone email website social_link]a
+
   @doc false
   @spec changeset(t(), map()) :: Ecto.Changeset.t()
   def changeset(organization, attrs) do
     organization
-    |> cast(attrs, [:name, :logo, :description, :address, :contacts])
+    |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_length(:name, max: 255)
     |> validate_length(:address, max: 255)
-    |> validate_length(:contacts, max: 255)
     |> validate_length(:description, max: 2000)
-    |> validate_required([:name, :description, :address, :contacts])
+    |> validate_required(@required_fields)
   end
 end

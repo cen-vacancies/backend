@@ -7,8 +7,11 @@ defmodule Cen.Repo.Migrations.CreateOrganizations do
       add :logo, :string
       add :description, :text, null: false
       add :address, :string, null: false
-      add :contacts, :string, null: false
       add :employer_id, references(:users, on_delete: :delete_all), null: false
+      add :phone, :string
+      add :email, :string
+      add :website, :string
+      add :social_link, :string
 
       timestamps(type: :utc_datetime)
     end

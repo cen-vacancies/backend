@@ -18,7 +18,10 @@ defmodule CenWeb.OrganizationJSON do
       logo: organization.logo,
       description: organization.description,
       address: organization.address,
-      contacts: organization.contacts,
+      phone: organization.phone,
+      email: organization.email,
+      website: organization.website,
+      social_link: organization.social_link,
       employer: UserJSON.data(organization.employer)
     }
   end

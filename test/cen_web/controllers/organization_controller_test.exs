@@ -13,16 +13,22 @@ defmodule CenWeb.OrganizationControllerTest do
     address: "some address",
     description: "some description",
     logo: "some logo",
-    contacts: "some contacts"
+    phone: "some phone",
+    email: "some email",
+    website: "some website",
+    social_link: "some social_link"
   }
   @update_attrs %{
     name: "some updated name",
     address: "some updated address",
     description: "some updated description",
     logo: "some updated logo",
-    contacts: "some updated contacts"
+    phone: "some updated phone",
+    email: "some updated email",
+    website: "some updated website",
+    social_link: "some updated social_link"
   }
-  @invalid_attrs %{name: nil, address: nil, description: nil, logo: nil, contacts: nil}
+  @invalid_attrs %{name: nil, address: nil, description: nil, logo: nil}
 
   setup %{conn: conn} do
     employer = Cen.AccountsFixtures.user_fixture(role: :employer)
@@ -48,7 +54,6 @@ defmodule CenWeb.OrganizationControllerTest do
       assert %{
                "id" => ^id,
                "address" => "some address",
-               "contacts" => "some contacts",
                "description" => "some description",
                "logo" => "some logo",
                "name" => "some name"
