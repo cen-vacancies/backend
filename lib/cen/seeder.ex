@@ -545,7 +545,7 @@ defmodule Cen.Repo.Seeder do
       hashed_password: "$2b$12$eQvcD.hsuKO9LxbDWTJx/.kY0qNuWIDEGiYkoH2xarWo7udRo8hba",
       phone: "+7958#{Enum.random(1_000_000..9_999_999)}",
       role: :applicant,
-      birth_date: Enum.random([nil, random_date()])
+      birth_date: random_date()
     }
   end
 

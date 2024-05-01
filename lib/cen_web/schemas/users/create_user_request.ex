@@ -9,7 +9,6 @@ defmodule CenWeb.Schemas.CreateUserRequest do
     properties: %{
       user: %{
         type: :object,
-        optional: [:birth_date],
         properties:
           using_properties(User.schema(),
             only: ~w[email password fullname birth_date phone]a,

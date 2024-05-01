@@ -17,7 +17,8 @@ defmodule Cen.AccountsFixtures do
       password: valid_user_password(),
       fullname: valid_user_fullname(),
       role: valid_user_role(),
-      phone: valid_user_phone()
+      phone: valid_user_phone(),
+      birth_date: ~D[2000-01-01]
     })
   end
 

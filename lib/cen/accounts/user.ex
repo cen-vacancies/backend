@@ -67,6 +67,7 @@ defmodule Cen.Accounts.User do
     |> validate_email(opts)
     |> validate_password(opts)
     |> validate_phone()
+    |> validate_applicant()
     |> validate_required(~w[fullname role]a)
     |> validate_exclusion(:role, ~w[admin]a)
   end
@@ -200,6 +201,7 @@ defmodule Cen.Accounts.User do
     |> cast(attrs, ~w[fullname birth_date phone]a)
     |> validate_required(~w[fullname]a)
     |> validate_phone()
+    |> validate_applicant()
   end
 
   defp validate_phone(changeset) do
@@ -207,5 +209,12 @@ defmodule Cen.Accounts.User do
     |> validate_required([:phone])
     |> validate_length(:phone, min: 9, max: 16)
     |> validate_starts_with(:phone, "+")
+  end
+
+  defp validate_applicant(changeset) do
+    case get_field(changeset, :role) do
+      :applicant -> validate_required(changeset, [:birth_date])
+      _other -> changeset
+    end
   end
 end
