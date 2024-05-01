@@ -21,10 +21,10 @@ defmodule CenWeb.CVControllerTest do
     educations: [
       %{
         level: :bachelor,
-        educational_institution: nil,
+        educational_institution: "some insistute",
         department: nil,
-        specialization: nil,
-        year_of_graduation: nil
+        specialization: "some specialization",
+        year_of_graduation: 2024
       }
     ]
   }
@@ -40,10 +40,10 @@ defmodule CenWeb.CVControllerTest do
     educations: [
       %{
         level: :bachelor,
-        educational_institution: nil,
+        educational_institution: "updated institute",
         department: nil,
-        specialization: nil,
-        year_of_graduation: nil
+        specialization: "updated specialization",
+        year_of_graduation: 2024
       }
     ]
   }
@@ -257,9 +257,11 @@ defmodule CenWeb.CVControllerTest do
     end
 
     test "shows with given education and bachelor", %{conn: conn} do
-      cv_fixture(educations: [%{level: :secondary}], published: true)
-      cv_fixture(educations: [%{level: :secondary_vocational}], published: true)
-      cv_fixture(educations: [%{level: :bachelor}], published: true)
+      education = %{level: nil, educational_institution: "institute", specialization: "spec", year_of_graduation: 2024}
+
+      cv_fixture(educations: [%{education | level: :secondary}], published: true)
+      cv_fixture(educations: [%{education | level: :secondary_vocational}], published: true)
+      cv_fixture(educations: [%{education | level: :bachelor}], published: true)
 
       conn = get(conn, ~p"/api/cvs/search?education=secondary_vocational")
       json = json_response(conn, 200)

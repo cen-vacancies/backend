@@ -76,10 +76,13 @@ defmodule Cen.Applicants.CV do
     end
   end
 
+  @education_required_fields ~w[level educational_institution specialization year_of_graduation]a
+  @education_optional_fields [:department]
+
   @spec education_changeset(education(), map()) :: Ecto.Changeset.t()
   def education_changeset(education, attrs) do
     education
-    |> cast(attrs, ~w[level educational_institution department specialization year_of_graduation]a)
-    |> validate_required([:level])
+    |> cast(attrs, @education_optional_fields ++ @education_required_fields)
+    |> validate_required(@education_required_fields)
   end
 end

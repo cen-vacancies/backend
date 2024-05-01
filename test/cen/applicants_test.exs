@@ -43,10 +43,10 @@ defmodule Cen.ApplicantsTest do
         educations: [
           %{
             level: :bachelor,
-            educational_institution: nil,
+            educational_institution: "some institute",
             department: nil,
-            specialization: nil,
-            year_of_graduation: nil
+            specialization: "some specialization",
+            year_of_graduation: 2024
           }
         ],
         field_of_art: :folklore,

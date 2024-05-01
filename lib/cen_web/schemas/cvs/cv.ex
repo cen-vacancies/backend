@@ -22,7 +22,7 @@ defmodule CenWeb.Schemas.CV do
         minItems: 1,
         items: %{
           type: :object,
-          optional: ~w[educational_institution department specialization year_of_graduation],
+          optional: ~w[department],
           properties: %{
             level: %{type: :string, enum: Cen.Enums.cv_educations()},
             educational_institution: %{type: :string, nullable: true},
