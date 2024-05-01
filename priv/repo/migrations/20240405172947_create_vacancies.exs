@@ -18,6 +18,7 @@ defmodule Cen.Repo.Migrations.CreateVacancies do
       add :organization_id, references(:organizations, on_delete: :delete_all), null: false
 
       add :searchable, :tsvector,
+        null: false,
         generated: """
         ALWAYS AS (
           to_tsvector('russian', coalesce(title, '') || ' ' || coalesce(description, ''))
