@@ -29,19 +29,29 @@ defmodule CenWeb.CVJSON do
       employment_types: cv.employment_types,
       work_schedules: cv.work_schedules,
       field_of_art: cv.field_of_art,
-      years_of_work_experience: cv.years_of_work_experience,
       applicant: CenWeb.UserJSON.data(cv.applicant),
-      educations: Enum.map(cv.educations, &data_educations/1)
+      educations: Enum.map(cv.educations, &data_education/1),
+      jobs: Enum.map(cv.jobs, &data_job/1)
     }
   end
 
-  def data_educations(education) do
+  def data_education(education) do
     %{
       level: education.level,
       educational_institution: education.educational_institution,
       department: education.department,
       specialization: education.specialization,
       year_of_graduation: education.year_of_graduation
+    }
+  end
+
+  def data_job(job) do
+    %{
+      organization_name: job.organization_name,
+      job_title: job.job_title,
+      description: job.description,
+      start_date: job.start_date,
+      end_date: job.end_date
     }
   end
 end

@@ -17,7 +17,6 @@ defmodule CenWeb.CVControllerTest do
     employment_types: [:main, :internship],
     work_schedules: [:remote_working],
     field_of_art: :visual,
-    years_of_work_experience: 42,
     educations: [
       %{
         level: :bachelor,
@@ -25,6 +24,15 @@ defmodule CenWeb.CVControllerTest do
         department: nil,
         specialization: "some specialization",
         year_of_graduation: 2024
+      }
+    ],
+    jobs: [
+      %{
+        organization_name: "some org",
+        job_title: "some job",
+        description: "some description",
+        start_date: ~D[2024-01-01],
+        end_date: ~D[2024-01-02]
       }
     ]
   }
@@ -36,7 +44,6 @@ defmodule CenWeb.CVControllerTest do
     employment_types: [:practice],
     work_schedules: [:hybrid_working],
     field_of_art: :music,
-    years_of_work_experience: 43,
     educations: [
       %{
         level: :bachelor,
@@ -55,7 +62,6 @@ defmodule CenWeb.CVControllerTest do
     employment_types: nil,
     work_schedules: nil,
     field_of_art: nil,
-    years_of_work_experience: nil,
     educations: []
   }
 
@@ -88,8 +94,7 @@ defmodule CenWeb.CVControllerTest do
                "published" => true,
                "reviewed" => true,
                "summary" => "some summary",
-               "work_schedules" => ["remote_working"],
-               "years_of_work_experience" => 42
+               "work_schedules" => ["remote_working"]
              } = json["data"]
     end
 

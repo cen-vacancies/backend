@@ -17,7 +17,6 @@ defmodule Cen.ApplicantsTest do
         employment_types: nil,
         work_schedules: nil,
         field_of_art: nil,
-        years_of_work_experience: nil,
         applicant: AccountsFixtures.user_fixture()
       })
     end
@@ -50,7 +49,6 @@ defmodule Cen.ApplicantsTest do
           }
         ],
         field_of_art: :folklore,
-        years_of_work_experience: 42,
         applicant: AccountsFixtures.user_fixture()
       }
 
@@ -62,7 +60,6 @@ defmodule Cen.ApplicantsTest do
       assert cv.employment_types == [:main]
       assert cv.work_schedules == [:full_time, :part_time]
       assert cv.field_of_art == :folklore
-      assert cv.years_of_work_experience == 42
     end
 
     test "create_cv/1 with invalid data returns error changeset", %{invalid_attrs: invalid_attrs} do
@@ -79,7 +76,6 @@ defmodule Cen.ApplicantsTest do
         employment_types: [:secondary, :internship],
         work_schedules: [:flexible_schedule],
         field_of_art: :music,
-        years_of_work_experience: 43,
         applicant: AccountsFixtures.user_fixture()
       }
 
@@ -89,7 +85,6 @@ defmodule Cen.ApplicantsTest do
       assert cv.employment_types == [:secondary, :internship]
       assert cv.work_schedules == [:flexible_schedule]
       assert cv.field_of_art == :music
-      assert cv.years_of_work_experience == 43
     end
 
     test "update_cv/2 with invalid data returns error changeset", %{invalid_attrs: invalid_attrs} do

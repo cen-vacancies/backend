@@ -14,10 +14,10 @@ defmodule Cen.Applicants.CV do
           employment_types: atom() | nil,
           work_schedules: atom() | nil,
           field_of_art: atom() | nil,
-          years_of_work_experience: integer() | nil,
           applicant_id: integer() | nil,
           applicant: User.t() | Ecto.Association.NotLoaded.t(),
-          educations: [education]
+          educations: [education],
+          jobs: [job]
         }
 
   @type education :: %__MODULE__.Education{
@@ -28,6 +28,14 @@ defmodule Cen.Applicants.CV do
           year_of_graduation: integer()
         }
 
+  @type job :: %__MODULE__.Job{
+          organization_name: String.t() | nil,
+          job_title: String.t() | nil,
+          description: String.t() | nil,
+          start_date: Date.t() | nil,
+          end_date: Date.t() | nil
+        }
+
   schema "applicants_cvs" do
     field :title, :string
     field :summary, :string
@@ -36,7 +44,6 @@ defmodule Cen.Applicants.CV do
     field :employment_types, {:array, Ecto.Enum}, values: Cen.Enums.employment_types()
     field :work_schedules, {:array, Ecto.Enum}, values: Cen.Enums.work_schedules()
     field :field_of_art, Ecto.Enum, values: Cen.Enums.field_of_arts()
-    field :years_of_work_experience, :integer, default: 0
 
     embeds_many :educations, Education, on_replace: :delete do
       field :level, Ecto.Enum, values: Cen.Enums.cv_educations()
@@ -46,13 +53,21 @@ defmodule Cen.Applicants.CV do
       field :year_of_graduation, :integer, default: nil
     end
 
+    embeds_many :jobs, Job, on_replace: :delete do
+      field :organization_name, :string
+      field :job_title, :string
+      field :description, :string
+      field :start_date, :date
+      field :end_date, :date
+    end
+
     belongs_to :applicant, User
 
     timestamps(type: :utc_datetime)
   end
 
   @requried_fields ~w[title summary employment_types work_schedules field_of_art]a
-  @optional_fields ~w[published years_of_work_experience]a
+  @optional_fields ~w[published]a
 
   @doc false
   @spec changeset(t(), map()) :: Ecto.Changeset.t()
@@ -60,6 +75,7 @@ defmodule Cen.Applicants.CV do
     cv
     |> cast(attrs, @requried_fields ++ @optional_fields)
     |> cast_embed(:educations, with: &education_changeset/2, requried: true)
+    |> cast_embed(:jobs, with: &job_changeset/2, requried: true)
     |> validate_length(:title, max: 255)
     |> validate_length(:summary, max: 2000)
     |> validate_length(:employment_types, min: 1)
@@ -84,5 +100,15 @@ defmodule Cen.Applicants.CV do
     education
     |> cast(attrs, @education_optional_fields ++ @education_required_fields)
     |> validate_required(@education_required_fields)
+  end
+
+  @job_required_fields ~w[start_date end_date]a
+  @job_optional_fields ~w[organization_name job_title description]a
+
+  @spec job_changeset(job(), map()) :: Ecto.Changeset.t()
+  def job_changeset(job, attrs) do
+    job
+    |> cast(attrs, @job_optional_fields ++ @job_required_fields)
+    |> validate_required(@job_required_fields)
   end
 end

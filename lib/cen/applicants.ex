@@ -136,7 +136,8 @@ defmodule Cen.Applicants do
     |> QueryUtils.filter(:employment_types, :intersection, options["employment_types"])
     |> QueryUtils.filter(:work_schedules, :intersection, options["work_schedules"])
     |> QueryUtils.filter(:field_of_art, :eq, options["field_of_art"])
-    |> QueryUtils.filter(:years_of_work_experience, :not_lt, options["min_years_of_work_experience"])
+    # |> QueryUtils.filter(:years_of_work_experience, :not_lt, options["min_years_of_work_experience"])
+    |> filter_work_experience(options["min_years_of_work_experience"])
     |> filter_education(options["education"])
     |> preload(:applicant)
     |> Repo.paginate(page: options["page"], page_size: options["page_size"])
@@ -153,6 +154,19 @@ defmodule Cen.Applicants do
           "EXISTS (SELECT * FROM unnest(?) AS education WHERE education->>'level' = ANY(?))",
           cv.educations,
           ^educations
+        )
+    )
+  end
+
+  defp filter_work_experience(query, nil), do: query
+
+  defp filter_work_experience(query, min_years_of_work_experience) do
+    from(cv in query,
+      where:
+        fragment(
+          "(SELECT SUM(EXTRACT(EPOCH FROM (COALESCE(TO_DATE(job->>'end_date', 'YYYY-MM-DD'), NOW()) - TO_DATE(job->>'start_date', 'YYYY-MM-DD'))) / (60 * 60 * 24 * 365)) FROM unnest(?) AS job) > ?",
+          cv.jobs,
+          ^min_years_of_work_experience
         )
     )
   end

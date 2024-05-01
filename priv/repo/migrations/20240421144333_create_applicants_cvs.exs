@@ -10,9 +10,9 @@ defmodule Cen.Repo.Migrations.CreateApplicantsCVs do
       add :employment_types, {:array, :string}, null: false
       add :work_schedules, {:array, :string}, null: false
       add :field_of_art, :string, null: false
-      add :years_of_work_experience, :integer, default: 0, null: false
       add :applicant_id, references(:users, on_delete: :delete_all), null: false
       add :educations, {:array, :map}, null: false, default: []
+      add :jobs, {:array, :map}, null: false, default: []
 
       add :searchable, :tsvector,
         null: false,

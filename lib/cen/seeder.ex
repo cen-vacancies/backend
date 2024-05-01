@@ -549,6 +549,35 @@ defmodule Cen.Repo.Seeder do
     }
   end
 
+  defp random_jobs do
+    jobs = [
+      %Cen.Applicants.CV.Job{
+        organization_name: "УрФУ",
+        job_title: "Заведующий кафедрой",
+        start_date: ~D[2020-01-01],
+        end_date: ~D[2023-01-01]
+      },
+      %Cen.Applicants.CV.Job{
+        start_date: ~D[2020-01-01],
+        end_date: ~D[2023-01-01]
+      },
+      %Cen.Applicants.CV.Job{
+        organization_name: nil,
+        job_title: "Преподаватель",
+        description: """
+        Преподаватель в течение трех лет, специализирующийся на развитии критического мышления и творческих способностей у студентов. За это время успешно разработал и внедрил новые образовательные программы, ориентированные на практическое применение знаний. Руководил несколькими проектами, которые привели к повышению успеваемости студентов и их активности в учебном процессе. Получил признание как среди коллег, так и среди учеников за инновационные подходы к преподаванию и эффективную коммуникацию
+        """,
+        start_date: ~D[2022-01-01]
+      }
+    ]
+
+    jobs_count = Enum.random(1..3)
+
+    jobs
+    |> Enum.shuffle()
+    |> Enum.take(jobs_count)
+  end
+
   def insert_cvs do
     users =
       [
@@ -601,7 +630,7 @@ defmodule Cen.Repo.Seeder do
             year_of_graduation: 2012
           }
         ],
-        years_of_work_experience: 10
+        jobs: random_jobs()
       },
       %Cen.Applicants.CV{
         title: "Художник-график",
@@ -637,7 +666,7 @@ defmodule Cen.Repo.Seeder do
             year_of_graduation: 2015
           }
         ],
-        years_of_work_experience: 7
+        jobs: random_jobs()
       },
       %Cen.Applicants.CV{
         title: "Актер театра",
@@ -677,7 +706,7 @@ defmodule Cen.Repo.Seeder do
             year_of_graduation: 2010
           }
         ],
-        years_of_work_experience: 12
+        jobs: random_jobs()
       },
       %Cen.Applicants.CV{
         title: "Балерина",
@@ -717,7 +746,7 @@ defmodule Cen.Repo.Seeder do
             year_of_graduation: 2016
           }
         ],
-        years_of_work_experience: 6
+        jobs: random_jobs()
       },
       %Cen.Applicants.CV{
         title: "Фольклорный музыкант",
@@ -758,7 +787,7 @@ defmodule Cen.Repo.Seeder do
             year_of_graduation: 2014
           }
         ],
-        years_of_work_experience: 8
+        jobs: random_jobs()
       },
       %Cen.Applicants.CV{
         title: "Композитор",
@@ -802,7 +831,7 @@ defmodule Cen.Repo.Seeder do
             year_of_graduation: 2011
           }
         ],
-        years_of_work_experience: 13
+        jobs: random_jobs()
       },
       %Cen.Applicants.CV{
         title: "Фотограф",
@@ -847,7 +876,7 @@ defmodule Cen.Repo.Seeder do
             year_of_graduation: 2018
           }
         ],
-        years_of_work_experience: 4
+        jobs: random_jobs()
       },
       %Cen.Applicants.CV{
         title: "Театральный режиссер",
@@ -892,7 +921,7 @@ defmodule Cen.Repo.Seeder do
             year_of_graduation: 2009
           }
         ],
-        years_of_work_experience: 15
+        jobs: random_jobs()
       },
       %Cen.Applicants.CV{
         title: "Кинематографист",
@@ -930,7 +959,7 @@ defmodule Cen.Repo.Seeder do
             year_of_graduation: 2013
           }
         ],
-        years_of_work_experience: 10
+        jobs: random_jobs()
       },
       %Cen.Applicants.CV{
         title: "Куратор выставок",
@@ -968,7 +997,7 @@ defmodule Cen.Repo.Seeder do
             year_of_graduation: 2016
           }
         ],
-        years_of_work_experience: 7
+        jobs: random_jobs()
       }
     ]
 

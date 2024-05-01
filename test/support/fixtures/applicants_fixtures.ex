@@ -21,7 +21,6 @@ defmodule Cen.ApplicantsFixtures do
         summary: "some summary",
         title: "some title",
         work_schedules: [:full_time, :part_time],
-        years_of_work_experience: 42,
         educations: [
           %{
             level: :secondary,
@@ -29,6 +28,15 @@ defmodule Cen.ApplicantsFixtures do
             department: "Архитектурный факультет",
             specialization: "Архитектура зданий и сооружений. Творческие концепции архитектурной деятельности",
             year_of_graduation: 2024
+          }
+        ],
+        jobs: [
+          %{
+            organization_name: "УрФУ",
+            job_title: "Преподаватель",
+            description: "Преподавал предмет",
+            start_date: ~D[2022-12-01],
+            end_date: ~D[2024-02-01]
           }
         ]
       })
