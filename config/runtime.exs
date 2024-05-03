@@ -21,6 +21,15 @@ if System.get_env("PHX_SERVER") do
 end
 
 if config_env() == :prod do
+  uploads_path =
+    System.get_env("UPLOADS_PATH") ||
+      raise """
+      environment variable UPLOADS_PATH is missing.
+      For example: /app/uploads
+      """
+
+  config :cen, Cen.Uploads, path: uploads_path
+
   database_url =
     System.get_env("DATABASE_URL") ||
       raise """

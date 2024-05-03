@@ -53,6 +53,8 @@ defmodule CenWeb.Router do
   scope "/api", CenWeb do
     pipe_through [:api, :fetch_api_user]
 
+    post "/uploads/image", UploadsController, :upload_image
+
     resources "/user", UserController, singleton: true, only: [:show, :delete]
     put "/user/info", UserController, :update_info
     patch "/user/info", UserController, :update_info
