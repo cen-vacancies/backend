@@ -25,7 +25,7 @@ defmodule Cen.Employers.Organization do
     field :name, :string
     field :address, :string
     field :description, :string
-    field :logo, :string
+    field :logo, :string, default: "/images/no_photo.jpg"
 
     field :phone, :string
     field :email, :string

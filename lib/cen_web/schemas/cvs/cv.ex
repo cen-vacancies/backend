@@ -12,6 +12,7 @@ defmodule CenWeb.Schemas.CV do
       summary: %{type: :string, maximum: 2000},
       published: %{type: :boolean},
       reviewed: %{type: :boolean},
+      photo: %{type: :string},
       employment_types: %{type: :array, items: %{type: :string, enum: Cen.Enums.employment_types()}},
       work_schedules: %{type: :array, items: %{type: :string, enum: Cen.Enums.work_schedules()}},
       field_of_art: %{type: :string, enum: Cen.Enums.field_of_arts()},
@@ -56,6 +57,7 @@ defmodule CenWeb.Schemas.CV do
       "work_schedules" => ["full_time"],
       "field_of_art" => "music",
       "applicant" => User.schema().example,
+      "photo" => "/uploads/photo.png",
       "educations" => [
         %{
           "level" => :secondary,

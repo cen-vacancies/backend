@@ -9,7 +9,7 @@ defmodule CenWeb.Schemas.CreateCVRequest do
     properties: %{
       cv: %{
         type: :object,
-        optional: ~w[published]a,
+        optional: ~w[published photo]a,
         properties: using_properties(CV.schema(), remove: ~w[id applicant]a)
       }
     },

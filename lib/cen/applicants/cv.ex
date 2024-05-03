@@ -45,6 +45,8 @@ defmodule Cen.Applicants.CV do
     field :work_schedules, {:array, Ecto.Enum}, values: Cen.Enums.work_schedules()
     field :field_of_art, Ecto.Enum, values: Cen.Enums.field_of_arts()
 
+    field :photo, :string, default: "/images/no_photo.jpg"
+
     embeds_many :educations, Education, on_replace: :delete do
       field :level, Ecto.Enum, values: Cen.Enums.cv_educations()
       field :educational_institution, :string, default: nil

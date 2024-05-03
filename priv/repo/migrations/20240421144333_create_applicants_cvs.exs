@@ -14,6 +14,8 @@ defmodule Cen.Repo.Migrations.CreateApplicantsCVs do
       add :educations, {:array, :map}, null: false, default: []
       add :jobs, {:array, :map}, null: false, default: []
 
+      add :photo, :string, null: false
+
       add :searchable, :tsvector,
         null: false,
         generated: """

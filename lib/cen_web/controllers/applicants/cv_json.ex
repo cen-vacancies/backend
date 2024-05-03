@@ -29,6 +29,7 @@ defmodule CenWeb.CVJSON do
       employment_types: cv.employment_types,
       work_schedules: cv.work_schedules,
       field_of_art: cv.field_of_art,
+      photo: cv.photo,
       applicant: CenWeb.UserJSON.data(cv.applicant),
       educations: Enum.map(cv.educations, &data_education/1),
       jobs: Enum.map(cv.jobs, &data_job/1)

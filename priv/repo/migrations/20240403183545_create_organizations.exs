@@ -4,7 +4,7 @@ defmodule Cen.Repo.Migrations.CreateOrganizations do
   def change do
     create table(:organizations) do
       add :name, :string, null: false
-      add :logo, :string
+      add :logo, :string, null: false
       add :description, :text, null: false
       add :address, :string, null: false
       add :employer_id, references(:users, on_delete: :delete_all), null: false
