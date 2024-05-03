@@ -26,6 +26,12 @@ defmodule CenWeb.Plugs.RequestErrorRendererPlug do
   end
 
   @spec do_render_error(list(), OpenApiSpex.Cast.Error.t(), map()) :: map()
+  defp do_render_error([], error, result) do
+    error_string = to_string(error)
+    Map.update(result, "self", [error_string], &[error_string | &1])
+  end
+
+  @spec do_render_error(list(), OpenApiSpex.Cast.Error.t(), map()) :: map()
   defp do_render_error([value], error, result) do
     error_string = to_string(error)
     Map.update(result, value, [error_string], &[error_string | &1])
