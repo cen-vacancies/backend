@@ -80,6 +80,7 @@ ENV LC_ALL en_US.UTF-8
 
 WORKDIR "/app"
 RUN chown nobody /app
+RUN mkdir /app/uploads && chown nobody /app/uploads
 
 # set runner ENV
 ENV MIX_ENV="prod"
