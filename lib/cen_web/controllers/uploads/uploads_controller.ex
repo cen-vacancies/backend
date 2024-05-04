@@ -37,7 +37,7 @@ defmodule CenWeb.UploadsController do
     case Uploads.save_image(file) do
       {:ok, path} ->
         conn
-        |> put_resp_header("location", "/uploads/#{path}")
+        |> put_resp_header("location", ~p"/uploads/#{path}")
         |> resp(:created, "")
 
       {:error, reason} ->

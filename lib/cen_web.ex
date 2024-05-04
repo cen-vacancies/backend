@@ -19,6 +19,7 @@ defmodule CenWeb do
   """
 
   def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
+  def all_static_paths, do: static_paths() ++ ~w(uploads)
 
   def router do
     quote do
@@ -108,7 +109,7 @@ defmodule CenWeb do
       use Phoenix.VerifiedRoutes,
         endpoint: CenWeb.Endpoint,
         router: CenWeb.Router,
-        statics: CenWeb.static_paths()
+        statics: CenWeb.all_static_paths()
     end
   end
 
