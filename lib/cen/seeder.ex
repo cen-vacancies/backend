@@ -1,6 +1,31 @@
 # credo:disable-for-this-file
 defmodule Cen.Repo.Seeder do
   @moduledoc false
+  require Phoenix.VerifiedRoutes
+
+  defp upload_image(filename, extenstion \\ "jpeg") do
+    path = Path.join([:code.priv_dir(:cen), "repo", "seeds_images", filename])
+
+    {:ok, path} =
+      Cen.Uploads.save_image(%Plug.Upload{
+        filename: "stub",
+        path: path,
+        content_type: "image/#{extenstion}"
+      })
+
+    "/uploads/#{path}"
+  end
+
+  defp random_person_photo do
+    percent = Enum.random(1..100)
+
+    if percent > 80 do
+      "/images/no_photo.jpg"
+    else
+      num = Enum.random(1..4)
+      upload_image("tpdne#{num}.jpg")
+    end
+  end
 
   def seed do
     insert_vacancies()
@@ -26,6 +51,8 @@ defmodule Cen.Repo.Seeder do
         role: :employer
       })
 
+    logo_path = upload_image("urfu.jpg")
+
     organization =
       Cen.Repo.insert!(%Cen.Employers.Organization{
         name: "УрФУ имени первого Президента России Б.Н. Ельцина",
@@ -45,7 +72,8 @@ defmodule Cen.Repo.Seeder do
         email: "contact@urfu.ru",
         website: "https://urfu.me",
         social_link: "https://vk.com/ural.federal.university",
-        employer_id: employer.id
+        employer_id: employer.id,
+        logo: logo_path
       })
 
     vacancies = [
@@ -212,6 +240,8 @@ defmodule Cen.Repo.Seeder do
         role: :employer
       })
 
+    logo_path = upload_image("socic.jpg")
+
     organization =
       Cen.Repo.insert!(%Cen.Employers.Organization{
         name:
@@ -224,7 +254,8 @@ defmodule Cen.Repo.Seeder do
         email: "souik2@mail.ru",
         website: "https://www.socic.ru",
         social_link: "https://vk.com/public217097475",
-        employer_id: employer.id
+        employer_id: employer.id,
+        logo: logo_path
       })
 
     vacancies = [
@@ -375,6 +406,8 @@ defmodule Cen.Repo.Seeder do
         role: :employer
       })
 
+    logo_path = upload_image("etude.png", "png")
+
     organization =
       Cen.Repo.insert!(%Cen.Employers.Organization{
         name: "Гимназия \"Арт-Этюд\"",
@@ -390,7 +423,8 @@ defmodule Cen.Repo.Seeder do
         email: "souik2@mail.ru ",
         website: "https://www.socic.ru",
         social_link: "https://vk.com/public217097475",
-        employer_id: employer.id
+        employer_id: employer.id,
+        logo: logo_path
       })
 
     vacancies = [
@@ -1009,6 +1043,7 @@ defmodule Cen.Repo.Seeder do
 
     for {user, cv} <- Enum.zip(users, cvs) do
       cv
+      |> Map.put(:photo, random_person_photo())
       |> Map.put(:applicant_id, user.id)
       |> Cen.Repo.insert!()
     end
