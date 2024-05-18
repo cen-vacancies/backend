@@ -3,6 +3,8 @@ defmodule Cen.Communications do
 
   import Ecto.Query
 
+  alias Cen.Accounts.User
+  alias Cen.Communications.Chat
   alias Cen.Communications.Interest
   alias Cen.Repo
 
@@ -57,5 +59,20 @@ defmodule Cen.Communications do
       left_join: employer in assoc(organization, :employer),
       where: applicant.id == ^user_id or employer.id == ^user_id,
       preload: [cv: {cv, applicant: applicant}, vacancy: {vacancy, organization: {organization, employer: employer}}]
+  end
+
+  @spec get_chats_by_user(User.t()) :: [Chat.t()]
+  def get_chats_by_user(user) do
+    query =
+      from chat in Chat,
+        left_join: cv in assoc(chat, :cv),
+        left_join: applicant in assoc(cv, :applicant),
+        left_join: vacancy in assoc(chat, :vacancy),
+        left_join: organization in assoc(vacancy, :organization),
+        left_join: employer in assoc(organization, :employer),
+        where: applicant.id == ^user.id or employer.id == ^user.id,
+        preload: [cv: {cv, applicant: applicant}, vacancy: {vacancy, organization: {organization, employer: employer}}]
+
+    Repo.all(query)
   end
 end
