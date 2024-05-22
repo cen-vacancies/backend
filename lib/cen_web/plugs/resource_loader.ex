@@ -47,7 +47,7 @@ defmodule CenWeb.Plugs.ResourceLoader do
 
     loader_options =
       options
-      |> Keyword.get(:loader, [])
+      |> Keyword.get(:loader_options, [])
       |> append_param_key(key)
       |> maybe_append_context(context, key)
 

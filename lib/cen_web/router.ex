@@ -41,7 +41,7 @@ defmodule CenWeb.Router do
     post "/user", UserController, :create
     post "/token", TokenController, :create
 
-    get "/organizations/:organization_id", OrganizationController, :show
+    get "/organizations/:organization_id", OrganizationController, :show_by_id
 
     get "/vacancies/search", VacancyController, :search
     get "/vacancies/:vacancy_id", VacancyController, :show
@@ -59,9 +59,9 @@ defmodule CenWeb.Router do
     put "/user/info", UserController, :update_info
     patch "/user/info", UserController, :update_info
 
-    resources "/organizations", OrganizationController,
-      param: "organization_id",
-      only: [:create, :update, :delete]
+    resources "/organization", OrganizationController,
+      singleton: true,
+      only: [:create, :show, :update, :delete]
 
     post "/organizations/:organization_id/new_vacancy", VacancyController, :create
 

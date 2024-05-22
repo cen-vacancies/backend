@@ -63,6 +63,19 @@ defmodule Cen.Employers do
     end
   end
 
+  @spec fetch_organization_by_user(User.t()) :: {:ok, Organization.t()} | {:error, :not_found}
+  def fetch_organization_by_user(user) do
+    query =
+      from organization in Organization,
+        where: organization.employer_id == ^user.id,
+        preload: :employer
+
+    case Repo.one(query) do
+      nil -> {:error, :not_found}
+      organization -> {:ok, organization}
+    end
+  end
+
   @doc """
   Creates a organization.
 

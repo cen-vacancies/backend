@@ -43,10 +43,10 @@ defmodule CenWeb.OrganizationControllerTest do
 
   describe "create organization" do
     test "renders organization when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/api/organizations", organization: @create_attrs)
+      conn = post(conn, ~p"/api/organization", organization: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn_get = get(conn, ~p"/api/organizations/#{id}")
+      conn_get = get(conn, ~p"/api/organization")
       json = json_response(conn_get, 200)
 
       assert_schema OrganizationResponse, json
@@ -61,17 +61,36 @@ defmodule CenWeb.OrganizationControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, ~p"/api/organizations", organization: @invalid_attrs)
+      conn = post(conn, ~p"/api/organization", organization: @invalid_attrs)
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
     end
 
     test "renders forbidden error when user is applicant", %{conn_applicant: conn} do
-      conn = post(conn, ~p"/api/organizations", organization: @invalid_attrs)
+      conn = post(conn, ~p"/api/organization", organization: @invalid_attrs)
       json = json_response(conn, 403)
 
       assert_schema GenericErrorResponse, json
+    end
+  end
+
+  describe "show organization by id" do
+    setup [:create_organization]
+
+    test "renders organization", %{conn: conn, organization: %Organization{id: id}} do
+      conn = get(conn, ~p"/api/organizations/#{id}")
+      json = json_response(conn, 200)
+
+      assert_schema OrganizationResponse, json
+
+      assert %{
+               "id" => ^id,
+               "address" => "some address",
+               "description" => "some description",
+               "logo" => "some logo",
+               "name" => "some name"
+             } = json["data"]
     end
   end
 
@@ -79,7 +98,7 @@ defmodule CenWeb.OrganizationControllerTest do
     setup [:create_organization]
 
     test "renders organization when data is valid", %{conn: conn, organization: %Organization{id: id} = organization} do
-      conn = patch(conn, ~p"/api/organizations/#{organization}", organization: @update_attrs)
+      conn = patch(conn, ~p"/api/organization", organization: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn_get = get(conn, ~p"/api/organizations/#{id}")
@@ -89,15 +108,15 @@ defmodule CenWeb.OrganizationControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, organization: organization} do
-      conn = patch(conn, ~p"/api/organizations/#{organization}", organization: @invalid_attrs)
+      conn = patch(conn, ~p"/api/organization", organization: @invalid_attrs)
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
     end
 
-    test "renders forbidden error when user is not owner", %{conn_applicant: conn, organization: organization} do
-      conn = patch(conn, ~p"/api/organizations/#{organization}", organization: @update_attrs)
-      json = json_response(conn, 403)
+    test "renders not found error when user hasn't organization", %{conn_applicant: conn, organization: organization} do
+      conn = patch(conn, ~p"/api/organization", organization: @update_attrs)
+      json = json_response(conn, 404)
 
       assert_schema GenericErrorResponse, json
     end
@@ -107,16 +126,16 @@ defmodule CenWeb.OrganizationControllerTest do
     setup [:create_organization]
 
     test "deletes chosen organization", %{conn: conn, organization: organization} do
-      conn = delete(conn, ~p"/api/organizations/#{organization}")
+      conn = delete(conn, ~p"/api/organization")
       assert response(conn, 204)
 
-      conn_get = get(conn, ~p"/api/organizations/#{organization}")
+      conn_get = get(conn, ~p"/api/organization")
       assert response(conn_get, 404)
     end
 
-    test "renders forbidden error when user is not owner", %{conn_applicant: conn, organization: organization} do
-      conn = delete(conn, ~p"/api/organizations/#{organization}")
-      json = json_response(conn, 403)
+    test "renders not found error when user hasn't organization", %{conn_applicant: conn, organization: organization} do
+      conn = delete(conn, ~p"/api/organization")
+      json = json_response(conn, 404)
 
       assert_schema GenericErrorResponse, json
     end

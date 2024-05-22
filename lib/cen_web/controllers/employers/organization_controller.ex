@@ -15,10 +15,6 @@ defmodule CenWeb.OrganizationController do
   fallback = CenWeb.FallbackController
   action_fallback fallback
 
-  plug ResourceLoader,
-       [key: :organization, context: Employers, fallback: fallback]
-       when action in [:show, :update, :delete]
-
   plug AccessRules,
        [
          fallback: fallback,
@@ -28,20 +24,27 @@ defmodule CenWeb.OrganizationController do
        ]
        when action in [:create]
 
-  plug AccessRules,
+  plug ResourceLoader,
+       [key: :organization, context: Employers, fallback: fallback]
+       when action in [:show_by_id]
+
+  plug ResourceLoader,
        [
          fallback: fallback,
-         verify_fun: &Employers.can_user_edit_organization?/2,
-         args_keys: [:organization, :current_user],
-         reason: "You are not the owner"
+         key: :organization,
+         loader_module: ResourceLoader.RelativeLoader,
+         loader_options: [
+           resource: {Employers, :fetch_organization_by_user},
+           path: [:current_user]
+         ]
        ]
-       when action in [:update, :delete]
+       when action in [:show, :update, :delete]
 
   plug CenWeb.Plugs.CastAndValidate
 
   tags :organizations
 
-  operation :show,
+  operation :show_by_id,
     summary: "Get organization",
     parameters: [
       organization_id: [in: :path, description: "Organization ID", type: :integer, example: "10132"]
@@ -52,12 +55,25 @@ defmodule CenWeb.OrganizationController do
       unauthorized: {"Unauthorized", "application/json", GenericErrorResponse}
     ]
 
-  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def show(conn, _params) do
+  @spec show_by_id(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def show_by_id(conn, _params) do
     render(conn, :show, organization: fetch_organization(conn))
   end
 
   security [%{"user_auth" => ["employer"]}]
+
+  operation :show,
+    summary: "Get current user's organization",
+    responses: [
+      created: {"Requested organization", "application/json", OrganizationResponse},
+      not_found: {"Organization not found", "application/json", GenericErrorResponse},
+      unauthorized: {"Unauthorized", "application/json", GenericErrorResponse}
+    ]
+
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def show(conn, _params) do
+    render(conn, :show, organization: fetch_organization(conn))
+  end
 
   operation :create,
     summary: "Create organization",
@@ -79,16 +95,13 @@ defmodule CenWeb.OrganizationController do
 
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/organizations/#{organization}")
+      |> put_resp_header("location", ~p"/api/organization")
       |> render(:show, organization: organization)
     end
   end
 
   operation :update,
     summary: "Update organization",
-    parameters: [
-      organization_id: [in: :path, description: "Organization ID", type: :integer, example: "10132"]
-    ],
     request_body: {"Organization params", "application/json", UpdateOrganizationRequest},
     responses: [
       created: {"Requested organization", "application/json", OrganizationResponse},
@@ -111,9 +124,6 @@ defmodule CenWeb.OrganizationController do
 
   operation :delete,
     summary: "Delete organization",
-    parameters: [
-      organization_id: [in: :path, description: "Organization ID", type: :integer, example: "10132"]
-    ],
     responses: [
       no_content: "Organization deleted",
       unauthorized: {"Unauthorized", "application/json", GenericErrorResponse},
