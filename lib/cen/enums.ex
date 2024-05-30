@@ -23,7 +23,4 @@ defmodule Cen.Enums do
 
   @spec field_of_arts() :: [atom(), ...]
   def field_of_arts, do: ~w[music visual performing choreography folklore other]a
-
-  @spec message_types() :: [atom(), ...]
-  def message_types, do: ~w[interest default waiver]a
 end
