@@ -3,6 +3,7 @@ defmodule CenWeb.InterestController do
 
   alias Cen.Communications
   alias CenWeb.Schemas.InterestResponse
+  alias CenWeb.Schemas.InterestsListResponse
   alias CenWeb.Schemas.SendInterestRequest
   alias CenWeb.UserAuth
 
@@ -28,5 +29,29 @@ defmodule CenWeb.InterestController do
     with {:ok, interest} <- Communications.send_interest(user.role, cv_id, vacancy_id) do
       render(conn, :show, interest: Communications.get_interest!(interest.id))
     end
+  end
+
+  operation :index,
+    summary: "Send interest to vacancy or CV",
+    parameters: [
+      type: [
+        in: :query,
+        required: true,
+        schema: %OpenApiSpex.Schema{type: :string, enum: ~w[sended recieved]}
+      ],
+      page: [in: :query, description: "Page number", type: :integer],
+      page_size: [in: :query, description: "Page size", type: :integer]
+    ],
+    responses: [
+      ok: {"Interest", "application/json", InterestsListResponse}
+    ]
+
+  @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def index(conn, params) do
+    user = UserAuth.fetch_current_user(conn)
+
+    page = Communications.list_interests(user.id, user.role, params["type"], params)
+
+    render(conn, :index, page: page)
   end
 end

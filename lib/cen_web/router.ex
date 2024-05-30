@@ -74,6 +74,7 @@ defmodule CenWeb.Router do
       only: [:create, :update, :delete]
 
     post "/send_interest", InterestController, :send_interest
+    get "/interests", InterestController, :index
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

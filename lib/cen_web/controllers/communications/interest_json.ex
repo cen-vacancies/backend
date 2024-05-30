@@ -2,7 +2,12 @@
 defmodule CenWeb.InterestJSON do
   alias Cen.Communications.Interest
   alias CenWeb.CVJSON
+  alias CenWeb.PageJSON
   alias CenWeb.VacancyJSON
+
+  def index(%{page: %{entries: entries} = page}) do
+    %{data: for(entry <- entries, do: data(entry)), page: PageJSON.show(page)}
+  end
 
   def show(%{interest: interest}) do
     %{data: data(interest)}
