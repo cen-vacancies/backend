@@ -97,7 +97,7 @@ defmodule CenWeb.OrganizationControllerTest do
   describe "update organization" do
     setup [:create_organization]
 
-    test "renders organization when data is valid", %{conn: conn, organization: %Organization{id: id} = organization} do
+    test "renders organization when data is valid", %{conn: conn, organization: %Organization{id: id}} do
       conn = patch(conn, ~p"/api/organization", organization: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
@@ -107,14 +107,14 @@ defmodule CenWeb.OrganizationControllerTest do
       assert_schema OrganizationResponse, json
     end
 
-    test "renders errors when data is invalid", %{conn: conn, organization: organization} do
+    test "renders errors when data is invalid", %{conn: conn} do
       conn = patch(conn, ~p"/api/organization", organization: @invalid_attrs)
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
     end
 
-    test "renders not found error when user hasn't organization", %{conn_applicant: conn, organization: organization} do
+    test "renders not found error when user hasn't organization", %{conn_applicant: conn} do
       conn = patch(conn, ~p"/api/organization", organization: @update_attrs)
       json = json_response(conn, 404)
 
@@ -125,7 +125,7 @@ defmodule CenWeb.OrganizationControllerTest do
   describe "delete organization" do
     setup [:create_organization]
 
-    test "deletes chosen organization", %{conn: conn, organization: organization} do
+    test "deletes chosen organization", %{conn: conn} do
       conn = delete(conn, ~p"/api/organization")
       assert response(conn, 204)
 
@@ -133,7 +133,7 @@ defmodule CenWeb.OrganizationControllerTest do
       assert response(conn_get, 404)
     end
 
-    test "renders not found error when user hasn't organization", %{conn_applicant: conn, organization: organization} do
+    test "renders not found error when user hasn't organization", %{conn_applicant: conn} do
       conn = delete(conn, ~p"/api/organization")
       json = json_response(conn, 404)
 
