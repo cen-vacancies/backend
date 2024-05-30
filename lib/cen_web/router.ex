@@ -72,6 +72,8 @@ defmodule CenWeb.Router do
     resources "/cvs", CVController,
       param: "cv_id",
       only: [:create, :update, :delete]
+
+    post "/send_interest", InterestController, :send_interest
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

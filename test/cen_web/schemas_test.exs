@@ -10,7 +10,8 @@ defmodule CenWeb.SchemasTest do
     {Schemas.User, Cen.Accounts.User, ~w[hashed_password confirmed_at inserted_at updated_at]a},
     {Schemas.Organization, Cen.Employers.Organization, ~w[employer_id inserted_at updated_at]a},
     {Schemas.Vacancy, Cen.Employers.Vacancy, ~w[organization_id inserted_at updated_at]a},
-    {Schemas.CV, Cen.Applicants.CV, ~w[applicant_id inserted_at updated_at]a}
+    {Schemas.CV, Cen.Applicants.CV, ~w[applicant_id inserted_at updated_at]a},
+    {Schemas.Interest, Cen.Communications.Interest, ~w[from cv_id vacancy_id inserted_at updated_at]a}
   ]
 
   for {api_schema, db_schema, ignored_fields} <- api_schemas_and_db_schemas do

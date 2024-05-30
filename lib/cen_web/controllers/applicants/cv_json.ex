@@ -19,7 +19,7 @@ defmodule CenWeb.CVJSON do
     %{data: data(cv)}
   end
 
-  defp data(%CV{} = cv) do
+  def data(%CV{} = cv) do
     %{
       id: cv.id,
       published: cv.published,

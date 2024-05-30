@@ -23,4 +23,7 @@ defmodule Cen.Enums do
 
   @spec field_of_arts() :: [atom(), ...]
   def field_of_arts, do: ~w[music visual performing choreography folklore other]a
+
+  @spec interest_directions() :: [atom(), ...]
+  def interest_directions, do: ~w[employer applicant]a
 end
