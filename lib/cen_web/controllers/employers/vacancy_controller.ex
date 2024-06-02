@@ -1,6 +1,7 @@
 defmodule CenWeb.VacancyController do
   use CenWeb, :controller_with_specs
 
+  alias Cen.Accounts
   alias Cen.Employers
   alias Cen.Employers.Vacancy
   alias CenWeb.Plugs.AccessRules
@@ -11,26 +12,23 @@ defmodule CenWeb.VacancyController do
   alias CenWeb.Schemas.Vacancies.UpdateVacancyRequest
   alias CenWeb.Schemas.Vacancies.VacanciesQueryResponse
   alias CenWeb.Schemas.VacancyResponse
+  alias CenWeb.UserAuth
 
   fallback = CenWeb.FallbackController
   action_fallback fallback
 
-  plug ResourceLoader,
-       [key: :organization, context: Employers, fallback: fallback]
+  plug AccessRules,
+       [
+         fallback: fallback,
+         verify_fun: &Accounts.has_employer_permissions?/1,
+         args_keys: [:current_user],
+         reason: "You are not the employer"
+       ]
        when action in [:create]
 
   plug ResourceLoader,
        [key: :vacancy, context: Employers, fallback: fallback]
        when action in [:show, :update, :delete]
-
-  plug AccessRules,
-       [
-         fallback: fallback,
-         verify_fun: &Employers.can_user_edit_organization?/2,
-         args_keys: [:organization, :current_user],
-         reason: "You are not the owner of the organization"
-       ]
-       when action in [:create]
 
   plug AccessRules,
        [
@@ -114,9 +112,6 @@ defmodule CenWeb.VacancyController do
 
   operation :create,
     summary: "Create vacancy",
-    parameters: [
-      organization_id: [in: :path, description: "Organization ID", type: :integer, example: "10132"]
-    ],
     request_body: {"Vacancy params", "application/json", CreateVacancyRequest},
     responses: [
       created: {"Created vacancy", "application/json", VacancyResponse},
@@ -126,10 +121,11 @@ defmodule CenWeb.VacancyController do
 
   @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
   def create(conn, %{"vacancy" => vacancy_params}) do
-    organization = fetch_organization(conn)
-    vacancy_params = Map.put(vacancy_params, :organization, organization)
+    current_user = UserAuth.fetch_current_user(conn)
 
-    with {:ok, %Vacancy{} = vacancy} <- Employers.create_vacancy(vacancy_params) do
+    with {:ok, organization} <- Employers.fetch_organization_by_user(current_user),
+         vacancy_params = Map.put(vacancy_params, :organization, organization),
+         {:ok, %Vacancy{} = vacancy} <- Employers.create_vacancy(vacancy_params) do
       vacancy = Map.put(vacancy, :organization, organization)
 
       conn
@@ -181,6 +177,5 @@ defmodule CenWeb.VacancyController do
     send_resp(conn, :no_content, "")
   end
 
-  defp fetch_organization(%{assigns: %{organization: organization}}), do: organization
   defp fetch_vacancy(%{assigns: %{vacancy: vacancy}}), do: vacancy
 end

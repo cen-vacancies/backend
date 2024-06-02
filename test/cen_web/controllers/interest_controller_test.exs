@@ -1,11 +1,10 @@
-defmodule CenWeb.HealthCheckControllerTest do
+defmodule CenWeb.InterestControllerTest do
   use CenWeb.ConnCase
 
   import Cen.ApplicantsFixtures
   import Cen.EmployersFixtures
 
   alias CenWeb.Schemas.ChangesetErrorsResponse
-  alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.InterestResponse
 
   setup %{conn: conn} do

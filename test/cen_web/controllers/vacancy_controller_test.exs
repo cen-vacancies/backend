@@ -52,8 +52,8 @@ defmodule CenWeb.VacancyControllerTest do
   describe "create vacancy" do
     setup [:create_organization]
 
-    test "renders vacancy when data is valid", %{conn: conn, organization: organization} do
-      conn = post(conn, ~p"/api/organizations/#{organization}/new_vacancy", vacancy: @create_attrs)
+    test "renders vacancy when data is valid", %{conn: conn} do
+      conn = post(conn, ~p"/api/vacancies", vacancy: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn_get = get(conn, ~p"/api/vacancies/#{id}")
@@ -73,21 +73,11 @@ defmodule CenWeb.VacancyControllerTest do
              } = json["data"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn, organization: organization} do
-      conn = post(conn, ~p"/api/organizations/#{organization}/new_vacancy", vacancy: @invalid_attrs)
+    test "renders errors when data is invalid", %{conn: conn} do
+      conn = post(conn, ~p"/api/vacancies", vacancy: @invalid_attrs)
       json = json_response(conn, 422)
 
       assert_schema ChangesetErrorsResponse, json
-    end
-
-    test "renders forbidden error when user not owner of organization", %{
-      conn_not_owner: conn,
-      organization: organization
-    } do
-      conn = post(conn, ~p"/api/organizations/#{organization}/new_vacancy", vacancy: @invalid_attrs)
-      json = json_response(conn, 403)
-
-      assert_schema GenericErrorResponse, json
     end
   end
 

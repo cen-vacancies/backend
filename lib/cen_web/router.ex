@@ -63,11 +63,9 @@ defmodule CenWeb.Router do
       singleton: true,
       only: [:create, :show, :update, :delete]
 
-    post "/organizations/:organization_id/new_vacancy", VacancyController, :create
-
     resources "/vacancies", VacancyController,
       param: "vacancy_id",
-      only: [:update, :delete]
+      only: [:create, :update, :delete]
 
     resources "/cvs", CVController,
       param: "cv_id",
