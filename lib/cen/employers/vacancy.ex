@@ -13,7 +13,7 @@ defmodule Cen.Employers.Vacancy do
           description: String.t(),
           employment_types: [atom()],
           work_schedules: [atom()],
-          educations: [atom()],
+          education: atom(),
           field_of_art: atom(),
           min_years_of_work_experience: integer(),
           proposed_salary: integer(),
@@ -29,8 +29,8 @@ defmodule Cen.Employers.Vacancy do
 
     field :employment_types, {:array, Ecto.Enum}, values: Cen.Enums.employment_types()
     field :work_schedules, {:array, Ecto.Enum}, values: Cen.Enums.work_schedules()
-    field :educations, {:array, Ecto.Enum}, values: Cen.Enums.educations()
 
+    field :education, Ecto.Enum, values: Cen.Enums.educations()
     field :field_of_art, Ecto.Enum, values: Cen.Enums.field_of_arts()
 
     field :min_years_of_work_experience, :integer, default: 0
@@ -41,7 +41,7 @@ defmodule Cen.Employers.Vacancy do
     timestamps(type: :utc_datetime)
   end
 
-  @requried_fields ~w[title description employment_types work_schedules educations field_of_art]a
+  @requried_fields ~w[title description employment_types work_schedules education field_of_art]a
   @optional_fields ~w[published min_years_of_work_experience proposed_salary]a
 
   @doc false
@@ -53,7 +53,6 @@ defmodule Cen.Employers.Vacancy do
     |> validate_length(:description, max: 2000)
     |> validate_length(:employment_types, min: 1)
     |> validate_length(:work_schedules, min: 1)
-    |> validate_length(:educations, min: 1)
     |> validate_required(@requried_fields)
     |> put_change(:reviewed, true)
   end

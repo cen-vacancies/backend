@@ -37,7 +37,7 @@ defmodule Cen.EmployersFixtures do
       |> Enum.into(%{
         title: "some title",
         description: "some description",
-        educations: [:none, :secondary],
+        education: :secondary,
         employment_types: [:main, :secondary],
         field_of_art: :music,
         min_years_of_work_experience: 42,

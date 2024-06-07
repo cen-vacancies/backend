@@ -317,6 +317,6 @@ defmodule Cen.Employers do
   defp filter_education(query, education) do
     educations = Enum.drop_while(@reversed_educations, &(&1 != education))
 
-    QueryUtils.filter(query, :educations, :intersection, educations)
+    QueryUtils.filter(query, :education, :field_in_value, educations)
   end
 end

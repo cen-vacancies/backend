@@ -10,6 +10,7 @@ defmodule Cen.Repo.Migrations.CreateUsersAuthTables do
       add :fullname, :string, null: false
       add :role, :string, null: false
       add :birth_date, :date
+      add :phone, :string, null: false, default: ""
       add :confirmed_at, :naive_datetime
       timestamps(type: :utc_datetime)
     end

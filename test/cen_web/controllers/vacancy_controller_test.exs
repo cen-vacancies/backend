@@ -14,7 +14,7 @@ defmodule CenWeb.VacancyControllerTest do
     description: "some description",
     employment_types: [:main],
     work_schedules: [:full_time],
-    educations: [:none],
+    education: :none,
     field_of_art: :music,
     min_years_of_work_experience: 42,
     proposed_salary: 42
@@ -23,7 +23,7 @@ defmodule CenWeb.VacancyControllerTest do
     description: "some updated description",
     employment_types: [:secondary],
     work_schedules: [:part_time],
-    educations: [:bachelor],
+    education: :bachelor,
     field_of_art: :visual,
     min_years_of_work_experience: 43,
     proposed_salary: 43
@@ -64,7 +64,7 @@ defmodule CenWeb.VacancyControllerTest do
       assert %{
                "id" => ^id,
                "description" => "some description",
-               "educations" => ["none"],
+               "education" => "none",
                "employment_types" => ["main"],
                "field_of_art" => "music",
                "min_years_of_work_experience" => 42,
@@ -96,7 +96,7 @@ defmodule CenWeb.VacancyControllerTest do
       assert %{
                "id" => ^id,
                "description" => "some updated description",
-               "educations" => ["bachelor"],
+               "education" => "bachelor",
                "employment_types" => ["secondary"],
                "field_of_art" => "visual",
                "min_years_of_work_experience" => 43,
@@ -245,9 +245,9 @@ defmodule CenWeb.VacancyControllerTest do
     end
 
     test "shows with given education and bachelor", %{conn: conn} do
-      vacancy_fixture(educations: [:none], published: true)
-      vacancy_fixture(educations: [:secondary], published: true)
-      vacancy_fixture(educations: [:bachelor], published: true)
+      vacancy_fixture(education: :none, published: true)
+      vacancy_fixture(education: :secondary, published: true)
+      vacancy_fixture(education: :bachelor, published: true)
 
       conn = get(conn, ~p"/api/vacancies/search?education=secondary")
       json = json_response(conn, 200)

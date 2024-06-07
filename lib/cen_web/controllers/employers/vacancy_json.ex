@@ -29,7 +29,7 @@ defmodule CenWeb.VacancyJSON do
       description: vacancy.description,
       employment_types: vacancy.employment_types,
       work_schedules: vacancy.work_schedules,
-      educations: vacancy.educations,
+      education: vacancy.education,
       field_of_art: vacancy.field_of_art,
       proposed_salary: vacancy.proposed_salary,
       min_years_of_work_experience: vacancy.min_years_of_work_experience,

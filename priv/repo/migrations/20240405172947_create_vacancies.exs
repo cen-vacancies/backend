@@ -8,8 +8,9 @@ defmodule Cen.Repo.Migrations.CreateVacancies do
 
       add :title, :string, null: false
       add :description, :text, null: false
-      add :employment_type, :string, null: false
-      add :work_schedule, :string, null: false
+      add :employment_types, {:array, :string}, default: [], null: false
+      add :work_schedules, {:array, :string}, default: [], null: false
+
       add :education, :string, null: false
       add :field_of_art, :string, null: false
 
