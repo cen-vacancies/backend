@@ -75,7 +75,7 @@ defmodule Cen.Applicants do
 
   """
   @spec create_cv(map()) :: {:ok, CV.t()} | {:error, Ecto.Changeset.t()}
-  def create_cv(attrs \\ %{}) do
+  def create_cv(attrs) do
     attrs
     |> Map.fetch!(:applicant)
     |> Ecto.build_assoc(:cvs)

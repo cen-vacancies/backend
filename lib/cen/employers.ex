@@ -89,7 +89,7 @@ defmodule Cen.Employers do
 
   """
   @spec create_organization(map()) :: {:ok, Organization.t()} | {:error, Ecto.Changeset.t()}
-  def create_organization(attrs \\ %{}) do
+  def create_organization(attrs) do
     attrs
     |> Map.fetch!(:employer)
     |> Ecto.build_assoc(:organization)
@@ -228,7 +228,7 @@ defmodule Cen.Employers do
 
   """
   @spec create_vacancy(map()) :: {:ok, Vacancy.t()} | {:error, Ecto.Changeset.t()}
-  def create_vacancy(attrs \\ %{}) do
+  def create_vacancy(attrs) do
     attrs
     |> Map.fetch!(:organization)
     |> Ecto.build_assoc(:vacancies)

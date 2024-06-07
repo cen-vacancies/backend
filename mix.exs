@@ -10,7 +10,24 @@ defmodule Cen.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      test_coverage: [summary: [threshold: 0]],
+      test_coverage: [
+        summary: [threshold: 0],
+        ignore_modules: [
+          # Constants
+          Cen.Enums,
+          # Libs
+          ~r/Cen\.Repo.*/,
+          Cen.Token.Plug,
+          CenWeb.Telemetry,
+          # HTML
+          CenWeb.Layouts,
+          CenWeb.CoreComponents,
+          CenWeb.ErrorHTML,
+          CenWeb.Gettext,
+          # Others
+          ~r/.*Util.*/
+        ]
+      ],
       preferred_envs: [
         "ecto.reset.test": :test
       ]

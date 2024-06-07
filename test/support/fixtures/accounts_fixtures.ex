@@ -11,7 +11,7 @@ defmodule Cen.AccountsFixtures do
   def valid_user_role, do: :applicant
   def valid_user_phone, do: "+78001234567"
 
-  def valid_user_attributes(attrs \\ %{}) do
+  def valid_user_attributes(attrs) do
     Enum.into(attrs, %{
       email: unique_user_email(),
       password: valid_user_password(),
