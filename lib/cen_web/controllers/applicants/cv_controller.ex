@@ -12,6 +12,7 @@ defmodule CenWeb.CVController do
   alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.UpdateCVRequest
   alias CenWeb.Schemas.Vacancies.CVsQueryResponse
+  alias CenWeb.UserAuth
 
   fallback = CenWeb.FallbackController
   action_fallback fallback
@@ -177,6 +178,23 @@ defmodule CenWeb.CVController do
     with {:ok, %CV{}} <- Applicants.delete_cv(cv) do
       send_resp(conn, :no_content, "")
     end
+  end
+
+  operation :user_index,
+    summary: "Get user's CVs",
+    parameters: [
+      page: [in: :query, description: "Page number", type: :integer],
+      page_size: [in: :query, description: "Page size", type: :integer]
+    ],
+    responses: [
+      ok: {"Vacancies list", "application/json", CVsQueryResponse}
+    ]
+
+  @spec user_index(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def user_index(conn, params) do
+    user = UserAuth.fetch_current_user(conn)
+    page = Applicants.get_cvs_by_user_id(user.id, params)
+    render(conn, :index, page: page)
   end
 
   defp get_cv(%{assigns: %{cv: cv}}), do: cv

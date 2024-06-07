@@ -257,6 +257,29 @@ defmodule CenWeb.VacancyControllerTest do
     end
   end
 
+  describe "list user's vacancies" do
+    setup %{conn: conn} do
+      employer_1 = Cen.AccountsFixtures.user_fixture(role: :employer)
+      create_vacancy(%{user: employer_1})
+
+      employer_2 = Cen.AccountsFixtures.user_fixture(role: :employer)
+      create_vacancy(%{user: employer_2})
+
+      %{
+        conn: log_in_user(conn, employer_1)
+      }
+    end
+
+    test "returns only current_user vacancies", %{conn: conn} do
+      conn = get(conn, "/api/user/vacancies")
+
+      json = json_response(conn, 200)
+
+      assert_schema VacanciesQueryResponse, json
+      assert length(json["data"]) == 1
+    end
+  end
+
   defp create_organization(%{user: user}) do
     organization = organization_fixture(employer: user)
     %{organization: organization}

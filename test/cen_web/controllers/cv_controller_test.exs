@@ -243,22 +243,22 @@ defmodule CenWeb.CVControllerTest do
     end
 
     test "set page number", %{conn: conn} do
-      first_vacancy = cv_fixture(published: true)
-      secondary_vacancy = cv_fixture(published: true)
+      first_cv = cv_fixture(published: true)
+      secondary_cv = cv_fixture(published: true)
 
       first_conn = get(conn, ~p"/api/cvs/search?page=1&page_size=1")
 
       first_json = json_response(first_conn, 200)
 
       assert_schema CVsQueryResponse, first_json
-      assert first_json |> Map.fetch!("data") |> Enum.at(0) |> Map.fetch!("id") == first_vacancy.id
+      assert first_json |> Map.fetch!("data") |> Enum.at(0) |> Map.fetch!("id") == first_cv.id
 
       second_conn = get(conn, ~p"/api/cvs/search?page=2&page_size=1")
 
       second_json = json_response(second_conn, 200)
 
       assert_schema CVsQueryResponse, second_json
-      assert second_json |> Map.fetch!("data") |> Enum.at(0) |> Map.fetch!("id") == secondary_vacancy.id
+      assert second_json |> Map.fetch!("data") |> Enum.at(0) |> Map.fetch!("id") == secondary_cv.id
     end
 
     test "shows with given education and bachelor", %{conn: conn} do
@@ -273,6 +273,29 @@ defmodule CenWeb.CVControllerTest do
 
       assert_schema CVsQueryResponse, json
       assert json["page"]["total_entries"] == 2
+    end
+  end
+
+  describe "list user's CVs" do
+    setup %{conn: conn} do
+      applicant_1 = Cen.AccountsFixtures.user_fixture(role: :applicant)
+      create_cv(%{user: applicant_1})
+
+      applicant_2 = Cen.AccountsFixtures.user_fixture(role: :applicant)
+      create_cv(%{user: applicant_2})
+
+      %{
+        conn: log_in_user(conn, applicant_1)
+      }
+    end
+
+    test "returns only current_user CVs", %{conn: conn} do
+      conn = get(conn, "/api/user/cvs")
+
+      json = json_response(conn, 200)
+
+      assert_schema CVsQueryResponse, json
+      assert length(json["data"]) == 1
     end
   end
 

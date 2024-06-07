@@ -286,6 +286,14 @@ defmodule Cen.Employers do
     Vacancy.changeset(vacancy, attrs)
   end
 
+  @spec get_vacancies_by_organization_id(integer(), map()) :: Scrivener.Page.t()
+  def get_vacancies_by_organization_id(organization_id, options) do
+    from(vacancy in Vacancy)
+    |> where([vacancy], vacancy.organization_id == ^organization_id)
+    |> preload(organization: [:employer])
+    |> Repo.paginate(page: options["page"], page_size: options["page_size"])
+  end
+
   @spec search_vacancies(map()) :: Scrivener.Page.t()
   def search_vacancies(options) do
     Vacancy

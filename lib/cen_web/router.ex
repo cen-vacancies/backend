@@ -71,6 +71,9 @@ defmodule CenWeb.Router do
       param: "cv_id",
       only: [:create, :update, :delete]
 
+    get "/user/vacancies", VacancyController, :user_index
+    get "/user/cvs", CVController, :user_index
+
     post "/send_interest", InterestController, :send_interest
     get "/interests", InterestController, :index
   end

@@ -127,6 +127,14 @@ defmodule Cen.Applicants do
     cv.applicant_id == user.id
   end
 
+  @spec get_cvs_by_user_id(integer(), map()) :: Scrivener.Page.t()
+  def get_cvs_by_user_id(user_id, options) do
+    from(cv in CV)
+    |> where([cv], cv.applicant_id == ^user_id)
+    |> preload(:applicant)
+    |> Repo.paginate(page: options["page"], page_size: options["page_size"])
+  end
+
   @spec search_cvs(map()) :: Scrivener.Page.t()
   def search_cvs(options) do
     CV

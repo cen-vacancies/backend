@@ -177,5 +177,25 @@ defmodule CenWeb.VacancyController do
     send_resp(conn, :no_content, "")
   end
 
+  operation :user_index,
+    summary: "Get user's vacancies",
+    parameters: [
+      page: [in: :query, description: "Page number", type: :integer],
+      page_size: [in: :query, description: "Page size", type: :integer]
+    ],
+    responses: [
+      ok: {"Vacancies list", "application/json", VacanciesQueryResponse}
+    ]
+
+  @spec user_index(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def user_index(conn, params) do
+    user = UserAuth.fetch_current_user(conn)
+
+    with {:ok, organization} <- Employers.fetch_organization_by_user(user) do
+      page = Employers.get_vacancies_by_organization_id(organization.id, params)
+      render(conn, :index, page: page)
+    end
+  end
+
   defp fetch_vacancy(%{assigns: %{vacancy: vacancy}}), do: vacancy
 end
