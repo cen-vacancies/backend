@@ -3,7 +3,7 @@ defmodule Cen.Repo do
     otp_app: :cen,
     adapter: Ecto.Adapters.Postgres
 
-  use Scrivener, page_size: 10, max_page_size: 50
+  use Scrivener, page_size: 50, max_page_size: 100
 
   @spec fetch(Ecto.Queryable.t(), term(), Keyword.t()) :: Ecto.Schema.t() | term() | nil
   def fetch(queryable, id, options \\ []) do

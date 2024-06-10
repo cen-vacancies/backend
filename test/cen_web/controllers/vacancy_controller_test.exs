@@ -210,9 +210,9 @@ defmodule CenWeb.VacancyControllerTest do
 
       assert json["page"] == %{
                "page_number" => 1,
-               "page_size" => 10,
+               "page_size" => 50,
                "total_entries" => 55,
-               "total_pages" => 6
+               "total_pages" => 2
              }
     end
 
