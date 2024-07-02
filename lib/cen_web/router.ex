@@ -75,6 +75,8 @@ defmodule CenWeb.Router do
 
     put "/user/email", UserController, :update_email
     patch "/user/email", UserController, :update_email
+    put "/user/password", UserController, :update_password
+    patch "/user/password", UserController, :update_password
 
     resources "/organization", OrganizationController,
       singleton: true,

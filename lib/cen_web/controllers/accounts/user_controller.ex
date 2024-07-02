@@ -6,6 +6,7 @@ defmodule CenWeb.UserController do
   alias CenWeb.Schemas.CreateUserRequest
   alias CenWeb.Schemas.UpdateUserEmailRequest
   alias CenWeb.Schemas.UpdateUserInfoRequest
+  alias CenWeb.Schemas.UpdateUserPasswordRequest
   alias CenWeb.Schemas.UserResponse
   alias CenWeb.UserAuth
 
@@ -80,6 +81,26 @@ defmodule CenWeb.UserController do
       conn
       |> UserAuth.fetch_current_user()
       |> Accounts.update_user_email_with_password(attrs["current_password"], attrs)
+
+    with {:ok, updated_user} <- updating_result do
+      render(conn, :show, user: updated_user)
+    end
+  end
+
+  operation :update_password,
+    summary: "Update user's password",
+    request_body: {"User password", "application/json", UpdateUserPasswordRequest},
+    responses: [
+      ok: {"Updated user", "application/json", UserResponse},
+      unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}
+    ]
+
+  @spec update_password(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
+  def update_password(conn, %{"user" => attrs}) do
+    updating_result =
+      conn
+      |> UserAuth.fetch_current_user()
+      |> Accounts.update_user_password(attrs["current_password"], attrs)
 
     with {:ok, updated_user} <- updating_result do
       render(conn, :show, user: updated_user)

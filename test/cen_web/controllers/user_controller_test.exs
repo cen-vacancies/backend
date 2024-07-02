@@ -192,6 +192,63 @@ defmodule CenWeb.UserControllerTest do
     end
   end
 
+  describe "PATCH /api/user/password" do
+    setup :register_and_log_in_user
+
+    test "updates user password", %{conn: conn} do
+      valid_attrs = %{
+        current_password: AccountsFixtures.valid_user_password(),
+        password: "new-password"
+      }
+
+      conn = patch(conn, ~p"/api/user/password", %{user: valid_attrs})
+
+      json = json_response(conn, 200)
+
+      assert_schema UserResponse, json
+    end
+
+    test "returns error when invalid password", %{conn: conn} do
+      valid_attrs = %{
+        current_password: "invalid-password",
+        password: "new-password"
+      }
+
+      conn = patch(conn, ~p"/api/user/password", %{user: valid_attrs})
+
+      json = json_response(conn, 422)
+
+      assert_schema ChangesetErrorsResponse, json
+    end
+
+    test "returns error when attrs are invalid", %{conn: conn} do
+      invalid_attrs = %{
+        password: "new-password"
+      }
+
+      conn = patch(conn, ~p"/api/user/password", %{user: invalid_attrs})
+
+      json = json_response(conn, 422)
+
+      assert_schema ChangesetErrorsResponse, json
+    end
+
+    test "returns unauthorized when not logged in", %{conn: conn} do
+      valid_attrs = %{
+        current_password: AccountsFixtures.valid_user_password(),
+        password: "new-password"
+      }
+
+      conn =
+        conn
+        |> delete_req_header("authorization")
+        |> patch(~p"/api/user/password", %{user: valid_attrs})
+
+      json = json_response(conn, 401)
+      assert_schema GenericErrorResponse, json
+    end
+  end
+
   describe "DELETE /api/user" do
     setup :register_and_log_in_user
 
