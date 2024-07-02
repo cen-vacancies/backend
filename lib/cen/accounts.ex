@@ -153,6 +153,13 @@ defmodule Cen.Accounts do
     |> Ecto.Changeset.apply_action(:update)
   end
 
+  @spec not_safe_update_user_email(User.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  def not_safe_update_user_email(user, attrs) do
+    user
+    |> User.email_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Updates the user email using the given token.
 

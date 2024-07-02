@@ -4,6 +4,7 @@ defmodule CenWeb.UserController do
   alias Cen.Accounts
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.CreateUserRequest
+  alias CenWeb.Schemas.UpdateUserEmailRequest
   alias CenWeb.Schemas.UpdateUserInfoRequest
   alias CenWeb.Schemas.UserResponse
   alias CenWeb.UserAuth
@@ -59,6 +60,26 @@ defmodule CenWeb.UserController do
       conn
       |> UserAuth.fetch_current_user()
       |> Accounts.update_user_info(user_info)
+
+    with {:ok, updated_user} <- updating_result do
+      render(conn, :show, user: updated_user)
+    end
+  end
+
+  operation :update_email,
+    summary: "Update user's email",
+    request_body: {"User email", "application/json", UpdateUserEmailRequest},
+    responses: [
+      ok: {"Updated user", "application/json", UserResponse},
+      unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}
+    ]
+
+  @spec update_email(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
+  def update_email(conn, %{"user" => user_info}) do
+    updating_result =
+      conn
+      |> UserAuth.fetch_current_user()
+      |> Accounts.not_safe_update_user_email(user_info)
 
     with {:ok, updated_user} <- updating_result do
       render(conn, :show, user: updated_user)
