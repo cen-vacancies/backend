@@ -13,7 +13,7 @@ defmodule CenWeb.OrganizationControllerTest do
     address: "some address",
     description: "some description",
     logo: "some logo",
-    phone: "some phone",
+    phone: "+78007654321",
     email: "some email",
     website: "some website",
     social_link: "some social_link"
@@ -23,7 +23,7 @@ defmodule CenWeb.OrganizationControllerTest do
     address: "some updated address",
     description: "some updated description",
     logo: "some updated logo",
-    phone: "some updated phone",
+    phone: "+79007654321",
     email: "some updated email",
     website: "some updated website",
     social_link: "some updated social_link"

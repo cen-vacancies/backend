@@ -44,6 +44,7 @@ defmodule Cen.EmployersTest do
         address: "some address",
         description: "some description",
         logo: "some logo",
+        phone: "+78007654321",
         employer: AccountsFixtures.user_fixture()
       }
 

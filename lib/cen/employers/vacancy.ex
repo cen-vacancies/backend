@@ -41,7 +41,7 @@ defmodule Cen.Employers.Vacancy do
     timestamps(type: :utc_datetime)
   end
 
-  @requried_fields ~w[title description employment_types work_schedules education field_of_art]a
+  @requried_fields ~w[title field_of_art description employment_types work_schedules education]a
   @optional_fields ~w[published min_years_of_work_experience proposed_salary]a
 
   @doc false
@@ -49,7 +49,7 @@ defmodule Cen.Employers.Vacancy do
   def changeset(vacancy, attrs) do
     vacancy
     |> cast(attrs, @requried_fields ++ @optional_fields)
-    |> validate_length(:title, max: 255)
+    |> validate_length(:title, max: 160)
     |> validate_length(:description, max: 2000)
     |> validate_length(:employment_types, min: 1)
     |> validate_length(:work_schedules, min: 1)

@@ -8,13 +8,13 @@ defmodule CenWeb.Schemas.CV do
     type: :object,
     properties: %{
       id: %{type: :integer},
-      title: %{type: :string, maximum: 255},
-      summary: %{type: :string, maximum: 2000},
+      title: %{type: :string, maxLength: 160},
+      summary: %{type: :string, maxLength: 2000},
       published: %{type: :boolean},
       reviewed: %{type: :boolean},
       photo: %{type: :string},
-      employment_types: %{type: :array, items: %{type: :string, enum: Cen.Enums.employment_types()}},
-      work_schedules: %{type: :array, items: %{type: :string, enum: Cen.Enums.work_schedules()}},
+      employment_types: %{type: :array, minItems: 1, items: %{type: :string, enum: Cen.Enums.employment_types()}},
+      work_schedules: %{type: :array, minItems: 1, items: %{type: :string, enum: Cen.Enums.work_schedules()}},
       field_of_art: %{type: :string, enum: Cen.Enums.field_of_arts()},
       applicant: User.schema(),
       educations: %{
@@ -25,9 +25,9 @@ defmodule CenWeb.Schemas.CV do
           optional: ~w[department],
           properties: %{
             level: %{type: :string, enum: Cen.Enums.cv_educations()},
-            educational_institution: %{type: :string, nullable: true},
-            department: %{type: :string, nullable: true},
-            specialization: %{type: :string, nullable: true},
+            educational_institution: %{type: :string, maxLength: 160, nullable: true},
+            department: %{type: :string, maxLength: 160, nullable: true},
+            specialization: %{type: :string, maxLength: 160, nullable: true},
             year_of_graduation: %{type: :integer, nullable: true}
           }
         }
@@ -38,9 +38,9 @@ defmodule CenWeb.Schemas.CV do
           type: :object,
           optional: ~w[organization_name job_title description]a,
           properties: %{
-            organization_name: %{type: :string},
-            job_title: %{type: :string},
-            description: %{type: :string},
+            organization_name: %{type: :string, maxLength: 160, nullable: true},
+            job_title: %{type: :string, maxLength: 160, nullable: true},
+            description: %{type: :string, maxLength: 1000, nullable: true},
             start_date: %{type: :string, format: :date, description: "day should be ignored"},
             end_date: %{type: :string, format: :date, description: "day should be ignored"}
           }

@@ -46,17 +46,19 @@ defmodule CenWeb.StrictAPISchema do
   def set_required(api_schema) do
     updated_schema = traverse_schema(api_schema, &set_required/1)
 
-    all_keys =
-      api_schema
-      |> map_get_thruly(:properties, %{})
-      |> Map.keys()
+    Map.put_new_lazy(updated_schema, :required, fn ->
+      all_keys =
+        api_schema
+        |> map_get_thruly(:properties, %{})
+        |> Map.keys()
 
-    optional = Map.get(api_schema, :optional, [])
+      optional = Map.get(api_schema, :optional, [])
 
-    case optional do
-      :all -> Map.put(updated_schema, :required, [])
-      _list -> Map.put(updated_schema, :required, all_keys -- optional)
-    end
+      case optional do
+        :all -> []
+        _list -> all_keys -- optional
+      end
+    end)
   end
 
   def deny_additional_properties(%{type: :object} = api_schema) do
