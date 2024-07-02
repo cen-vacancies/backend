@@ -4,10 +4,10 @@ defmodule CenWeb.Schemas.Phone do
   use CenWeb.StrictAPISchema
 
   @phone_description """
-  Номер телефона
+  Phone number
 
-  - Должен содержать 12 символов
-  - Должен начинаться с "+7"
+  - Must contain 12 characters
+  - Must begin with "+7"
   """
 
   CenWeb.StrictAPISchema.schema(%{
