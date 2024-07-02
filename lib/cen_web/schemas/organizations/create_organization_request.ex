@@ -9,7 +9,7 @@ defmodule CenWeb.Schemas.CreateOrganizationRequest do
     properties: %{
       organization: %{
         type: :object,
-        optional: [:logo],
+        optional: ~w[address logo email website social_link]a,
         properties: using_properties(Organization.schema(), remove: ~w[id employer]a)
       }
     },

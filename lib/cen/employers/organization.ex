@@ -2,6 +2,7 @@ defmodule Cen.Employers.Organization do
   @moduledoc false
   use Ecto.Schema
 
+  import Cen.ChangesetUtils
   import Ecto.Changeset
 
   alias Cen.Accounts.User
@@ -26,8 +27,8 @@ defmodule Cen.Employers.Organization do
     field :address, :string
     field :description, :string
     field :logo, :string, default: "/images/no_photo.jpg"
-
     field :phone, :string
+
     field :email, :string
     field :website, :string
     field :social_link, :string
@@ -38,17 +39,27 @@ defmodule Cen.Employers.Organization do
     timestamps(type: :utc_datetime)
   end
 
-  @required_fields ~w[name description address]a
-  @optional_fields ~w[logo phone email website social_link]a
+  @required_fields ~w[name description phone]a
+  @optional_fields ~w[address logo email website social_link]a
 
   @doc false
   @spec changeset(t(), map()) :: Ecto.Changeset.t()
   def changeset(organization, attrs) do
     organization
     |> cast(attrs, @required_fields ++ @optional_fields)
-    |> validate_length(:name, max: 255)
-    |> validate_length(:address, max: 255)
+    |> validate_length(:name, max: 160)
+    |> validate_length(:address, max: 160)
+    |> validate_length(:email, max: 160)
+    |> validate_length(:website, max: 160)
+    |> validate_length(:social_link, max: 160)
     |> validate_length(:description, max: 2000)
+    |> validate_phone()
     |> validate_required(@required_fields)
+  end
+
+  defp validate_phone(changeset) do
+    changeset
+    |> validate_length(:phone, is: 12)
+    |> validate_starts_with(:phone, "+7")
   end
 end

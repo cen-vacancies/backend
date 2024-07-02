@@ -78,7 +78,7 @@ defmodule Cen.Applicants.CV do
     |> cast(attrs, @requried_fields ++ @optional_fields)
     |> cast_embed(:educations, with: &education_changeset/2, requried: true)
     |> cast_embed(:jobs, with: &job_changeset/2, requried: true)
-    |> validate_length(:title, max: 255)
+    |> validate_length(:title, max: 160)
     |> validate_length(:summary, max: 2000)
     |> validate_length(:employment_types, min: 1)
     |> validate_length(:work_schedules, min: 1)
@@ -101,6 +101,9 @@ defmodule Cen.Applicants.CV do
   def education_changeset(education, attrs) do
     education
     |> cast(attrs, @education_optional_fields ++ @education_required_fields)
+    |> validate_length(:educational_institution, max: 160)
+    |> validate_length(:department, max: 160)
+    |> validate_length(:specialization, max: 160)
     |> validate_required(@education_required_fields)
   end
 
@@ -111,6 +114,9 @@ defmodule Cen.Applicants.CV do
   def job_changeset(job, attrs) do
     job
     |> cast(attrs, @job_optional_fields ++ @job_required_fields)
+    |> validate_length(:organization_name, max: 160)
+    |> validate_length(:job_title, max: 160)
+    |> validate_length(:description, max: 1000)
     |> validate_required(@job_required_fields)
   end
 end

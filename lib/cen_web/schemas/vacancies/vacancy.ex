@@ -9,13 +9,21 @@ defmodule CenWeb.Schemas.Vacancy do
     type: :object,
     properties: %{
       id: %{type: :integer},
-      title: %{type: :string},
-      description: %{type: :string},
-      employment_types: %{type: :array, items: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.employment_types()}},
-      work_schedules: %{type: :array, items: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.work_schedules()}},
+      title: %{type: :string, maxLength: 160},
+      description: %{type: :string, maxLength: 2000},
+      employment_types: %{
+        type: :array,
+        items: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.employment_types()},
+        minItems: 1
+      },
+      work_schedules: %{
+        type: :array,
+        items: %OpenApiSpex.Schema{type: :string, enum: Cen.Enums.work_schedules()},
+        minItems: 1
+      },
       education: %{type: :string, enum: Cen.Enums.educations()},
       field_of_art: %{type: :string, enum: Cen.Enums.field_of_arts()},
-      min_years_of_work_experience: %{type: :integer, default: 0},
+      min_years_of_work_experience: %{type: :integer},
       proposed_salary: %{type: :integer, nullable: true},
       published: %{type: :boolean},
       reviewed: %{type: :boolean},

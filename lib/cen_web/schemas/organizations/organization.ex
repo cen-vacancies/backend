@@ -2,20 +2,21 @@ defmodule CenWeb.Schemas.Organization do
   @moduledoc false
   use CenWeb.StrictAPISchema
 
+  alias CenWeb.Schemas.Phone
   alias CenWeb.Schemas.User
 
   CenWeb.StrictAPISchema.schema(%{
     type: :object,
     properties: %{
       id: %{type: :integer},
-      name: %{type: :string},
+      name: %{type: :string, maxLength: 160},
       logo: %{type: :string},
-      description: %{type: :string},
-      address: %{type: :string},
-      phone: %{type: :string},
-      email: %{type: :string},
-      website: %{type: :string},
-      social_link: %{type: :string},
+      description: %{type: :string, maxLength: 2000},
+      address: %{type: :string, maxLength: 160},
+      phone: Phone.schema(),
+      email: %{type: :string, maxLength: 160},
+      website: %{type: :string, maxLength: 160},
+      social_link: %{type: :string, maxLength: 160},
       employer: User.schema()
     },
     example: %{

@@ -14,7 +14,7 @@ defmodule Cen.EmployersFixtures do
       attrs
       |> Enum.into(%{
         address: "some address",
-        phone: "some phone",
+        phone: "+78001234567",
         email: "some email",
         website: "some website",
         social_link: "some social_link",
