@@ -195,7 +195,7 @@ defmodule CenWeb.UserControllerTest do
   describe "PATCH /api/user/password" do
     setup :register_and_log_in_user
 
-    test "udpates user password", %{conn: conn} do
+    test "updates user password", %{conn: conn} do
       valid_attrs = %{
         current_password: AccountsFixtures.valid_user_password(),
         password: "new-password"
