@@ -73,6 +73,9 @@ defmodule CenWeb.Router do
     put "/user/info", UserController, :update_info
     patch "/user/info", UserController, :update_info
 
+    put "/user/email", UserController, :update_email
+    patch "/user/email", UserController, :update_email
+
     resources "/organization", OrganizationController,
       singleton: true,
       only: [:create, :show, :update, :delete]

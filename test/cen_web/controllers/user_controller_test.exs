@@ -1,6 +1,7 @@
 defmodule CenWeb.UserControllerTest do
   use CenWeb.ConnCase, async: true
 
+  alias Cen.AccountsFixtures
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.UserResponse
@@ -128,6 +129,63 @@ defmodule CenWeb.UserControllerTest do
         conn
         |> delete_req_header("authorization")
         |> patch(~p"/api/user/info", %{user: valid_attrs})
+
+      json = json_response(conn, 401)
+      assert_schema GenericErrorResponse, json
+    end
+  end
+
+  describe "PATCH /api/user/email" do
+    setup :register_and_log_in_user
+
+    test "updates user email", %{conn: conn} do
+      valid_attrs = %{
+        email: "some-test@example.com",
+        current_password: AccountsFixtures.valid_user_password()
+      }
+
+      conn = patch(conn, ~p"/api/user/email", %{user: valid_attrs})
+
+      json = json_response(conn, 200)
+
+      assert_schema UserResponse, json
+    end
+
+    test "returns error when invalid password", %{conn: conn} do
+      valid_attrs = %{
+        email: "some-test@example.com",
+        current_password: "invalid-password"
+      }
+
+      conn = patch(conn, ~p"/api/user/email", %{user: valid_attrs})
+
+      json = json_response(conn, 422)
+
+      assert_schema ChangesetErrorsResponse, json
+    end
+
+    test "returns error when attrs are invalid", %{conn: conn} do
+      invalid_attrs = %{
+        email: "invalid-email"
+      }
+
+      conn = patch(conn, ~p"/api/user/email", %{user: invalid_attrs})
+
+      json = json_response(conn, 422)
+
+      assert_schema ChangesetErrorsResponse, json
+    end
+
+    test "returns unauthorized when not logged in", %{conn: conn} do
+      valid_attrs = %{
+        email: "some-test@example.com",
+        current_password: AccountsFixtures.valid_user_password()
+      }
+
+      conn =
+        conn
+        |> delete_req_header("authorization")
+        |> patch(~p"/api/user/email", %{user: valid_attrs})
 
       json = json_response(conn, 401)
       assert_schema GenericErrorResponse, json

@@ -153,6 +153,14 @@ defmodule Cen.Accounts do
     |> Ecto.Changeset.apply_action(:update)
   end
 
+  @spec update_user_email_with_password(User.t(), String.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  def update_user_email_with_password(user, password, attrs) do
+    user
+    |> User.email_changeset(attrs)
+    |> User.validate_current_password(password)
+    |> Repo.update()
+  end
+
   @doc """
   Updates the user email using the given token.
 
