@@ -75,11 +75,11 @@ defmodule CenWeb.UserController do
     ]
 
   @spec update_email(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
-  def update_email(conn, %{"user" => %{"current_password" => password} = attrs}) do
+  def update_email(conn, %{"user" => attrs}) do
     updating_result =
       conn
       |> UserAuth.fetch_current_user()
-      |> Accounts.update_user_email_with_password(password, attrs)
+      |> Accounts.update_user_email_with_password(attrs["current_password"], attrs)
 
     with {:ok, updated_user} <- updating_result do
       render(conn, :show, user: updated_user)

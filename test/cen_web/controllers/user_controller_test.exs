@@ -166,8 +166,7 @@ defmodule CenWeb.UserControllerTest do
 
     test "returns error when attrs are invalid", %{conn: conn} do
       invalid_attrs = %{
-        email: "invalid-email",
-        current_password: AccountsFixtures.valid_user_password()
+        email: "invalid-email"
       }
 
       conn = patch(conn, ~p"/api/user/email", %{user: invalid_attrs})
