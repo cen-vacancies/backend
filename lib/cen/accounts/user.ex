@@ -207,8 +207,8 @@ defmodule Cen.Accounts.User do
   defp validate_phone(changeset) do
     changeset
     |> validate_required([:phone])
-    |> validate_length(:phone, min: 9, max: 16)
-    |> validate_starts_with(:phone, "+")
+    |> validate_length(:phone, is: 12)
+    |> validate_starts_with(:phone, "+7")
   end
 
   defp validate_applicant(changeset) do
