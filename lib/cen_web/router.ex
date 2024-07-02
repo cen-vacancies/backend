@@ -14,8 +14,17 @@ defmodule CenWeb.Router do
       "content-security-policy" =>
         "default-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; img-src 'self' data: blob:; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; font-src 'self'"
     }
+  end
 
-    plug :put_secure_browser_headers
+  pipeline :rapi_doc do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :protect_from_forgery
+
+    plug :put_secure_browser_headers, %{
+      "content-security-policy" =>
+        "default-src 'self'; script-src 'self' https://unpkg.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; object-src 'none'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'self'"
+    }
   end
 
   pipeline :api do
@@ -26,6 +35,11 @@ defmodule CenWeb.Router do
   scope "/" do
     pipe_through :browser
     get "/swaggerui", OpenApiSpex.Plug.SwaggerUI, path: "/api/openapi"
+  end
+
+  scope "/" do
+    pipe_through :rapi_doc
+    get "/rapidoc", CenWeb.RapiDocController, :index
   end
 
   scope "/api" do
