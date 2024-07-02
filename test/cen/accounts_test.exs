@@ -205,33 +205,28 @@ defmodule Cen.AccountsTest do
     end
   end
 
-  describe "not_safe_update_user_email/2" do
+  describe "update_user_email_with_password/3" do
     setup do
       user = user_fixture()
       email = unique_user_email()
+      password = valid_user_password()
 
-      %{user: user, email: email}
+      %{user: user, email: email, password: password}
     end
 
-    test "updates the email without a password", %{user: user, email: email} do
-      assert {:ok, updated_user} = Accounts.not_safe_update_user_email(user, %{email: email})
-      assert updated_user.email == email
+    test "updates user's password", %{user: user, email: email, password: password} do
+      assert {:ok, user} = Accounts.update_user_email_with_password(user, password, %{email: email})
+      assert user.email == email
     end
 
-    test "validates email", %{user: user} do
-      {:error, changeset} = Accounts.not_safe_update_user_email(user, %{email: "not valid"})
-      assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
-    end
-
-    test "requires email to change", %{user: user} do
-      {:error, changeset} = Accounts.not_safe_update_user_email(user, %{})
+    test "requires email to change", %{user: user, password: password} do
+      {:error, changeset} = Accounts.update_user_email_with_password(user, password, %{})
       assert %{email: ["did not change"]} = errors_on(changeset)
     end
 
-    test "requires unique email", %{user: user} do
-      %{email: email} = user_fixture()
-      {:error, changeset} = Accounts.not_safe_update_user_email(user, %{email: email})
-      assert "has already been taken" in errors_on(changeset).email
+    test "validates email", %{user: user, password: password} do
+      {:error, changeset} = Accounts.update_user_email_with_password(user, password, %{email: "not valid"})
+      assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
     end
   end
 

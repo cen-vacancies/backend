@@ -11,11 +11,11 @@ defmodule CenWeb.Schemas.UpdateUserEmailRequest do
       user: %{
         type: :object,
         optional: :all,
-        properties: using_properties(User.schema(), only: ~w[email]a)
+        properties: using_properties(User.schema(), only: ~w[email]a, add: %{current_password: %{type: :string}})
       }
     },
     example: %{
-      "user" => using_example(User.schema(), only: ~w(email))
+      "user" => using_example(User.schema(), only: ~w(email), add: %{"current_password" => "123456qwerty"})
     }
   })
 end

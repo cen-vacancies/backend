@@ -1,6 +1,7 @@
 defmodule CenWeb.UserControllerTest do
   use CenWeb.ConnCase, async: true
 
+  alias Cen.AccountsFixtures
   alias CenWeb.Schemas.ChangesetErrorsResponse
   alias CenWeb.Schemas.GenericErrorResponse
   alias CenWeb.Schemas.UserResponse
@@ -139,7 +140,8 @@ defmodule CenWeb.UserControllerTest do
 
     test "updates user email", %{conn: conn} do
       valid_attrs = %{
-        email: "some-test@example.com"
+        email: "some-test@example.com",
+        current_password: AccountsFixtures.valid_user_password()
       }
 
       conn = patch(conn, ~p"/api/user/email", %{user: valid_attrs})
@@ -149,9 +151,23 @@ defmodule CenWeb.UserControllerTest do
       assert_schema UserResponse, json
     end
 
+    test "returns error when invalid password", %{conn: conn} do
+      valid_attrs = %{
+        email: "some-test@example.com",
+        current_password: "invalid-password"
+      }
+
+      conn = patch(conn, ~p"/api/user/email", %{user: valid_attrs})
+
+      json = json_response(conn, 422)
+
+      assert_schema ChangesetErrorsResponse, json
+    end
+
     test "returns error when attrs are invalid", %{conn: conn} do
       invalid_attrs = %{
-        email: "invalid-email"
+        email: "invalid-email",
+        current_password: AccountsFixtures.valid_user_password()
       }
 
       conn = patch(conn, ~p"/api/user/email", %{user: invalid_attrs})
@@ -163,7 +179,8 @@ defmodule CenWeb.UserControllerTest do
 
     test "returns unauthorized when not logged in", %{conn: conn} do
       valid_attrs = %{
-        email: "some-test@example.com"
+        email: "some-test@example.com",
+        current_password: AccountsFixtures.valid_user_password()
       }
 
       conn =
