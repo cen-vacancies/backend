@@ -2,7 +2,7 @@
   description = "A very basic flake";
 
   inputs = {
-    nixpkgs = { url = "github:NixOS/nixpkgs/nixos-23.11"; };
+    nixpkgs = { url = "github:NixOS/nixpkgs/nixos-24.05"; };
     flake-utils = { url = "github:numtide/flake-utils"; };
   };
 
@@ -12,11 +12,11 @@
         inherit (pkgs.lib) optional optionals;
         pkgs = import nixpkgs { inherit system; };
 
-        beamPkg = pkgs.beam.packagesWith pkgs.erlangR26;
+        beamPkg = pkgs.beam.packagesWith pkgs.erlang_27;
 
         elixir = beamPkg.elixir.override {
-          version = "1.16.1";
-          sha256 = "rjUt3gCUszCbzGE7BriwH3ptrV81dqNB/d0nVOXrcGI=";
+          version = "1.17.2";
+          sha256 = "8rb2f4CvJzio3QgoxvCv1iz8HooXze0tWUJ4Sc13dxg=";
         };
       in
       with pkgs;

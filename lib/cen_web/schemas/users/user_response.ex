@@ -10,7 +10,7 @@ defmodule CenWeb.Schemas.UserResponse do
       data: User.schema()
     },
     example: %{
-      "data" => User.schema().example()
+      "data" => User.schema().example
     }
   })
 end
