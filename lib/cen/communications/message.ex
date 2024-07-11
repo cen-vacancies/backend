@@ -28,5 +28,21 @@ defmodule Cen.Communications.Message do
     message
     |> cast(attrs, [:text, :author_id])
     |> validate_required([:text, :author_id])
+    |> unsafe_check_user_in_chat()
+  end
+
+  def unsafe_check_user_in_chat(changeset) do
+    chat_id = get_field(changeset, :chat_id)
+    author_id = get_field(changeset, :author_id)
+
+    %{entries: entries} = Cen.Communications.get_chats_by_user(author_id)
+
+    case Enum.find(entries, fn %{id: id} -> id == chat_id end) do
+      nil ->
+        add_error(changeset, :author_id, "is not in the chat")
+
+      _ ->
+        changeset
+    end
   end
 end

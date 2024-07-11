@@ -3,7 +3,6 @@ defmodule Cen.Communications do
 
   import Ecto.Query
 
-  alias Cen.Accounts.User
   alias Cen.Applicants.CV
   alias Cen.Communications.Chat
   alias Cen.Communications.Interest
@@ -64,8 +63,8 @@ defmodule Cen.Communications do
       preload: [cv: {cv, applicant: applicant}, vacancy: {vacancy, organization: {organization, employer: employer}}]
   end
 
-  @spec get_chats_by_user(User.t()) :: [Chat.t()]
-  def get_chats_by_user(user) do
+  @spec get_chats_by_user(integer(), map()) :: Scrivener.Page.t()
+  def get_chats_by_user(user_id, params \\ %{}) do
     query =
       from chat in Chat,
         left_join: cv in assoc(chat, :cv),
@@ -73,24 +72,27 @@ defmodule Cen.Communications do
         left_join: vacancy in assoc(chat, :vacancy),
         left_join: organization in assoc(vacancy, :organization),
         left_join: employer in assoc(organization, :employer),
-        where: applicant.id == ^user.id or employer.id == ^user.id,
+        where: applicant.id == ^user_id or employer.id == ^user_id,
         preload: [cv: {cv, applicant: applicant}, vacancy: {vacancy, organization: {organization, employer: employer}}]
 
-    Repo.all(query)
+    Repo.paginate(query, page: params["page"], page_size: params["page_size"])
   end
 
   @spec create_chat(%{cv: CV.t(), vacancy: Vacancy.t()}) :: Chat.t()
   def create_chat(%{cv: %CV{id: cv_id}, vacancy: %Vacancy{id: vacancy_id}}) do
-    Repo.insert(%Chat{cv_id: cv_id, vacancy_id: vacancy_id})
+    %Chat{cv_id: cv_id, vacancy_id: vacancy_id}
+    |> Chat.changeset(%{})
+    |> Repo.insert()
   end
 
-  @spec list_messages(Chat.t()) :: [Message.t()]
-  def list_messages(chat) do
+  @spec list_messages(Chat.t(), map()) :: Scrivener.Page.t()
+  def list_messages(chat, params \\ %{}) do
     query =
       from message in Message,
-        where: message.chat_id == ^chat.id
+        where: message.chat_id == ^chat.id,
+        order_by: [desc: message.id]
 
-    Repo.all(query)
+    Repo.paginate(query, page: params["page"], page_size: params["page_size"])
   end
 
   @spec create_message(Chat.t(), map()) :: {:ok, Message.t()} | {:error, Ecto.Changeset.t()}
