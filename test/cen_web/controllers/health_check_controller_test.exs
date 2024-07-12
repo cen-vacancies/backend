@@ -1,5 +1,5 @@
 defmodule CenWeb.HealthCheckControllerTest do
-  use CenWeb.ConnCase
+  use CenWeb.ConnCase, async: true
 
   alias CenWeb.Schemas.HealthCheckResponse
 

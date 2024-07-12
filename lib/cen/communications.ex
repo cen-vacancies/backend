@@ -3,7 +3,11 @@ defmodule Cen.Communications do
 
   import Ecto.Query
 
+  alias Cen.Applicants.CV
+  alias Cen.Communications.Chat
   alias Cen.Communications.Interest
+  alias Cen.Communications.Message
+  alias Cen.Employers.Vacancy
   alias Cen.Repo
 
   @spec send_interest(atom(), integer(), integer()) :: {:ok, Interest.t()} | {:error, Ecto.Changeset.t()}
@@ -57,5 +61,45 @@ defmodule Cen.Communications do
       left_join: employer in assoc(organization, :employer),
       where: applicant.id == ^user_id or employer.id == ^user_id,
       preload: [cv: {cv, applicant: applicant}, vacancy: {vacancy, organization: {organization, employer: employer}}]
+  end
+
+  @spec get_chats_by_user(integer(), map()) :: Scrivener.Page.t()
+  def get_chats_by_user(user_id, params \\ %{}) do
+    query =
+      from chat in Chat,
+        left_join: cv in assoc(chat, :cv),
+        left_join: applicant in assoc(cv, :applicant),
+        left_join: vacancy in assoc(chat, :vacancy),
+        left_join: organization in assoc(vacancy, :organization),
+        left_join: employer in assoc(organization, :employer),
+        where: applicant.id == ^user_id or employer.id == ^user_id,
+        preload: [cv: {cv, applicant: applicant}, vacancy: {vacancy, organization: {organization, employer: employer}}]
+
+    Repo.paginate(query, page: params["page"], page_size: params["page_size"])
+  end
+
+  @spec create_chat(%{cv: CV.t(), vacancy: Vacancy.t()}) :: {:ok, Chat.t()} | {:error, Ecto.Changeset.t()}
+  def create_chat(%{cv: %CV{id: cv_id}, vacancy: %Vacancy{id: vacancy_id}}) do
+    %Chat{cv_id: cv_id, vacancy_id: vacancy_id}
+    |> Chat.changeset(%{})
+    |> Repo.insert()
+  end
+
+  @spec list_messages(Chat.t(), map()) :: Scrivener.Page.t()
+  def list_messages(chat, params \\ %{}) do
+    query =
+      from message in Message,
+        where: message.chat_id == ^chat.id,
+        order_by: [desc: message.id]
+
+    Repo.paginate(query, page: params["page"], page_size: params["page_size"])
+  end
+
+  @spec create_message(Chat.t(), map()) :: {:ok, Message.t()} | {:error, Ecto.Changeset.t()}
+  def create_message(chat, attrs) do
+    chat
+    |> Ecto.build_assoc(:messages)
+    |> Message.changeset(attrs)
+    |> Repo.insert()
   end
 end

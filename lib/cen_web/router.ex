@@ -95,6 +95,8 @@ defmodule CenWeb.Router do
 
     post "/send_interest", InterestController, :send_interest
     get "/interests", InterestController, :index
+
+    get "/chats", ChatController, :index
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
