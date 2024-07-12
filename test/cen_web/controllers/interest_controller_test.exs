@@ -1,5 +1,5 @@
 defmodule CenWeb.InterestControllerTest do
-  use CenWeb.ConnCase
+  use CenWeb.ConnCase, async: true
 
   import Cen.ApplicantsFixtures
   import Cen.EmployersFixtures

@@ -1,5 +1,5 @@
 defmodule ChatControllerTest do
-  use CenWeb.ConnCase
+  use CenWeb.ConnCase, async: true
 
   import Cen.CommunicationsFixtures
 
@@ -34,7 +34,7 @@ defmodule ChatControllerTest do
 
     test "returns a list of chats for employer with multiple chats for different employers", %{conn: conn, user: user} do
       %{id: chat_id1} = create_chat(employer: user)
-      %{id: chat_id2} = create_chat([])
+      create_chat([])
       conn = get(conn, "/api/chats")
 
       json = json_response(conn, 200)

@@ -1,5 +1,5 @@
 defmodule CenWeb.VacancyControllerTest do
-  use CenWeb.ConnCase
+  use CenWeb.ConnCase, async: true
 
   import Cen.EmployersFixtures
 

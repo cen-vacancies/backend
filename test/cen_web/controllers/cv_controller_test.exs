@@ -1,5 +1,5 @@
 defmodule CenWeb.CVControllerTest do
-  use CenWeb.ConnCase
+  use CenWeb.ConnCase, async: true
 
   import Cen.ApplicantsFixtures
 
