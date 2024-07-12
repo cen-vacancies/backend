@@ -78,7 +78,7 @@ defmodule Cen.Communications do
     Repo.paginate(query, page: params["page"], page_size: params["page_size"])
   end
 
-  @spec create_chat(%{cv: CV.t(), vacancy: Vacancy.t()}) :: Chat.t()
+  @spec create_chat(%{cv: CV.t(), vacancy: Vacancy.t()}) :: {:ok, Chat.t()} | {:error, Ecto.Changeset.t()}
   def create_chat(%{cv: %CV{id: cv_id}, vacancy: %Vacancy{id: vacancy_id}}) do
     %Chat{cv_id: cv_id, vacancy_id: vacancy_id}
     |> Chat.changeset(%{})
