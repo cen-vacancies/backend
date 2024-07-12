@@ -59,8 +59,8 @@ defmodule Cen.CommunicationsTest do
 
       applicant = AccountsFixtures.user_fixture(role: "applicant")
 
-      %{id: chat_1_id} = create_chat(employer: employer_1, applicant: applicant)
-      %{id: chat_2_id} = create_chat(employer: employer_2, applicant: applicant)
+      %{id: chat_1_id} = chat_fixture_by_users(employer: employer_1, applicant: applicant)
+      %{id: chat_2_id} = chat_fixture_by_users(employer: employer_2, applicant: applicant)
 
       assert %{entries: [%{id: ^chat_1_id}, %{id: ^chat_2_id}]} = Communications.get_chats_by_user(applicant.id)
       assert %{entries: [%{id: ^chat_1_id}]} = Communications.get_chats_by_user(employer_1.id)
@@ -71,8 +71,8 @@ defmodule Cen.CommunicationsTest do
       employer = AccountsFixtures.user_fixture(role: "employer")
       applicant = AccountsFixtures.user_fixture(role: "applicant")
 
-      create_chat(employer: employer, applicant: applicant)
-      create_chat(employer: employer, applicant: applicant)
+      chat_fixture_by_users(employer: employer, applicant: applicant)
+      chat_fixture_by_users(employer: employer, applicant: applicant)
 
       assert %{entries: [%Chat{}], page_number: 1, page_size: 1} =
                Communications.get_chats_by_user(applicant.id, %{"page" => 1, "page_size" => 1})
@@ -82,14 +82,14 @@ defmodule Cen.CommunicationsTest do
   describe "create_message/2" do
     test "creates message" do
       user = AccountsFixtures.user_fixture()
-      chat = create_chat(applicant: user)
+      chat = chat_fixture_by_users(applicant: user)
 
       assert {:ok, %Communications.Message{}} = Communications.create_message(chat, %{author_id: user.id, text: "Hello"})
     end
 
     test "can't create empty message" do
       user = AccountsFixtures.user_fixture()
-      chat = create_chat(applicant: user)
+      chat = chat_fixture_by_users(applicant: user)
 
       assert {:error, %Ecto.Changeset{valid?: false}} =
                Communications.create_message(chat, %{author_id: user.id, text: ""})
@@ -97,7 +97,7 @@ defmodule Cen.CommunicationsTest do
 
     test "can't create message for chat that user is not part of" do
       user = AccountsFixtures.user_fixture()
-      chat = create_chat([])
+      chat = chat_fixture()
 
       assert {:error, %Ecto.Changeset{valid?: false}} =
                Communications.create_message(chat, %{author_id: user.id, text: "Hello"})
@@ -107,7 +107,7 @@ defmodule Cen.CommunicationsTest do
   describe "list_messages/2" do
     test "returns messages for chat" do
       user = AccountsFixtures.user_fixture()
-      chat = create_chat(applicant: user)
+      chat = chat_fixture_by_users(applicant: user)
 
       {:ok, %{id: message_id}} = Communications.create_message(chat, %{author_id: user.id, text: "Hello"})
 
@@ -116,7 +116,7 @@ defmodule Cen.CommunicationsTest do
 
     test "returns messages for chat with pagination" do
       user = AccountsFixtures.user_fixture()
-      chat = create_chat(applicant: user)
+      chat = chat_fixture_by_users(applicant: user)
 
       Communications.create_message(chat, %{author_id: user.id, text: "Hello"})
       Communications.create_message(chat, %{author_id: user.id, text: "Hello"})
@@ -127,8 +127,8 @@ defmodule Cen.CommunicationsTest do
 
     test "returns only messages for chat" do
       user = AccountsFixtures.user_fixture()
-      chat_1 = create_chat(applicant: user)
-      chat_2 = create_chat(applicant: user)
+      chat_1 = chat_fixture_by_users(applicant: user)
+      chat_2 = chat_fixture_by_users(applicant: user)
 
       Communications.create_message(chat_1, %{author_id: user.id, text: "Hello"})
       Communications.create_message(chat_2, %{author_id: user.id, text: "Hello"})
@@ -138,31 +138,12 @@ defmodule Cen.CommunicationsTest do
 
     test "returns new messages first" do
       user = AccountsFixtures.user_fixture()
-      chat = create_chat(applicant: user)
+      chat = chat_fixture_by_users(applicant: user)
 
       {:ok, %{id: message_1_id}} = Communications.create_message(chat, %{author_id: user.id, text: "Hello"})
       {:ok, %{id: message_2_id}} = Communications.create_message(chat, %{author_id: user.id, text: "Hello"})
 
       assert %{entries: [%Message{id: ^message_2_id}, %Message{id: ^message_1_id}]} = Communications.list_messages(chat)
     end
-  end
-
-  defp create_chat(options) do
-    employer = Keyword.get(options, :employer) || AccountsFixtures.user_fixture(%{role: "employer"})
-    applicant = Keyword.get(options, :applicant) || AccountsFixtures.user_fixture(%{role: "applicant"})
-
-    chat_fixture(%{
-      cv:
-        Cen.ApplicantsFixtures.cv_fixture(%{
-          applicant: applicant
-        }),
-      vacancy:
-        Cen.EmployersFixtures.vacancy_fixture(%{
-          organization:
-            Cen.EmployersFixtures.organization_fixture(%{
-              employer: employer
-            })
-        })
-    })
   end
 end

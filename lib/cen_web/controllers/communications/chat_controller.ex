@@ -21,6 +21,7 @@ defmodule CenWeb.ChatController do
       ok: {"Chats list", "application/json", ChatsListResponse}
     ]
 
+  @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, params) do
     user = CenWeb.UserAuth.fetch_current_user(conn)
     page = Communications.get_chats_by_user(user.id, params)

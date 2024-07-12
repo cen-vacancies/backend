@@ -12,9 +12,9 @@ defmodule Cen.Communications.Chat do
           id: integer() | nil,
           vacancy_id: integer() | nil,
           cv_id: integer() | nil,
-          vacancy: Vacancy.t() | nil,
-          cv: CV.t() | nil,
-          messages: [Message.t()] | Ecto.Association.NotLoaded.t()
+          vacancy: Vacancy.t() | Ecto.Association.NotLoaded.t() | nil,
+          cv: CV.t() | Ecto.Association.NotLoaded.t() | nil,
+          messages: [Message.t()] | Ecto.Association.NotLoaded.t() | nil
         }
 
   schema "chats" do
@@ -26,6 +26,7 @@ defmodule Cen.Communications.Chat do
     timestamps(type: :utc_datetime)
   end
 
+  @spec changeset(t(), map()) :: Ecto.Changeset.t()
   def changeset(chat, attrs) do
     chat
     |> cast(attrs, [])
