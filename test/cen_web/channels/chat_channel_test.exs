@@ -23,7 +23,7 @@ defmodule CenWeb.ChatChannelTest do
       chat = chat_fixture_by_users(applicant: user)
       topic = "chat:#{chat.cv_id}:#{chat.vacancy_id}"
 
-      {:ok, _, socket} =
+      {:ok, _reply, socket} =
         CenWeb.UserSocket
         |> socket("user", %{current_user: user})
         |> subscribe_and_join(CenWeb.ChatChannel, topic)

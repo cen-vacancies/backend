@@ -26,7 +26,7 @@ defmodule CenWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  @impl true
+  @impl Phoenix.Socket
   def connect(params, socket, _connect_info) do
     case authorize(params) do
       {:error, reason} -> {:error, reason}
@@ -44,7 +44,7 @@ defmodule CenWeb.UserSocket do
   #     Elixir.CenWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  @impl true
+  @impl Phoenix.Socket
   def id(_socket), do: nil
 
   defp authorize(%{"token" => token}) do

@@ -130,6 +130,7 @@ defmodule Cen.Communications do
     end
   end
 
+  @spec chat_member?(integer(), integer(), integer()) :: boolean()
   def chat_member?(user_id, cv_id, vacancy_id) do
     query =
       from chat in Chat,

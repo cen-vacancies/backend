@@ -4,13 +4,8 @@ defmodule CenWeb.ChatChannel do
 
   alias Cen.Communications
 
-  @impl true
+  @impl Phoenix.Channel
   def join("chat:" <> ids, _payload, socket) do
-    case parse_ids(ids) do
-      {:ok, cv_id, vacancy_id} -> {:ok, assign(socket, cv_id: cv_id, vacancy_id: vacancy_id)}
-      {:error, reason} -> {:error, %{reason: reason}}
-    end
-
     with {:ok, cv_id, vacancy_id} <- parse_ids(ids),
          :ok <- check_user_in_db_chat(socket.assigns.current_user.id, cv_id, vacancy_id) do
       {:ok, assign(socket, cv_id: cv_id, vacancy_id: vacancy_id)}
@@ -21,7 +16,7 @@ defmodule CenWeb.ChatChannel do
 
   # It is also common to receive messages from the client and
   # broadcast to everyone in the current topic (chat:lobby).
-  @impl true
+  @impl Phoenix.Channel
   def handle_in("new_message", payload, socket) do
     case Communications.create_message(
            socket.assigns.current_user.id,
@@ -54,7 +49,7 @@ defmodule CenWeb.ChatChannel do
       Enum.reduce_while(list, {:ok, []}, fn x, {:ok, acc} ->
         case Integer.parse(x) do
           {int, ""} -> {:cont, {:ok, [int | acc]}}
-          _ -> {:halt, {:error, "invalid ids"}}
+          _nan -> {:halt, {:error, "invalid ids"}}
         end
       end)
 

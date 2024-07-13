@@ -19,9 +19,9 @@ defmodule CenWeb.ChannelCase do
 
   using do
     quote do
+      import CenWeb.ChannelCase
       # Import conveniences for testing with channels
       import Phoenix.ChannelTest
-      import CenWeb.ChannelCase
 
       # The default endpoint for testing
       @endpoint CenWeb.Endpoint
