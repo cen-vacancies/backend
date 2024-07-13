@@ -22,6 +22,7 @@ defmodule Cen.Communications.Message do
     timestamps(type: :utc_datetime)
   end
 
+  @spec set_author_id(t(), String.t()) :: t()
   def set_author_id(%__MODULE__{author_id: nil} = message, author_id) do
     %{message | author_id: author_id}
   end
@@ -42,15 +43,19 @@ defmodule Cen.Communications.Message do
     if is_nil(author_id) do
       add_error(changeset, :author_id, "can't be blank")
     else
-      %{entries: entries} = Cen.Communications.get_chats_by_user(author_id)
+      check_user_in_db_chat(changeset, author_id, chat_id)
+    end
+  end
 
-      case Enum.find(entries, fn %{id: id} -> id == chat_id end) do
-        nil ->
-          add_error(changeset, :author_id, "is not in the chat")
+  defp check_user_in_db_chat(changeset, author_id, chat_id) do
+    %{entries: entries} = Cen.Communications.get_chats_by_user(author_id)
 
-        _chats ->
-          changeset
-      end
+    case Enum.find(entries, fn %{id: id} -> id == chat_id end) do
+      nil ->
+        add_error(changeset, :author_id, "is not in the chat")
+
+      _chats ->
+        changeset
     end
   end
 end
