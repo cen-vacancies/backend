@@ -22,12 +22,17 @@ defmodule Cen.Communications.Message do
     timestamps(type: :utc_datetime)
   end
 
+  @spec set_author_id(t(), String.t()) :: t()
+  def set_author_id(%__MODULE__{author_id: nil} = message, author_id) do
+    %{message | author_id: author_id}
+  end
+
   @doc false
   @spec changeset(__MODULE__.t(), map()) :: Ecto.Changeset.t()
   def changeset(message, attrs) do
     message
-    |> cast(attrs, [:text, :author_id])
-    |> validate_required([:text, :author_id])
+    |> cast(attrs, [:text])
+    |> validate_required([:text])
     |> unsafe_check_user_in_chat()
   end
 
@@ -35,6 +40,14 @@ defmodule Cen.Communications.Message do
     chat_id = get_field(changeset, :chat_id)
     author_id = get_field(changeset, :author_id)
 
+    if is_nil(author_id) do
+      add_error(changeset, :author_id, "can't be blank")
+    else
+      check_user_in_db_chat(changeset, author_id, chat_id)
+    end
+  end
+
+  defp check_user_in_db_chat(changeset, author_id, chat_id) do
     %{entries: entries} = Cen.Communications.get_chats_by_user(author_id)
 
     case Enum.find(entries, fn %{id: id} -> id == chat_id end) do

@@ -18,4 +18,12 @@ defmodule CenWeb.ChatJSON do
       vacancy: VacancyJSON.data(chat.vacancy)
     }
   end
+
+  def show_message(%{message: message}) do
+    %{
+      id: message.id,
+      text: message.text,
+      created_at: message.inserted_at
+    }
+  end
 end
