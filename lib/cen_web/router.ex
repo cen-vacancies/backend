@@ -35,6 +35,7 @@ defmodule CenWeb.Router do
   scope "/" do
     pipe_through :browser
     get "/swaggerui", OpenApiSpex.Plug.SwaggerUI, path: "/api/openapi"
+    get "/chat_dev", CenWeb.ChatDevController, :index
   end
 
   scope "/" do
