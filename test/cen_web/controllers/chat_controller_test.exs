@@ -43,4 +43,30 @@ defmodule ChatControllerTest do
       assert [%{"id" => ^chat_id1}] = json["data"]
     end
   end
+
+  describe "POST /chats/send_message" do
+    setup :register_and_log_in_user
+
+    test "sends a message to a chat", %{conn: conn, user: user} do
+      chat = chat_fixture_by_users(applicant: user)
+
+      conn =
+        post(conn, "/api/chats/send_message", %{"cv_id" => chat.cv.id, "vacancy_id" => chat.vacancy.id, "text" => "Hello"})
+
+      json = json_response(conn, 200)
+
+      assert_schema CenWeb.Schemas.MessageResponse, json
+    end
+
+    test "sends a message to a chat with invalid data", %{conn: conn, user: user} do
+      chat = chat_fixture_by_users(applicant: user)
+
+      conn =
+        post(conn, "/api/chats/send_message", %{"cv_id" => chat.cv.id, "vacancy_id" => chat.vacancy.id, "text" => ""})
+
+      json = json_response(conn, 422)
+
+      assert_schema CenWeb.Schemas.ChangesetErrorsResponse, json
+    end
+  end
 end

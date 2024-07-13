@@ -95,11 +95,38 @@ defmodule Cen.Communications do
     Repo.paginate(query, page: params["page"], page_size: params["page_size"])
   end
 
-  @spec create_message(Chat.t(), map()) :: {:ok, Message.t()} | {:error, Ecto.Changeset.t()}
-  def create_message(chat, attrs) do
-    chat
-    |> Ecto.build_assoc(:messages)
-    |> Message.changeset(attrs)
-    |> Repo.insert()
+  @spec create_message(id, id, id, map()) :: {:ok, Message.t()} | {:error, Ecto.Changeset.t()}
+        when id: integer() | String.t()
+  def create_message(author_id, cv_id, vacancy_id, attrs) do
+    transaction =
+      Ecto.Multi.new()
+      |> Ecto.Multi.run(:get_chat, fn repo, _changes ->
+        query =
+          from chat in Chat,
+            where: chat.cv_id == ^cv_id and chat.vacancy_id == ^vacancy_id
+
+        case repo.one(query) do
+          nil ->
+            %Chat{cv_id: cv_id, vacancy_id: vacancy_id}
+            |> Chat.changeset(%{})
+            |> repo.insert()
+
+          chat ->
+            {:ok, chat}
+        end
+      end)
+      |> Ecto.Multi.run(:create_message, fn repo, %{get_chat: chat} ->
+        chat
+        |> Ecto.build_assoc(:messages)
+        |> Message.set_author_id(author_id)
+        |> Message.changeset(attrs)
+        |> repo.insert()
+      end)
+      |> Repo.transaction()
+
+    case transaction do
+      {:ok, %{create_message: message}} -> {:ok, message}
+      {:error, :create_message, changeset, _changes} -> {:error, changeset}
+    end
   end
 end
