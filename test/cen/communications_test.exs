@@ -112,7 +112,7 @@ defmodule Cen.CommunicationsTest do
 
       {:ok, %{id: message_id}} = Communications.create_message(user.id, chat.cv.id, chat.vacancy.id, %{text: "Hello"})
 
-      assert %{entries: [%Message{id: ^message_id}]} = Communications.list_messages(chat)
+      assert %{entries: [%Message{id: ^message_id}]} = Communications.list_messages(chat.cv.id, chat.vacancy.id)
     end
 
     test "returns messages for chat with pagination" do
@@ -123,7 +123,7 @@ defmodule Cen.CommunicationsTest do
       Communications.create_message(user.id, chat.cv.id, chat.vacancy.id, %{text: "Hello"})
 
       assert %{entries: [%Message{}], page_number: 1, page_size: 1} =
-               Communications.list_messages(chat, %{"page" => 1, "page_size" => 1})
+               Communications.list_messages(chat.cv.id, chat.vacancy.id, %{"page" => 1, "page_size" => 1})
     end
 
     test "returns only messages for chat" do
@@ -134,7 +134,7 @@ defmodule Cen.CommunicationsTest do
       Communications.create_message(user.id, chat_1.cv.id, chat_1.vacancy.id, %{text: "Hello"})
       Communications.create_message(user.id, chat_2.cv.id, chat_2.vacancy.id, %{text: "Hello"})
 
-      assert %{entries: [%Message{}]} = Communications.list_messages(chat_1)
+      assert %{entries: [%Message{}]} = Communications.list_messages(chat_1.cv.id, chat_1.vacancy.id)
     end
 
     test "returns new messages first" do
@@ -144,7 +144,8 @@ defmodule Cen.CommunicationsTest do
       {:ok, %{id: message_1_id}} = Communications.create_message(user.id, chat.cv.id, chat.vacancy.id, %{text: "Hello"})
       {:ok, %{id: message_2_id}} = Communications.create_message(user.id, chat.cv.id, chat.vacancy.id, %{text: "Hello"})
 
-      assert %{entries: [%Message{id: ^message_2_id}, %Message{id: ^message_1_id}]} = Communications.list_messages(chat)
+      assert %{entries: [%Message{id: ^message_2_id}, %Message{id: ^message_1_id}]} =
+               Communications.list_messages(chat.cv.id, chat.vacancy.id)
     end
   end
 end
