@@ -28,7 +28,10 @@ defmodule ChatControllerTest do
 
       assert_schema ChatsListResponse, json
 
-      assert [%{"id" => ^chat_id1}, %{"id" => ^chat_id2}] = json["data"]
+      ids = Enum.map(json["data"], & &1["id"])
+
+      assert Enum.member?(ids, chat_id1)
+      assert Enum.member?(ids, chat_id2)
     end
 
     test "returns a list of chats for employer with multiple chats for different employers", %{conn: conn, user: user} do

@@ -22,6 +22,7 @@ defmodule CenWeb.ChatJSON do
   def show_message(%{message: message}) do
     %{
       id: message.id,
+      author_id: message.author_id,
       text: message.text,
       created_at: message.inserted_at
     }

@@ -129,4 +129,18 @@ defmodule Cen.Communications do
       {:error, :create_message, changeset, _changes} -> {:error, changeset}
     end
   end
+
+  @spec chat_member?(integer(), integer(), integer()) :: boolean()
+  def chat_member?(user_id, cv_id, vacancy_id) do
+    query =
+      from chat in Chat,
+        left_join: cv in assoc(chat, :cv),
+        left_join: applicant in assoc(cv, :applicant),
+        left_join: vacancy in assoc(chat, :vacancy),
+        left_join: organization in assoc(vacancy, :organization),
+        left_join: employer in assoc(organization, :employer),
+        where: cv.id == ^cv_id and vacancy.id == ^vacancy_id and (applicant.id == ^user_id or employer.id == ^user_id)
+
+    Repo.all(query) != []
+  end
 end

@@ -78,7 +78,7 @@ defmodule Cen.MixProject do
       {:open_api_spex, "~> 3.18"},
       {:guardian, "~> 2.0"},
       {:scrivener_ecto, "~> 2.0"},
-      {:ecto_boot_migration, "~> 0.3.0"},
+      {:ecto_boot_migration, github: "txssu/ecto_boot_migration"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
