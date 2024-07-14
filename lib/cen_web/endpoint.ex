@@ -15,7 +15,7 @@ defmodule CenWeb.Endpoint do
     websocket: [connect_info: [session: @session_options]],
     longpoll: [connect_info: [session: @session_options]]
 
-  socket "/api/websocket/chats", CenWeb.UserSocket,
+  socket "/api/socket", CenWeb.UserSocket,
     websocket: true,
     longpoll: false
 

@@ -24,7 +24,15 @@ socket.onClose((e) => console.log("Closed", e));
 socket.connect();
 
 const channel = socket.channel(`chat:${cv_id}:${vacancy_id}`);
-channel.join().receive("error", renderResponse);
+channel
+  .join()
+  .receive("ok", (messages) => {
+    // Messages come with descending order
+    // And we render it from down to up
+    // So we need to reverse it
+    messages.reverse().map(renderResponse);
+  })
+  .receive("error", renderResponse);
 
 channel.on("new_message", renderResponse);
 

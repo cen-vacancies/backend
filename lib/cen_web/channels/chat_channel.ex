@@ -12,7 +12,12 @@ defmodule CenWeb.ChatChannel do
   def join("chat:" <> ids, _payload, socket) do
     with {:ok, cv_id, vacancy_id} <- parse_ids(ids),
          :ok <- check_user_in_db_chat(socket.assigns.current_user.id, cv_id, vacancy_id) do
-      {:ok, assign(socket, cv_id: cv_id, vacancy_id: vacancy_id)}
+      messages =
+        cv_id
+        |> Communications.list_messages(vacancy_id)
+        |> Enum.map(&format_message/1)
+
+      {:ok, messages, assign(socket, cv_id: cv_id, vacancy_id: vacancy_id)}
     else
       {:error, reason} -> {:error, %{reason: reason}}
     end

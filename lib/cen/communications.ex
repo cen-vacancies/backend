@@ -85,11 +85,13 @@ defmodule Cen.Communications do
     |> Repo.insert()
   end
 
-  @spec list_messages(Chat.t(), map()) :: Scrivener.Page.t()
-  def list_messages(chat, params \\ %{}) do
+  @spec list_messages(id, id, map()) :: Scrivener.Page.t()
+        when id: integer() | String.t()
+  def list_messages(cv_id, vacancy_id, params \\ %{}) do
     query =
       from message in Message,
-        where: message.chat_id == ^chat.id,
+        left_join: chat in assoc(message, :chat),
+        where: chat.cv_id == ^cv_id and chat.vacancy_id == ^vacancy_id,
         order_by: [desc: message.id]
 
     Repo.paginate(query, page: params["page"], page_size: params["page_size"])
