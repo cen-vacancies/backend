@@ -28,10 +28,7 @@ defmodule CenWeb.UserSocket do
   # performing token verification on connect.
   @impl Phoenix.Socket
   def connect(params, socket, _connect_info) do
-    case authorize(params) do
-      {:error, reason} -> {:error, reason}
-      {:ok, user} -> {:ok, assign(socket, :current_user, user)}
-    end
+    {:ok, assign(socket, :current_user, authorize(params))}
   end
 
   # Socket IDs are topics that allow you to identify all sockets for a given user:
@@ -49,10 +46,10 @@ defmodule CenWeb.UserSocket do
 
   defp authorize(%{"token" => token}) do
     case Accounts.fetch_user_by_api_token(token) do
-      {:ok, user, _claims} -> {:ok, user}
-      _err -> {:error, "unauthorized"}
+      {:ok, user, _claims} -> user
+      _err -> nil
     end
   end
 
-  defp authorize(_payload), do: {:error, "no token provided"}
+  defp authorize(_payload), do: nil
 end

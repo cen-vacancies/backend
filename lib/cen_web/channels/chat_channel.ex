@@ -5,6 +5,10 @@ defmodule CenWeb.ChatChannel do
   alias Cen.Communications
 
   @impl Phoenix.Channel
+  def join(_topic, _params, %{assigns: %{current_user: nil}}) do
+    {:error, %{reason: "unauthorized"}}
+  end
+
   def join("chat:" <> ids, _payload, socket) do
     with {:ok, cv_id, vacancy_id} <- parse_ids(ids),
          :ok <- check_user_in_db_chat(socket.assigns.current_user.id, cv_id, vacancy_id) do

@@ -12,32 +12,27 @@ const token = queryParams.token;
 const cv_id = queryParams.cv_id;
 const vacancy_id = queryParams.vacancy_id;
 
-// And connect to the path in "lib/cen_web/endpoint.ex". We pass the
-// token for authentication. Read below how it should be used.
-let socket = new Socket("/api/websocket/chats", {
-  params: { token: token },
-});
-
-socket.connect();
-
-let channel = socket.channel(`chat:${cv_id}:${vacancy_id}`);
-channel
-  .join()
-  .receive("ok", (resp) => {
-    console.log("Joined successfully", resp);
-  })
-  .receive("error", (resp) => {
-    console.log("Unable to join", resp);
-  });
-
-let addMessage = (msg) => {
+const renderResponse = (msg) => {
   console.log(msg);
-  let messages = document.getElementById("messages");
-  let message = document.createElement("div");
+  const messages = document.getElementById("messages");
+  const message = document.createElement("div");
   message.innerText = JSON.stringify(msg);
   messages.appendChild(message);
 };
-channel.on("new_message", addMessage);
+
+// And connect to the path in "lib/cen_web/endpoint.ex". We pass the
+// token for authentication. Read below how it should be used.
+const socket = new Socket("/api/socket", {
+  params: { token: token },
+});
+
+socket.onClose((e) => console.log("Closed", e));
+socket.connect();
+
+const channel = socket.channel(`chat:${cv_id}:${vacancy_id}`);
+channel.join().receive("error", renderResponse);
+
+channel.on("new_message", renderResponse);
 
 document.getElementById("chatInput").addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
@@ -45,13 +40,10 @@ document.getElementById("chatInput").addEventListener("keypress", (e) => {
 
     channel
       .push("new_message", msg)
-      .receive("ok", (resp) => {
-        console.log(resp);
+      .receive("ok", () => {
         e.target.value = "";
       })
-      .receive("error", (resp) => {
-        console.log(resp);
-      });
+      .receive("error", renderResponse);
   }
 });
 
