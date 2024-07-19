@@ -68,8 +68,18 @@ defmodule Cen.Accounts.User do
     |> validate_password(opts)
     |> validate_phone()
     |> validate_length(:fullname, max: 160)
-    |> validate_required(~w[fullname role birth_date]a)
-    |> validate_exclusion(:role, ~w[admin]a)
+    |> validate_required(~w[fullname birth_date]a)
+    |> validate_role(opts)
+  end
+
+  defp validate_role(changeset, opts) do
+    changeset = validate_required(changeset, [:role])
+
+    if Keyword.get(opts, :allow_admin, false) do
+      changeset
+    else
+      validate_exclusion(changeset, :role, ~w[admin]a)
+    end
   end
 
   defp validate_email(changeset, opts) do

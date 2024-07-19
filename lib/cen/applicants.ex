@@ -124,7 +124,7 @@ defmodule Cen.Applicants do
   """
   @spec can_user_edit_cv?(CV.t(), User.t()) :: boolean()
   def can_user_edit_cv?(%CV{} = cv, %User{} = user) do
-    cv.applicant_id == user.id
+    cv.applicant_id == user.id or user.role == :admin
   end
 
   @spec get_cvs_by_user_id(integer(), map()) :: Scrivener.Page.t()

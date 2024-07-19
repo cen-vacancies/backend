@@ -30,8 +30,18 @@ defmodule Cen.Repo.Seeder do
   def seed do
     insert_vacancies()
     insert_cvs()
+    insert_admin()
 
     :ok
+  end
+
+  defp insert_admin do
+    Cen.Repo.insert!(%Cen.Accounts.User{
+      email: "admin@vacancies.ru",
+      # Password is "password-from-seed"
+      hashed_password: "$2b$12$eQvcD.hsuKO9LxbDWTJx/.kY0qNuWIDEGiYkoH2xarWo7udRo8hba",
+      role: :admin
+    })
   end
 
   def insert_vacancies do
