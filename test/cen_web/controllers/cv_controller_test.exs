@@ -68,11 +68,13 @@ defmodule CenWeb.CVControllerTest do
   setup %{conn: conn} do
     applicant = Cen.AccountsFixtures.user_fixture(role: :applicant)
     employer = Cen.AccountsFixtures.user_fixture(role: :employer)
+    admin = Cen.AccountsFixtures.user_fixture(role: :admin)
 
     %{
       conn: log_in_user(conn, applicant),
       user: applicant,
-      conn_employer: log_in_user(conn, employer)
+      conn_employer: log_in_user(conn, employer),
+      conn_admin: log_in_user(conn, admin)
     }
   end
 
@@ -132,6 +134,17 @@ defmodule CenWeb.CVControllerTest do
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn_get = get(conn, ~p"/api/cvs/#{id}")
+
+      json = json_response(conn_get, 200)
+
+      assert_schema CVResponse, json
+    end
+
+    test "updates cv when user is not author but admin", %{conn_admin: conn, cv: %CV{id: id} = cv} do
+      conn = patch(conn, ~p"/api/cvs/#{cv}", cv: @update_attrs)
+      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+
+      conn_get = get(conn, ~p"/api/cvs/#{cv}")
 
       json = json_response(conn_get, 200)
 

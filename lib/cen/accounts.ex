@@ -95,10 +95,10 @@ defmodule Cen.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec register_user(map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
-  def register_user(attrs) do
+  @spec register_user(map(), keyword()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  def register_user(attrs, opts \\ []) do
     %User{}
-    |> User.registration_changeset(attrs)
+    |> User.registration_changeset(attrs, opts)
     |> Repo.insert()
   end
 

@@ -26,7 +26,7 @@ defmodule Cen.AccountsFixtures do
     {:ok, user} =
       attrs
       |> valid_user_attributes()
-      |> Cen.Accounts.register_user()
+      |> Cen.Accounts.register_user(allow_admin: true)
 
     user
   end
