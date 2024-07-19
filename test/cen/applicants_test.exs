@@ -56,7 +56,7 @@ defmodule Cen.ApplicantsTest do
       assert cv.title == "some title"
       assert cv.summary == "some summary"
       assert cv.published == true
-      assert cv.reviewed == true
+      assert cv.reviewed == false
       assert cv.employment_types == [:main]
       assert cv.work_schedules == [:full_time, :part_time]
       assert cv.field_of_art == :folklore

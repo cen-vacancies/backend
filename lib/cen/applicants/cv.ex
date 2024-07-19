@@ -69,11 +69,11 @@ defmodule Cen.Applicants.CV do
   end
 
   @requried_fields ~w[title summary employment_types work_schedules field_of_art]a
-  @optional_fields ~w[published]a
+  @optional_fields ~w[reviewed published]a
 
   @doc false
-  @spec changeset(t(), map()) :: Ecto.Changeset.t()
-  def changeset(cv, attrs) do
+  @spec changeset(t(), map(), keyword()) :: Ecto.Changeset.t()
+  def changeset(cv, attrs, opts \\ []) do
     cv
     |> cast(attrs, @requried_fields ++ @optional_fields)
     |> cast_embed(:educations, with: &education_changeset/2, requried: true)
@@ -84,7 +84,17 @@ defmodule Cen.Applicants.CV do
     |> validate_length(:work_schedules, min: 1)
     |> validate_educations_provided()
     |> validate_required(@requried_fields)
-    |> put_change(:reviewed, true)
+    |> validate_reviewed(opts)
+  end
+
+  defp validate_reviewed(changeset, opts) do
+    admin? = Keyword.get(opts, :admin, false)
+
+    if admin? do
+      changeset
+    else
+      delete_change(changeset, :reviewed)
+    end
   end
 
   defp validate_educations_provided(changeset) do

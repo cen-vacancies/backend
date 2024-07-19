@@ -42,11 +42,11 @@ defmodule Cen.Employers.Vacancy do
   end
 
   @requried_fields ~w[title field_of_art description employment_types work_schedules education]a
-  @optional_fields ~w[published min_years_of_work_experience proposed_salary]a
+  @optional_fields ~w[reviewed published min_years_of_work_experience proposed_salary]a
 
   @doc false
-  @spec changeset(t(), map()) :: Ecto.Changeset.t()
-  def changeset(vacancy, attrs) do
+  @spec changeset(t(), map(), keyword()) :: Ecto.Changeset.t()
+  def changeset(vacancy, attrs, opts \\ []) do
     vacancy
     |> cast(attrs, @requried_fields ++ @optional_fields)
     |> validate_length(:title, max: 160)
@@ -54,6 +54,16 @@ defmodule Cen.Employers.Vacancy do
     |> validate_length(:employment_types, min: 1)
     |> validate_length(:work_schedules, min: 1)
     |> validate_required(@requried_fields)
-    |> put_change(:reviewed, true)
+    |> validate_reviewed(opts)
+  end
+
+  defp validate_reviewed(changeset, opts) do
+    admin? = Keyword.get(opts, :admin, false)
+
+    if admin? do
+      changeset
+    else
+      delete_change(changeset, :reviewed)
+    end
   end
 end

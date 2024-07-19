@@ -94,7 +94,7 @@ defmodule CenWeb.CVControllerTest do
                "employment_types" => ["main", "internship"],
                "field_of_art" => "visual",
                "published" => true,
-               "reviewed" => true,
+               "reviewed" => false,
                "summary" => "some summary",
                "work_schedules" => ["remote_working"]
              } = json["data"]
@@ -136,6 +136,7 @@ defmodule CenWeb.CVControllerTest do
       conn_get = get(conn, ~p"/api/cvs/#{id}")
 
       json = json_response(conn_get, 200)
+      assert json["data"]["reviewed"] == true
 
       assert_schema CVResponse, json
     end
@@ -147,6 +148,7 @@ defmodule CenWeb.CVControllerTest do
       conn_get = get(conn, ~p"/api/cvs/#{cv}")
 
       json = json_response(conn_get, 200)
+      assert json["data"]["reviewed"] == false
 
       assert_schema CVResponse, json
     end
@@ -200,8 +202,8 @@ defmodule CenWeb.CVControllerTest do
 
   describe "search cvs" do
     test "list all without query", %{conn: conn} do
-      cv_fixture(employment_types: [:main], published: true)
-      cv_fixture(employment_types: [:secondary], published: true)
+      cv_fixture(employment_types: [:main], published: true, reviewed: true)
+      cv_fixture(employment_types: [:secondary], published: true, reviewed: true)
 
       conn = get(conn, ~p"/api/cvs/search")
 

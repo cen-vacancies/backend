@@ -43,9 +43,10 @@ defmodule Cen.EmployersFixtures do
         min_years_of_work_experience: 42,
         proposed_salary: 42,
         work_schedules: [:full_time],
-        organization: organization_fixture()
+        organization: organization_fixture(),
+        reviewed: true
       })
-      |> Cen.Employers.create_vacancy()
+      |> Cen.Employers.create_vacancy(admin: true)
 
     vacancy
   end

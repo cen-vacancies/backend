@@ -22,6 +22,7 @@ defmodule CenWeb.VacancyControllerTest do
   @update_attrs %{
     description: "some updated description",
     employment_types: [:secondary],
+    reviewed: false,
     work_schedules: [:part_time],
     education: :bachelor,
     field_of_art: :visual,
@@ -97,6 +98,7 @@ defmodule CenWeb.VacancyControllerTest do
 
       assert %{
                "id" => ^id,
+               "reviewed" => true,
                "description" => "some updated description",
                "education" => "bachelor",
                "employment_types" => ["secondary"],
@@ -114,6 +116,7 @@ defmodule CenWeb.VacancyControllerTest do
       conn_get = get(conn, ~p"/api/vacancies/#{vacancy}")
 
       json = json_response(conn_get, 200)
+      assert json["data"]["reviewed"] == false
 
       assert_schema VacancyResponse, json
     end
@@ -160,8 +163,8 @@ defmodule CenWeb.VacancyControllerTest do
 
   describe "search vacancies" do
     test "list all without query", %{conn: conn} do
-      vacancy_fixture(employment_types: [:main], published: true)
-      vacancy_fixture(employment_types: [:secondary], published: true)
+      vacancy_fixture(employment_types: [:main], published: true, reviewed: true)
+      vacancy_fixture(employment_types: [:secondary], published: true, reviewed: true)
 
       conn = get(conn, ~p"/api/vacancies/search")
 
@@ -172,8 +175,8 @@ defmodule CenWeb.VacancyControllerTest do
     end
 
     test "list only published vacancies", %{conn: conn} do
-      vacancy_fixture(employment_types: [:main])
-      vacancy_fixture(employment_types: [:secondary], published: true)
+      vacancy_fixture(employment_types: [:main], reviewed: true)
+      vacancy_fixture(employment_types: [:secondary], published: true, reviewed: true)
 
       conn = get(conn, ~p"/api/vacancies/search")
 

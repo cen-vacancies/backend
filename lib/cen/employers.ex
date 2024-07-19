@@ -227,12 +227,12 @@ defmodule Cen.Employers do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_vacancy(map()) :: {:ok, Vacancy.t()} | {:error, Ecto.Changeset.t()}
-  def create_vacancy(attrs) do
+  @spec create_vacancy(map(), keyword()) :: {:ok, Vacancy.t()} | {:error, Ecto.Changeset.t()}
+  def create_vacancy(attrs, opts \\ []) do
     attrs
     |> Map.fetch!(:organization)
     |> Ecto.build_assoc(:vacancies)
-    |> Vacancy.changeset(Map.delete(attrs, :organization))
+    |> Vacancy.changeset(Map.delete(attrs, :organization), opts)
     |> Repo.insert()
   end
 
@@ -248,10 +248,10 @@ defmodule Cen.Employers do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec update_vacancy(Vacancy.t(), map()) :: {:ok, Vacancy.t()} | {:error, Ecto.Changeset.t()}
-  def update_vacancy(%Vacancy{} = vacancy, attrs) do
+  @spec update_vacancy(Vacancy.t(), map(), keyword()) :: {:ok, Vacancy.t()} | {:error, Ecto.Changeset.t()}
+  def update_vacancy(%Vacancy{} = vacancy, attrs, opts \\ []) do
     vacancy
-    |> Vacancy.changeset(attrs)
+    |> Vacancy.changeset(attrs, opts)
     |> Repo.update()
   end
 
