@@ -41,11 +41,13 @@ defmodule CenWeb.VacancyControllerTest do
   setup %{conn: conn} do
     employer = Cen.AccountsFixtures.user_fixture(role: :employer)
     employer_not_owner = Cen.AccountsFixtures.user_fixture(role: :employer)
+    admin = Cen.AccountsFixtures.user_fixture(role: :admin)
 
     %{
       conn: log_in_user(conn, employer),
       user: employer,
-      conn_not_owner: log_in_user(conn, employer_not_owner)
+      conn_not_owner: log_in_user(conn, employer_not_owner),
+      conn_admin: log_in_user(conn, admin)
     }
   end
 
@@ -103,6 +105,17 @@ defmodule CenWeb.VacancyControllerTest do
                "proposed_salary" => 43,
                "work_schedules" => ["part_time"]
              } = json["data"]
+    end
+
+    test "updates vacancy when user is not author but admin", %{conn_admin: conn, vacancy: %Vacancy{id: id} = vacancy} do
+      conn = patch(conn, ~p"/api/vacancies/#{vacancy}", vacancy: @update_attrs)
+      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+
+      conn_get = get(conn, ~p"/api/vacancies/#{vacancy}")
+
+      json = json_response(conn_get, 200)
+
+      assert_schema VacancyResponse, json
     end
 
     test "renders errors when data is invalid", %{conn: conn, vacancy: vacancy} do

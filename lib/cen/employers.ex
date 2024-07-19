@@ -152,7 +152,7 @@ defmodule Cen.Employers do
   """
   @spec can_user_edit_organization?(Organization.t(), User.t()) :: boolean()
   def can_user_edit_organization?(%Organization{} = organization, %User{} = user) do
-    organization.employer_id == user.id
+    organization.employer_id == user.id or user.role == :admin
   end
 
   @doc """
