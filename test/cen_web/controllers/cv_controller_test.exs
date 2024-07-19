@@ -178,6 +178,24 @@ defmodule CenWeb.CVControllerTest do
       |> get(~p"/api/cvs/#{cv}")
       |> response(404)
     end
+
+    test "deletes chosen cv when not owner but admin", %{conn_admin: conn, cv: cv} do
+      conn = delete(conn, ~p"/api/cvs/#{cv}")
+      assert response(conn, 204)
+
+      conn
+      |> get(~p"/api/cvs/#{cv}")
+      |> response(404)
+    end
+
+    test "returns error when not owner", %{conn_employer: conn, cv: cv} do
+      conn = delete(conn, ~p"/api/cvs/#{cv}")
+      assert response(conn, 403)
+
+      conn
+      |> get(~p"/api/cvs/#{cv}")
+      |> response(200)
+    end
   end
 
   describe "search cvs" do
