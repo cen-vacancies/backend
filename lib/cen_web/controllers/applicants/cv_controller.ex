@@ -153,7 +153,7 @@ defmodule CenWeb.CVController do
     applicant = CenWeb.UserAuth.fetch_current_user(conn)
     cv = get_cv(conn)
 
-    with {:ok, %CV{} = cv} <- Applicants.update_cv(cv, cv_params) do
+    with {:ok, %CV{} = cv} <- Applicants.update_cv(cv, cv_params, admin: applicant.role == :admin) do
       cv = Map.put(cv, :applicant, applicant)
 
       render(conn, :show, cv: cv)

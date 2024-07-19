@@ -150,8 +150,9 @@ defmodule CenWeb.VacancyController do
   @spec update(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
   def update(conn, %{"vacancy" => vacancy_params}) do
     %{organization: org} = vacancy = fetch_vacancy(conn)
+    current_user = UserAuth.fetch_current_user(conn)
 
-    updating_result = Employers.update_vacancy(vacancy, vacancy_params)
+    updating_result = Employers.update_vacancy(vacancy, vacancy_params, admin: current_user.role == :admin)
 
     with {:ok, vacancy} <- updating_result do
       render(conn, :show, vacancy: Map.put(vacancy, :organization, org))

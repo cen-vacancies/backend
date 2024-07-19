@@ -40,7 +40,7 @@ defmodule Cen.ApplicantsFixtures do
           }
         ]
       })
-      |> Cen.Applicants.create_cv()
+      |> Cen.Applicants.create_cv(admin: true)
 
     cv
   end

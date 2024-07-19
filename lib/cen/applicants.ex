@@ -74,12 +74,12 @@ defmodule Cen.Applicants do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_cv(map()) :: {:ok, CV.t()} | {:error, Ecto.Changeset.t()}
-  def create_cv(attrs) do
+  @spec create_cv(map(), keyword()) :: {:ok, CV.t()} | {:error, Ecto.Changeset.t()}
+  def create_cv(attrs, opts \\ []) do
     attrs
     |> Map.fetch!(:applicant)
     |> Ecto.build_assoc(:cvs)
-    |> CV.changeset(Map.delete(attrs, :applicant))
+    |> CV.changeset(Map.delete(attrs, :applicant), opts)
     |> Repo.insert()
   end
 
@@ -95,10 +95,10 @@ defmodule Cen.Applicants do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec update_cv(CV.t(), map()) :: {:ok, CV.t()} | {:error, Ecto.Changeset.t()}
-  def update_cv(%CV{} = cv, attrs) do
+  @spec update_cv(CV.t(), map(), keyword()) :: {:ok, CV.t()} | {:error, Ecto.Changeset.t()}
+  def update_cv(%CV{} = cv, attrs, opts \\ []) do
     cv
-    |> CV.changeset(attrs)
+    |> CV.changeset(attrs, opts)
     |> Repo.update()
   end
 
