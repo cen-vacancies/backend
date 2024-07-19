@@ -143,6 +143,13 @@ defmodule CenWeb.VacancyControllerTest do
       assert conn |> get(~p"/api/vacancies/#{vacancy}") |> response(404)
     end
 
+    test "deletes vacancy when not owner but admin", %{conn_admin: conn, vacancy: vacancy} do
+      conn = delete(conn, ~p"/api/vacancies/#{vacancy}")
+      assert response(conn, 204)
+
+      assert conn |> get(~p"/api/vacancies/#{vacancy}") |> response(404)
+    end
+
     test "renders forbidden error when user not owner of organization", %{conn_not_owner: conn, vacancy: vacancy} do
       conn = delete(conn, ~p"/api/vacancies/#{vacancy}")
       json = json_response(conn, 403)
