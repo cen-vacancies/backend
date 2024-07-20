@@ -35,12 +35,14 @@ defmodule Cen.Repo.Seeder do
     :ok
   end
 
-  defp insert_admin do
+  def insert_admin do
     Cen.Repo.insert!(%Cen.Accounts.User{
       email: "admin@vacancies.ru",
       # Password is "password-from-seed"
       hashed_password: "$2b$12$eQvcD.hsuKO9LxbDWTJx/.kY0qNuWIDEGiYkoH2xarWo7udRo8hba",
-      role: :admin
+      role: :admin,
+      fullname: "Колпаков Тимофей Петрович",
+      phone: "+78001234567"
     })
   end
 
