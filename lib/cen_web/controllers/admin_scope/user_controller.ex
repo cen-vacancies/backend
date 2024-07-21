@@ -3,6 +3,9 @@ defmodule CenWeb.AdminScope.UserController do
 
   alias Cen.Accounts
   alias CenWeb.Plugs.ResourceLoader
+  alias CenWeb.Schemas.ChangesetErrorsResponse
+  alias CenWeb.Schemas.UpdateUserInfoRequest
+  alias CenWeb.Schemas.UserResponse
   alias CenWeb.Schemas.UsersListResponse
 
   fallback = CenWeb.FallbackController
@@ -12,7 +15,7 @@ defmodule CenWeb.AdminScope.UserController do
 
   plug ResourceLoader,
        [key: :user, context: Accounts, fallback: fallback]
-       when action in [:delete]
+       when action in [:update, :delete]
 
   tags "admin_users"
 
@@ -31,6 +34,26 @@ defmodule CenWeb.AdminScope.UserController do
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, params) do
     render(conn, :index, page: Accounts.list_users(params))
+  end
+
+  operation :update,
+    summary: "Update user",
+    request_body: {"User params", "application/json", UpdateUserInfoRequest},
+    responses: [
+      ok: {"Updated user", "application/json", UserResponse},
+      unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}
+    ]
+
+  @spec update(Plug.Conn.t(), map()) :: Plug.Conn.t() | {:error, atom()}
+  def update(conn, %{"user" => user_info}) do
+    updating_result =
+      conn
+      |> fetch_user()
+      |> Accounts.update_user(user_info)
+
+    with {:ok, updated_user} <- updating_result do
+      render(conn, :show, user: updated_user)
+    end
   end
 
   operation :delete,

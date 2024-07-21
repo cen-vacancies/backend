@@ -9,6 +9,12 @@ defmodule CenWeb.AdminScope.UserJSON do
   Renders a list of users.
   """
   def index(%{page: %{entries: users} = page}) do
-    %{data: for(user <- users, do: UserJSON.data(user)), page: PageJSON.show(page)}
+    %{data: for(user <- users, do: data(user)), page: PageJSON.show(page)}
   end
+
+  def show(%{user: user}) do
+    %{data: data(user)}
+  end
+
+  defp data(user), do: UserJSON.data(user)
 end

@@ -213,6 +213,13 @@ defmodule Cen.Accounts.User do
     |> validate_phone()
   end
 
+  @spec changeset(t(), map(), keyword()) :: Ecto.Changeset.t()
+  def changeset(user, attrs, opts \\ []) do
+    user
+    |> info_changeset(attrs)
+    |> validate_email(opts)
+  end
+
   defp validate_phone(changeset) do
     changeset
     |> validate_required([:phone])

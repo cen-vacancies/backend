@@ -270,6 +270,13 @@ defmodule Cen.Accounts do
     |> Repo.update()
   end
 
+  @spec update_user(User.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  def update_user(user, attrs) do
+    user
+    |> User.changeset(attrs)
+    |> Repo.update()
+  end
+
   ## Confirmation
 
   @doc ~S"""
