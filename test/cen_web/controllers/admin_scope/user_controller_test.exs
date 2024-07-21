@@ -23,6 +23,7 @@ defmodule CenWeb.AdminScope.UserControllerTest do
       json = json_response(conn, 200)
 
       assert_schema UsersListResponse, json
+      assert json["page"]["total_entries"] == 2
     end
 
     test "can't access without admin role", %{conn_not_admin: conn} do

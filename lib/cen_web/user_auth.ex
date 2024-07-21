@@ -21,10 +21,11 @@ defmodule CenWeb.UserAuth do
     end
   end
 
+  @spec admin_only(Plug.Conn.t(), any()) :: Plug.Conn.t()
   def admin_only(conn, _opts) do
     case fetch_current_user(conn) do
       %Accounts.User{role: :admin} -> conn
-      _ -> conn |> CenWeb.FallbackController.call({:error, :unauthorized}) |> halt()
+      _not_admin -> conn |> CenWeb.FallbackController.call({:error, :unauthorized}) |> halt()
     end
   end
 
