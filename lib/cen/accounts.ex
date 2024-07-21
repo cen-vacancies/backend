@@ -12,6 +12,11 @@ defmodule Cen.Accounts do
 
   ## Database getters
 
+  @spec list_users(map()) :: Scrivener.Page.t()
+  def list_users(params) do
+    Repo.paginate(User, page: params["page"], page_size: params["page_size"])
+  end
+
   @doc """
   Gets a user by email.
 
