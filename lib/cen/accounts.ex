@@ -12,6 +12,10 @@ defmodule Cen.Accounts do
 
   ## Database getters
 
+  def list_users(params) do
+    Repo.paginate(User, page: params["page"], page_size: params["page_size"])
+  end
+
   @doc """
   Gets a user by email.
 

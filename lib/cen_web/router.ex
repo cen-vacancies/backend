@@ -74,6 +74,12 @@ defmodule CenWeb.Router do
     put "/user/info", UserController, :update_info
     patch "/user/info", UserController, :update_info
 
+    scope "/admin", AdminScope do
+      pipe_through :admin_only
+
+      resources "/users", UserController, only: [:index]
+    end
+
     put "/user/email", UserController, :update_email
     patch "/user/email", UserController, :update_email
     put "/user/password", UserController, :update_password

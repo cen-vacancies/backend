@@ -21,6 +21,13 @@ defmodule CenWeb.UserAuth do
     end
   end
 
+  def admin_only(conn, _opts) do
+    case fetch_current_user(conn) do
+      %Accounts.User{role: :admin} -> conn
+      _ -> conn |> CenWeb.FallbackController.call({:error, :unauthorized}) |> halt()
+    end
+  end
+
   @spec fetch_current_user(Plug.Conn.t()) :: Accounts.User.t()
   def fetch_current_user(%{assigns: %{current_user: current_user}}), do: current_user
 end
