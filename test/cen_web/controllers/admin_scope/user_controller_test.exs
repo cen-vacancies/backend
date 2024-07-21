@@ -34,4 +34,24 @@ defmodule CenWeb.AdminScope.UserControllerTest do
       assert_schema GenericErrorResponse, json
     end
   end
+
+  describe "delete user" do
+    test "deletes user", %{conn: conn} do
+      user = user_fixture()
+
+      conn = delete(conn, ~p"/api/admin/users/#{user}")
+
+      assert response(conn, 204) == ""
+    end
+
+    test "can't delete user without admin role", %{conn_not_admin: conn} do
+      user = user_fixture()
+
+      conn = delete(conn, ~p"/api/admin/users/#{user.id}")
+
+      json = json_response(conn, 401)
+
+      assert_schema GenericErrorResponse, json
+    end
+  end
 end

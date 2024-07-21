@@ -77,7 +77,7 @@ defmodule CenWeb.Router do
     scope "/admin", AdminScope do
       pipe_through :admin_only
 
-      resources "/users", UserController, only: [:index]
+      resources "/users", UserController, param: "user_id", only: [:index, :delete]
     end
 
     put "/user/email", UserController, :update_email
