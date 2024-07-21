@@ -35,6 +35,28 @@ defmodule CenWeb.AdminScope.UserControllerTest do
     end
   end
 
+  describe "edit user" do
+    test "updates user", %{conn: conn} do
+      user = user_fixture()
+
+      conn = put(conn, ~p"/api/admin/users/#{user.id}", %{user: %{fullname: "New Name"}})
+
+      json = json_response(conn, 200)
+
+      assert json["data"]["fullname"] == "New Name"
+    end
+
+    test "can't update user without admin role", %{conn_not_admin: conn} do
+      user = user_fixture()
+
+      conn = put(conn, ~p"/api/admin/users/#{user.id}", %{user: %{fullname: "New Name"}})
+
+      json = json_response(conn, 401)
+
+      assert_schema GenericErrorResponse, json
+    end
+  end
+
   describe "delete user" do
     test "deletes user", %{conn: conn} do
       user = user_fixture()
