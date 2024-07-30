@@ -4,7 +4,7 @@ defmodule CenWeb.AdminScope.UserController do
   alias Cen.Accounts
   alias CenWeb.Plugs.ResourceLoader
   alias CenWeb.Schemas.ChangesetErrorsResponse
-  alias CenWeb.Schemas.UpdateUserInfoRequest
+  alias CenWeb.Schemas.UpdateUserRequest
   alias CenWeb.Schemas.UserResponse
   alias CenWeb.Schemas.UsersListResponse
 
@@ -38,7 +38,7 @@ defmodule CenWeb.AdminScope.UserController do
 
   operation :update,
     summary: "Update user",
-    request_body: {"User params", "application/json", UpdateUserInfoRequest},
+    request_body: {"User params", "application/json", UpdateUserRequest},
     responses: [
       ok: {"Updated user", "application/json", UserResponse},
       unprocessable_entity: {"Changeset errors", "application/json", ChangesetErrorsResponse}
