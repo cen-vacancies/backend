@@ -103,6 +103,7 @@ defmodule CenWeb.Router do
     get "/user/cvs", CVController, :user_index
 
     post "/send_interest", InterestController, :send_interest
+    post "/unsend_interest", InterestController, :unsend_interest
     get "/interests", InterestController, :index
 
     get "/chats", ChatController, :index

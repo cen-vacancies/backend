@@ -19,6 +19,7 @@ defmodule CenWeb.AdminScope.OrganizationController do
       ok: {"Organizations list", "application/json", OrganizationsListResponse}
     ]
 
+  @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, params) do
     render(conn, :index, page: Cen.Employers.list_organizations(params))
   end

@@ -31,8 +31,22 @@ defmodule CenWeb.InterestController do
     end
   end
 
+  operation :unsend_interest,
+    summary: "Unsend interest to vacancy or CV",
+    request_body: {"credentials", "application/json", SendInterestRequest},
+    responses: [
+      no_content: "User deleted"
+    ]
+
+  @spec unsend_interest(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def unsend_interest(conn, %{"cv_id" => cv_id, "vacancy_id" => vacancy_id}) do
+    Communications.unsend_interest(cv_id, vacancy_id)
+
+    send_resp(conn, :no_content, "")
+  end
+
   operation :index,
-    summary: "Send interest to vacancy or CV",
+    summary: "Get list of interests",
     parameters: [
       type: [
         in: :query,

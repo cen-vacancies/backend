@@ -17,6 +17,17 @@ defmodule Cen.Communications do
     |> Repo.insert()
   end
 
+  @spec unsend_interest(integer(), integer()) :: :ok
+  def unsend_interest(cv_id, vacancy_id) do
+    query =
+      from interest in Interest,
+        where: interest.cv_id == ^cv_id and interest.vacancy_id == ^vacancy_id
+
+    Repo.delete_all(query)
+
+    :ok
+  end
+
   @spec get_interest!(integer()) :: Interest.t()
   def get_interest!(id) do
     Interest

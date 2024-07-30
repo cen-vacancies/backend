@@ -7,6 +7,7 @@ defmodule CenWeb.AdminScope.OrganizationJSON do
   @doc """
   Renders a list of organizations.
   """
+  @spec index(map()) :: map()
   def index(%{page: %{entries: organizations} = page}) do
     %{data: for(organization <- organizations, do: data(organization)), page: PageJSON.show(page)}
   end
