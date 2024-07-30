@@ -20,8 +20,9 @@ defmodule Cen.EmployersTest do
     end
 
     test "list_organizations/0 returns all organizations" do
-      organization = organization_fixture()
-      assert Employers.list_organizations() == [organization]
+      %{id: organization_id} = organization_fixture()
+
+      assert %{entries: [%{id: ^organization_id}]} = Employers.list_organizations()
     end
 
     test "get_organization!/1 returns the organization with given id" do

@@ -20,9 +20,11 @@ defmodule Cen.Employers do
       [%Organization{}, ...]
 
   """
-  @spec list_organizations() :: [Organization.t()]
-  def list_organizations do
-    Repo.all(Organization)
+  @spec list_organizations(map()) :: Scrivener.Page.t()
+  def list_organizations(params \\ %{}) do
+    Organization
+    |> preload(:employer)
+    |> Repo.paginate(page: params["page"], page_size: params["page_size"])
   end
 
   @doc """
