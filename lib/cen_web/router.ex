@@ -80,6 +80,9 @@ defmodule CenWeb.Router do
       resources "/users", UserController, param: "user_id", only: [:index, :update, :delete]
 
       get "/organizations", OrganizationController, :index
+
+      get "/vacancies/unreviewed", VacancyController, :index_unreviewed
+      get "/cvs/unreviewed", CVController, :index_unreviewed
     end
 
     put "/user/email", UserController, :update_email

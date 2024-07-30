@@ -183,4 +183,12 @@ defmodule Cen.Applicants do
 
   defp smaller_educations(:none), do: @educations
   defp smaller_educations(education), do: Enum.drop_while(@educations, &(&1 != education))
+
+  @spec list_unreviewed_cvs(map()) :: Scrivener.Page.t()
+  def list_unreviewed_cvs(params) do
+    CV
+    |> where([cv], not cv.reviewed)
+    |> preload(:applicant)
+    |> Repo.paginate(page: params["page"], page_size: params["page_size"])
+  end
 end

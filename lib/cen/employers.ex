@@ -321,4 +321,12 @@ defmodule Cen.Employers do
 
     QueryUtils.filter(query, :education, :field_in_value, educations)
   end
+
+  @spec list_unreviewed_vacancies(map()) :: Scrivener.Page.t()
+  def list_unreviewed_vacancies(params) do
+    Vacancy
+    |> where([vacancy], not vacancy.reviewed)
+    |> preload(organization: [:employer])
+    |> Repo.paginate(page: params["page"], page_size: params["page_size"])
+  end
 end
