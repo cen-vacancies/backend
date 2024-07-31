@@ -216,7 +216,9 @@ defmodule Cen.Accounts.User do
   @spec changeset(t(), map(), keyword()) :: Ecto.Changeset.t()
   def changeset(user, attrs, opts \\ []) do
     user
-    |> info_changeset(attrs)
+    |> cast(attrs, ~w[email fullname birth_date phone]a)
+    |> validate_required(~w[fullname]a)
+    |> validate_phone()
     |> validate_email(opts)
   end
 
