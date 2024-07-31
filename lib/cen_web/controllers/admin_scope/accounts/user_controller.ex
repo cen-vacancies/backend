@@ -15,7 +15,7 @@ defmodule CenWeb.AdminScope.UserController do
 
   plug ResourceLoader,
        [key: :user, context: Accounts, fallback: fallback]
-       when action in [:update, :delete]
+       when action in [:show, :update, :delete]
 
   tags "admin_users"
 
@@ -28,12 +28,26 @@ defmodule CenWeb.AdminScope.UserController do
       page_size: [in: :query, description: "Page size", type: :integer]
     ],
     responses: [
-      ok: {"Requested user", "application/json", UsersListResponse}
+      ok: {"Users list", "application/json", UsersListResponse}
     ]
 
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, params) do
     render(conn, :index, page: Accounts.list_users(params))
+  end
+
+  operation :show,
+    summary: "Get user by ID",
+    parameters: [
+      user_id: [in: :path, description: "User ID", type: :integer, example: "10132"]
+    ],
+    responses: [
+      ok: {"Requested user", "application/json", UserResponse}
+    ]
+
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def show(conn, _params) do
+    render(conn, :show, user: fetch_user(conn))
   end
 
   operation :update,
